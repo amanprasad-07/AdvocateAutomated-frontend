@@ -1,20 +1,34 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
+import LoadingSpinner from "../../components/LoadingSpinner";
+
+/* ---------- Status Styles (Semantic) ---------- */
+const STATUS_STYLES = {
+  requested: "border-l-warning text-warning",
+  approved: "border-l-success text-success",
+  rejected: "border-l-error text-error",
+};
 
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const [hiddenRejected, setHiddenRejected] = useState(() => {
+    const stored = localStorage.getItem("hiddenRejectedAppointments");
+    return stored ? JSON.parse(stored) : [];
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         const res = await api.get("/appointments");
-        // adjust endpoint if different
-        setAppointments(res.data.data);
-      } catch (err) {
-        setError("Failed to load appointments");
+        setAppointments(res.data.data || []);
+      } catch {
+        setError("Failed to load appointments.");
       } finally {
         setLoading(false);
       }
@@ -23,51 +37,191 @@ const MyAppointments = () => {
     fetchAppointments();
   }, []);
 
+  /* ---------- Filters ---------- */
+  const statusParam = searchParams.get("status");
+
+  const visibleAppointments = appointments.filter((a) => {
+    if (hiddenRejected.includes(a._id)) return false;
+    if (!statusParam) return a.status !== "completed";
+    return a.status === statusParam;
+  });
+
+  const setFilter = (status) => {
+    if (!status) {
+      setSearchParams({});
+    } else {
+      setSearchParams({ status });
+    }
+  };
+
+  const hideRejectedAppointment = (id) => {
+    const updated = [...hiddenRejected, id];
+    setHiddenRejected(updated);
+    localStorage.setItem(
+      "hiddenRejectedAppointments",
+      JSON.stringify(updated)
+    );
+  };
+
   return (
     <DashboardLayout
       title="My Appointments"
       navItems={[
         { label: "Home", path: "/client" },
         { label: "Book Appointment", path: "/client/book-appointment" },
+        { label: "My Appointments", path: "/client/my-appointments" },
+        { label: "Past Appointments", path: "/client/past-appointments" },
         { label: "My Cases", path: "/client/my-cases" },
-        { label: "My Payments", path: "#" },
       ]}
     >
-      {loading && <p>Loading appointments...</p>}
+      {loading && <LoadingSpinner />}
 
-      {error && <p className="text-red-500">{error}</p>}
-
-      {!loading && appointments.length === 0 && (
-        <p>No appointments booked yet.</p>
-      )}
-
-      {!loading && appointments.length > 0 && (
-        <div className="space-y-4">
-          {appointments.map((appt) => (
-            <div
-              key={appt._id}
-              className="border border-border p-4 rounded"
+      {!loading && (
+        <>
+          {/* ---------- Filters ---------- */}
+          <div className="mb-4 flex flex-wrap gap-2">
+            <button
+              onClick={() => setFilter(null)}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  !statusParam
+                    ? "bg-primary text-white"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
             >
-              <p>
-                <strong>Advocate:</strong>{" "}
-                {appt.advocate?.name || "N/A"}
-              </p>
-              <p>
-                <strong>Date:</strong> {appt.date}
-              </p>
-              <p>
-                <strong>Time Slot:</strong> {appt.timeSlot}
-              </p>
-              <p>
-                <strong>Status:</strong>{" "}
-                <span className="capitalize">{appt.status}</span>
-              </p>
-              <p>
-                <strong>Purpose:</strong> {appt.purpose}
-              </p>
-            </div>
-          ))}
-        </div>
+              All
+            </button>
+
+            <button
+              onClick={() => setFilter("requested")}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  statusParam === "requested"
+                    ? "bg-surfaceElevated text-warning"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
+            >
+              Requested
+            </button>
+
+            <button
+              onClick={() => setFilter("approved")}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  statusParam === "approved"
+                    ? "bg-surfaceElevated text-success"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
+            >
+              Approved
+            </button>
+
+            <button
+              onClick={() => setFilter("rejected")}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  statusParam === "rejected"
+                    ? "bg-surfaceElevated text-error"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
+            >
+              Rejected
+            </button>
+          </div>
+
+          {/* ---------- Error ---------- */}
+          {error && (
+            <p className="mb-3 text-sm text-error">
+              {error}
+            </p>
+          )}
+
+          {/* ---------- Empty State ---------- */}
+          {visibleAppointments.length === 0 && (
+            <p className="text-text-muted">
+              No appointments match this filter.
+            </p>
+          )}
+
+          {/* ---------- Appointment List ---------- */}
+          <div className="space-y-3">
+            {visibleAppointments.map((appt) => (
+              <div
+                key={appt._id}
+                className={`
+                  rounded-xl border border-border
+                  border-l-4
+                  bg-surface
+                  p-4
+                  ${STATUS_STYLES[appt.status] || ""}
+                `}
+              >
+                <p className="font-semibold text-text-primary">
+                  Advocate: {appt.advocate?.name || "N/A"}
+                </p>
+
+                <div className="mt-1 space-y-1 text-sm text-text-secondary">
+                  <p>
+                    <strong>Date:</strong> {appt.date}
+                  </p>
+                  <p>
+                    <strong>Time:</strong> {appt.timeSlot}
+                  </p>
+                  <p>
+                    <strong>Purpose:</strong> {appt.purpose}
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    <span className="capitalize font-medium">
+                      {appt.status}
+                    </span>
+                  </p>
+                </div>
+
+                {appt.status === "rejected" && appt.notes && (
+                  <p className="mt-2 text-sm text-error">
+                    <strong>Reason:</strong> {appt.notes}
+                  </p>
+                )}
+
+                {appt.status === "rejected" && (
+                  <button
+                    onClick={() =>
+                      hideRejectedAppointment(appt._id)
+                    }
+                    className="
+                      mt-3 rounded-lg
+                      border border-border
+                      px-3 py-1 text-sm
+                      text-text-secondary
+                      hover:bg-surfaceElevated
+                      hover:text-text-primary
+                      transition-colors
+                    "
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </DashboardLayout>
   );

@@ -2,6 +2,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
+const applyThemeClass = (theme) => {
+  document.documentElement.classList.toggle("dark", theme === "dark");
+};
+
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState("light");
 
@@ -13,17 +17,14 @@ export const ThemeProvider = ({ children }) => {
 
     const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
     setTheme(initialTheme);
-    document.documentElement.classList.toggle(
-      "dark",
-      initialTheme === "dark"
-    );
+    applyThemeClass(initialTheme);
   }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
+    applyThemeClass(newTheme);
   };
 
   return (

@@ -11,20 +11,43 @@ import Login from "./pages/public/Login";
 import Register from "./pages/public/Register";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminPendingApprovals from "./pages/admin/AdminPendingApprovals";
+import VerifiedAdvocates from "./pages/admin/VerifiedAdvocates";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminCases from "./pages/admin/AdminCases";
+import AdminPayments from "./pages/admin/AdminPayments";
+import AdminEvidence from "./pages/admin/AdminEvidence";
+import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 
 import AdvocateDashboard from "./pages/advocate/AdvocateDashboard";
 import AdvocateMyAppointments from "./pages/advocate/MyAppointments";
 import CreateCase from "./pages/advocate/CreateCase";
 import AdvocateMyCases from "./pages/advocate/MyCases";
+import AdvocateCaseDetails from "./pages/advocate/AdvocateCaseDetails";
+import AdvocateAddTask from "./pages/advocate/AdvocateAddTask";
+import AdvocateCaseTasks from "./pages/advocate/AdvocateCaseTasks";
+import AdvocateCaseEvidence from "./pages/advocate/AdvocateCaseEvidence";
+import AdvocateAddEvidence from "./pages/advocate/AdvocateAddEvidence";
+import AdvocateCreateBill from "./pages/advocate/AdvocateCreateBill";
+import AdvocateCaseBills from "./pages/advocate/AdvocateCaseBills";
 
 import ClientDashboard from "./pages/client/ClientDashboard";
 import BookAppointment from "./pages/client/BookAppointment";
 import MyAppointments from "./pages/client/MyAppointments";
+import PastAppointments from "./pages/client/PastAppointments";
 import ClientMyCases from "./pages/client/MyCases";
+import ClientCaseDetails from "./pages/client/ClientCaseDetails";
 
 import JuniorDashboard from "./pages/junior/JuniorDashboard";
+import JuniorMyCases from "./pages/junior/JuniorMyCases";
+import JuniorCaseDetails from "./pages/junior/JuniorCaseDetails";
+import JuniorCaseTasks from "./pages/junior/JuniorCaseTasks";
+import JuniorAddEvidence from "./pages/junior/JuniorAddEvidence";
+import JuniorCaseEvidence from "./pages/junior/JuniorCaseEvidence";
 
 import "./index.css";
+
+
 
 const router = createBrowserRouter([
   {
@@ -47,6 +70,63 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "/admin/pending-approvals",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <AdminPendingApprovals />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/verified",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <VerifiedAdvocates />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/users",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <AdminUsers />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/cases",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <AdminCases />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/payments",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <AdminPayments />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/evidence",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <AdminEvidence />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/audit-logs",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <AdminAuditLogs />
+      </ProtectedRoute>
+    ),
+  },
+
   {
     path: "/advocate",
     element: (
@@ -80,6 +160,63 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/advocate/my-cases/:caseId",
+    element: (
+      <ProtectedRoute allowedRoles={["advocate"]}>
+        <AdvocateCaseDetails />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/advocate/my-cases/:caseId/add-task",
+    element: (
+      <ProtectedRoute allowedRoles={["advocate"]}>
+        <AdvocateAddTask />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/advocate/my-cases/:caseId/tasks",
+    element: (
+      <ProtectedRoute allowedRoles={["advocate"]}>
+        <AdvocateCaseTasks />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/advocate/my-cases/:caseId/evidence",
+    element: (
+      <ProtectedRoute allowedRoles={["advocate"]}>
+        <AdvocateCaseEvidence />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/advocate/my-cases/:caseId/add-evidence",
+    element: (
+      <ProtectedRoute allowedRoles={["advocate"]}>
+        <AdvocateAddEvidence />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/advocate/my-cases/:caseId/create-bill",
+    element: (
+      <ProtectedRoute allowedRoles={["advocate"]}>
+        <AdvocateCreateBill />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/advocate/my-cases/:caseId/bills",
+    element: (
+      <ProtectedRoute allowedRoles={["advocate"]}>
+        <AdvocateCaseBills />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
     path: "/client",
     element: (
       <ProtectedRoute allowedRoles={["client"]}>
@@ -104,6 +241,14 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/client/past-appointments",
+    element: (
+      <ProtectedRoute allowedRoles={["client"]}>
+        <PastAppointments />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/client/my-cases",
     element: (
       <ProtectedRoute allowedRoles={["client"]}>
@@ -112,10 +257,59 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/client/my-cases/:caseId",
+    element: (
+      <ProtectedRoute allowedRoles={["client"]}>
+        <ClientCaseDetails />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
     path: "/junior_advocate",
     element: (
       <ProtectedRoute allowedRoles={["junior_advocate"]}>
         <JuniorDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/junior_advocate/cases",
+    element: (
+      <ProtectedRoute allowedRoles={["junior_advocate"]}>
+        <JuniorMyCases />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/junior_advocate/cases/:caseId",
+    element: (
+      <ProtectedRoute allowedRoles={["junior_advocate"]}>
+        <JuniorCaseDetails />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/junior_advocate/cases/:caseId/tasks",
+    element: (
+      <ProtectedRoute allowedRoles={["junior_advocate"]}>
+        <JuniorCaseTasks />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/junior_advocate/cases/:caseId/add-evidence",
+    element: (
+      <ProtectedRoute allowedRoles={["junior_advocate"]}>
+        <JuniorAddEvidence />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/junior_advocate/cases/:caseId/evidence",
+    element: (
+      <ProtectedRoute allowedRoles={["junior_advocate"]}>
+        <JuniorCaseEvidence />
       </ProtectedRoute>
     ),
   },

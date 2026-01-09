@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
+import LoadingSpinner from "../../components/LoadingSpinner";
+
+/* ---------- Status Styles (Semantic) ---------- */
+const STATUS_STYLES = {
+  open: "border-l-primary text-primary",
+  in_progress: "border-l-warning text-warning",
+  closed: "border-l-success text-success",
+};
 
 const AdvocateMyCases = () => {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
     const fetchCases = async () => {
       try {
         const res = await api.get("/cases");
-        setCases(res.data.data); // backend returns { success, count, data }
-      } catch (err) {
-        setError("Failed to load cases");
+        setCases(res.data.data || []);
+      } catch {
+        setError("Failed to load cases.");
       } finally {
         setLoading(false);
       }
@@ -22,50 +34,161 @@ const AdvocateMyCases = () => {
     fetchCases();
   }, []);
 
+  /* ---------- Filters ---------- */
+  const statusParam = searchParams.get("status");
+
+  const filteredCases = statusParam
+    ? cases.filter(c =>
+        statusParam.split(",").includes(c.status)
+      )
+    : cases;
+
+  const setFilter = (status) => {
+    if (!status) {
+      setSearchParams({});
+    } else {
+      setSearchParams({ status });
+    }
+  };
+
   return (
     <DashboardLayout
       title="My Cases"
       navItems={[
         { label: "Home", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
+        { label: "My Cases", path: "/advocate/my-cases" },
       ]}
     >
-      {loading && <p>Loading cases...</p>}
+      {loading && <LoadingSpinner />}
 
-      {error && <p className="text-red-500">{error}</p>}
-
-      {!loading && cases.length === 0 && (
-        <p>No cases assigned yet.</p>
-      )}
-
-      {!loading && cases.length > 0 && (
-        <div className="space-y-4">
-          {cases.map((c) => (
-            <div
-              key={c._id}
-              className="border border-border p-4 rounded"
+      {!loading && (
+        <>
+          {/* ---------- Filters ---------- */}
+          <div className="mb-4 flex flex-wrap gap-2">
+            <button
+              onClick={() => setFilter(null)}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  !statusParam
+                    ? "bg-primary text-white"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
             >
-              <p>
-                <strong>Case Number:</strong> {c.caseNumber}
-              </p>
-              <p>
-                <strong>Title:</strong> {c.title}
-              </p>
-              <p>
-                <strong>Client:</strong>{" "}
-                {c.client?.name} ({c.client?.email})
-              </p>
-              <p>
-                <strong>Type:</strong>{" "}
-                <span className="capitalize">{c.caseType}</span>
-              </p>
-              <p>
-                <strong>Status:</strong>{" "}
-                <span className="capitalize">{c.status}</span>
-              </p>
-            </div>
-          ))}
-        </div>
+              All
+            </button>
+
+            <button
+              onClick={() => setFilter("open")}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  statusParam === "open"
+                    ? "bg-surfaceElevated text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
+            >
+              Open
+            </button>
+
+            <button
+              onClick={() => setFilter("in_progress")}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  statusParam === "in_progress"
+                    ? "bg-surfaceElevated text-warning"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
+            >
+              In Progress
+            </button>
+
+            <button
+              onClick={() => setFilter("closed")}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  statusParam === "closed"
+                    ? "bg-surfaceElevated text-success"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
+            >
+              Closed
+            </button>
+          </div>
+
+          {/* ---------- Error ---------- */}
+          {error && (
+            <p className="mb-3 text-sm text-error">
+              {error}
+            </p>
+          )}
+
+          {/* ---------- Empty State ---------- */}
+          {filteredCases.length === 0 && (
+            <p className="text-text-muted">
+              No cases match this filter.
+            </p>
+          )}
+
+          {/* ---------- Case List ---------- */}
+          <div className="space-y-3">
+            {filteredCases.map(c => (
+              <div
+                key={c._id}
+                onClick={() =>
+                  navigate(`/advocate/my-cases/${c._id}`)
+                }
+                className={`
+                  cursor-pointer
+                  rounded-xl border border-border
+                  border-l-4
+                  bg-surface
+                  p-4
+                  hover:bg-surfaceElevated
+                  transition-colors
+                  ${STATUS_STYLES[c.status] || ""}
+                `}
+              >
+                <p className="font-semibold text-text-primary">
+                  {c.caseNumber} • {c.title}
+                </p>
+
+                <div className="mt-1 space-y-1 text-sm text-text-secondary">
+                  <p>
+                    <strong>Client:</strong>{" "}
+                    {c.client?.name} ({c.client?.email})
+                  </p>
+
+                  <p className="capitalize">
+                    <strong>Type:</strong> {c.caseType}
+                  </p>
+
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    <span className="capitalize font-medium">
+                      {c.status.replace(/_/g, " ")}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </DashboardLayout>
   );

@@ -6,42 +6,47 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 
 /* ---------- Status Styles (Semantic) ---------- */
 const STATUS_STYLES = {
-  open: "border-l-primary text-primary",
-  in_progress: "border-l-warning text-warning",
-  closed: "border-l-success text-success",
+  completed: "border-l-success text-success",
+  rejected: "border-l-error text-error",
 };
 
-const ClientMyCases = () => {
-  const [cases, setCases] = useState([]);
+const PastAppointments = () => {
+  const navigate = useNavigate();
+
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    const fetchCases = async () => {
+    const fetchAppointments = async () => {
       try {
-        const res = await api.get("/cases");
-        setCases(res.data.data || []);
+        const res = await api.get("/appointments");
+
+        const past = res.data.data.filter(
+          (appt) =>
+            appt.status === "completed" ||
+            appt.status === "rejected"
+        );
+
+        setAppointments(past || []);
       } catch {
-        setError("Failed to load cases.");
+        setError("Failed to load past appointments.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCases();
+    fetchAppointments();
   }, []);
 
   /* ---------- Filters ---------- */
   const statusParam = searchParams.get("status");
 
-  const filteredCases = statusParam
-    ? cases.filter(c =>
-        statusParam.split(",").includes(c.status)
-      )
-    : cases;
+  const filteredAppointments = statusParam
+    ? appointments.filter(a => a.status === statusParam)
+    : appointments;
 
   const setFilter = (status) => {
     if (!status) {
@@ -53,7 +58,7 @@ const ClientMyCases = () => {
 
   return (
     <DashboardLayout
-      title="My Cases"
+      title="Past Appointments"
       navItems={[
         { label: "Home", path: "/client" },
         { label: "Book Appointment", path: "/client/book-appointment" },
@@ -85,51 +90,35 @@ const ClientMyCases = () => {
             </button>
 
             <button
-              onClick={() => setFilter("open")}
+              onClick={() => setFilter("completed")}
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
                 ${
-                  statusParam === "open"
-                    ? "bg-surfaceElevated text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
-                }
-                transition-colors
-              `}
-            >
-              Open
-            </button>
-
-            <button
-              onClick={() => setFilter("in_progress")}
-              className={`
-                rounded-lg border border-border
-                px-3 py-1 text-sm
-                ${
-                  statusParam === "in_progress"
-                    ? "bg-surfaceElevated text-warning"
-                    : "text-text-secondary hover:bg-surfaceElevated"
-                }
-                transition-colors
-              `}
-            >
-              In Progress
-            </button>
-
-            <button
-              onClick={() => setFilter("closed")}
-              className={`
-                rounded-lg border border-border
-                px-3 py-1 text-sm
-                ${
-                  statusParam === "closed"
+                  statusParam === "completed"
                     ? "bg-surfaceElevated text-success"
                     : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
             >
-              Closed
+              Completed
+            </button>
+
+            <button
+              onClick={() => setFilter("rejected")}
+              className={`
+                rounded-lg border border-border
+                px-3 py-1 text-sm
+                ${
+                  statusParam === "rejected"
+                    ? "bg-surfaceElevated text-error"
+                    : "text-text-secondary hover:bg-surfaceElevated"
+                }
+                transition-colors
+              `}
+            >
+              Rejected
             </button>
           </div>
 
@@ -141,48 +130,72 @@ const ClientMyCases = () => {
           )}
 
           {/* ---------- Empty State ---------- */}
-          {filteredCases.length === 0 && (
+          {filteredAppointments.length === 0 && (
             <p className="text-text-muted">
-              No cases match this filter.
+              No past appointments match this filter.
             </p>
           )}
 
-          {/* ---------- Case List ---------- */}
+          {/* ---------- Appointment List ---------- */}
           <div className="space-y-3">
-            {filteredCases.map(c => (
+            {filteredAppointments.map((appt) => (
               <div
-                key={c._id}
-                onClick={() =>
-                  navigate(`/client/my-cases/${c._id}`)
-                }
+                key={appt._id}
                 className={`
-                  cursor-pointer
                   rounded-xl border border-border
                   border-l-4
                   bg-surface
                   p-4
-                  hover:bg-surfaceElevated
-                  transition-colors
-                  ${STATUS_STYLES[c.status] || ""}
+                  ${STATUS_STYLES[appt.status] || ""}
                 `}
               >
                 <p className="font-semibold text-text-primary">
-                  {c.caseNumber} • {c.title}
+                  Advocate: {appt.advocate?.name || "N/A"}
                 </p>
 
                 <div className="mt-1 space-y-1 text-sm text-text-secondary">
                   <p>
-                    <strong>Advocate:</strong>{" "}
-                    {c.advocate?.name || "Not assigned"}
+                    <strong>Date:</strong> {appt.date}
                   </p>
-
+                  <p>
+                    <strong>Time:</strong> {appt.timeSlot}
+                  </p>
                   <p>
                     <strong>Status:</strong>{" "}
                     <span className="capitalize font-medium">
-                      {c.status.replace(/_/g, " ")}
+                      {appt.status}
                     </span>
                   </p>
                 </div>
+
+                {/* ---------- Rejection Reason ---------- */}
+                {appt.status === "rejected" && appt.notes && (
+                  <p className="mt-2 text-sm text-error">
+                    <strong>Reason:</strong> {appt.notes}
+                  </p>
+                )}
+
+                {/* ---------- Case Link ---------- */}
+                {appt.status === "completed" && appt.linkedCase && (
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/client/my-cases/${appt.linkedCase}`
+                      )
+                    }
+                    className="
+                      mt-3 rounded-lg
+                      border border-border
+                      px-3 py-1 text-sm
+                      text-text-secondary
+                      hover:bg-surfaceElevated
+                      hover:text-text-primary
+                      transition-colors
+                    "
+                  >
+                    View Case
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -192,4 +205,4 @@ const ClientMyCases = () => {
   );
 };
 
-export default ClientMyCases;
+export default PastAppointments;

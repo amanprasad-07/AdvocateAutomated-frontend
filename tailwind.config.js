@@ -1,38 +1,34 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: "class",
-  content: ["./index.html", "./src/**/*.{js,jsx}"],
-
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
-        // Light Theme
-        background: "#F8F9FA",
-        surface: "#FFFFFF",
-        primary: "#0F2A44",      // Deep Navy
-        secondary: "#3E5C76",    // Steel Blue
-        accent: "#C9A24D",       // Gold
-        text: {
-          primary: "#1F2933",
-          muted: "#6B7280",
-        },
-        border: "#E5E7EB",
+        bg: "hsl(var(--bg))",
+        surface: "hsl(var(--surface))",
+        surfaceElevated: "hsl(var(--surface-elevated))",
 
-        // Dark Theme
-        dark: {
-          background: "#0B1220",
-          surface: "#111827",
-          primary: "#D4AF37",    // Gold becomes primary
-          secondary: "#93A3B8",
-          accent: "#F5C77A",
-          text: {
-            primary: "#E5E7EB",
-            muted: "#9CA3AF",
-          },
-          border: "#1F2937",
+        border: "hsl(var(--border))",
+
+        text: {
+          primary: "hsl(var(--text-primary))",
+          secondary: "hsl(var(--text-secondary))",
+          muted: "hsl(var(--text-muted))",
         },
+
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          hover: "hsl(var(--primary-hover))",
+        },
+
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        error: "hsl(var(--error))",
       },
     },
   },
   plugins: [],
-}
+};

@@ -1,47 +1,51 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 /* ---------- Status Styles (Semantic) ---------- */
 const STATUS_STYLES = {
-  open: "border-l-primary text-primary",
-  in_progress: "border-l-warning text-warning",
-  closed: "border-l-success text-success",
+  pending: "border-l-warning text-warning",
+  paid: "border-l-success text-success",
 };
 
-const ClientMyCases = () => {
-  const [cases, setCases] = useState([]);
+const AdvocateCaseBills = () => {
+  const { caseId } = useParams();
+  const navigate = useNavigate();
+
+  const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
-    const fetchCases = async () => {
-      try {
-        const res = await api.get("/cases");
-        setCases(res.data.data || []);
-      } catch {
-        setError("Failed to load cases.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchBills = async () => {
+    try {
+      const res = await api.get("/payments");
 
-    fetchCases();
-  }, []);
+      const caseBills = res.data.data.filter(
+        (p) => p.case?._id === caseId
+      );
+
+      setBills(caseBills || []);
+    } catch {
+      setError("Failed to load bills.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBills();
+  }, [caseId]);
 
   /* ---------- Filters ---------- */
   const statusParam = searchParams.get("status");
 
-  const filteredCases = statusParam
-    ? cases.filter(c =>
-        statusParam.split(",").includes(c.status)
-      )
-    : cases;
+  const filteredBills = statusParam
+    ? bills.filter((b) => b.status === statusParam)
+    : bills;
 
   const setFilter = (status) => {
     if (!status) {
@@ -51,15 +55,22 @@ const ClientMyCases = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    await api.delete(`/payments/${id}`);
+    fetchBills();
+  };
+
   return (
     <DashboardLayout
-      title="My Cases"
+      title="Case Bills"
       navItems={[
-        { label: "Home", path: "/client" },
-        { label: "Book Appointment", path: "/client/book-appointment" },
-        { label: "My Appointments", path: "/client/my-appointments" },
-        { label: "Past Appointments", path: "/client/past-appointments" },
-        { label: "My Cases", path: "/client/my-cases" },
+        { label: "Home", path: "/advocate" },
+        { label: "My Appointments", path: "/advocate/my-appointments" },
+        { label: "My Cases", path: "/advocate/my-cases" },
+        {
+          label: "Back to Case",
+          path: `/advocate/my-cases/${caseId}`,
+        },
       ]}
     >
       {loading && <LoadingSpinner />}
@@ -85,51 +96,35 @@ const ClientMyCases = () => {
             </button>
 
             <button
-              onClick={() => setFilter("open")}
+              onClick={() => setFilter("pending")}
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
                 ${
-                  statusParam === "open"
-                    ? "bg-surfaceElevated text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
-                }
-                transition-colors
-              `}
-            >
-              Open
-            </button>
-
-            <button
-              onClick={() => setFilter("in_progress")}
-              className={`
-                rounded-lg border border-border
-                px-3 py-1 text-sm
-                ${
-                  statusParam === "in_progress"
+                  statusParam === "pending"
                     ? "bg-surfaceElevated text-warning"
                     : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
             >
-              In Progress
+              Pending
             </button>
 
             <button
-              onClick={() => setFilter("closed")}
+              onClick={() => setFilter("paid")}
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
                 ${
-                  statusParam === "closed"
+                  statusParam === "paid"
                     ? "bg-surfaceElevated text-success"
                     : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
             >
-              Closed
+              Paid
             </button>
           </div>
 
@@ -141,48 +136,58 @@ const ClientMyCases = () => {
           )}
 
           {/* ---------- Empty State ---------- */}
-          {filteredCases.length === 0 && (
+          {filteredBills.length === 0 && (
             <p className="text-text-muted">
-              No cases match this filter.
+              No bills match this filter.
             </p>
           )}
 
-          {/* ---------- Case List ---------- */}
+          {/* ---------- Bills List ---------- */}
           <div className="space-y-3">
-            {filteredCases.map(c => (
+            {filteredBills.map((bill) => (
               <div
-                key={c._id}
-                onClick={() =>
-                  navigate(`/client/my-cases/${c._id}`)
-                }
+                key={bill._id}
                 className={`
-                  cursor-pointer
                   rounded-xl border border-border
                   border-l-4
                   bg-surface
                   p-4
-                  hover:bg-surfaceElevated
-                  transition-colors
-                  ${STATUS_STYLES[c.status] || ""}
+                  ${STATUS_STYLES[bill.status] || ""}
                 `}
               >
-                <p className="font-semibold text-text-primary">
-                  {c.caseNumber} • {c.title}
+                <p className="text-lg font-semibold text-text-primary">
+                  ₹{bill.amount}
                 </p>
 
                 <div className="mt-1 space-y-1 text-sm text-text-secondary">
                   <p>
-                    <strong>Advocate:</strong>{" "}
-                    {c.advocate?.name || "Not assigned"}
+                    <strong>For:</strong> {bill.paymentFor}
                   </p>
 
-                  <p>
+                  <p className="capitalize">
                     <strong>Status:</strong>{" "}
-                    <span className="capitalize font-medium">
-                      {c.status.replace(/_/g, " ")}
+                    <span className="font-medium">
+                      {bill.status}
                     </span>
                   </p>
                 </div>
+
+                {bill.status === "pending" && (
+                  <button
+                    onClick={() => handleDelete(bill._id)}
+                    className="
+                      mt-3 rounded-lg
+                      border border-border
+                      px-3 py-1
+                      text-sm text-text-secondary
+                      hover:bg-surfaceElevated
+                      hover:text-text-primary
+                      transition-colors
+                    "
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -192,4 +197,4 @@ const ClientMyCases = () => {
   );
 };
 
-export default ClientMyCases;
+export default AdvocateCaseBills;

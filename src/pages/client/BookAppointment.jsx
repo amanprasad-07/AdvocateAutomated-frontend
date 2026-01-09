@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const BookAppointment = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const BookAppointment = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const today = new Date().toISOString().split("T")[0];
 
   // Fetch advocates
   useEffect(() => {
@@ -40,11 +42,21 @@ const BookAppointment = () => {
     setLoading(true);
     setError("");
 
+    const selectedDate = new Date(form.date);
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate < todayDate) {
+      setError("Appointment date cannot be in the past");
+      setLoading(false);
+      return;
+    }
+
     try {
       await api.post("/appointments", form);
       navigate("/client/my-appointments");
     } catch (err) {
-      setError("Failed to book appointment");
+      setError(err.response?.data?.message || "Failed to book appointment");
     } finally {
       setLoading(false);
     }
@@ -55,73 +67,135 @@ const BookAppointment = () => {
       title="Book Appointment"
       navItems={[
         { label: "Home", path: "/client" },
+        { label: "Book Appointment", path: "/client/book-appointment" },
         { label: "My Appointments", path: "/client/my-appointments" },
+        { label: "Past Appointments", path: "/client/past-appointments" },
         { label: "My Cases", path: "/client/my-cases" },
-        { label: "My Payments", path: "#" },
       ]}
     >
-      <form onSubmit={handleSubmit} className="max-w-md space-y-4">
-        {/* Advocate */}
-        <select
-          name="advocateId"
-          value={form.advocateId}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        >
-          <option value="">Select Advocate</option>
-          {advocates.map((adv) => (
-            <option key={adv._id} value={adv._id}>
-              {adv.name} ({adv.email})
-            </option>
-          ))}
-        </select>
+      {loading && <LoadingSpinner />}
 
-        {/* Date */}
-        <input
-          type="date"
-          name="date"
-          value={form.date}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        />
+      {!loading && (
+        <div className="max-w-md">
+          <form
+            onSubmit={handleSubmit}
+            className="
+              space-y-4
+              rounded-xl
+              border border-border
+              bg-surface
+              p-6
+            "
+          >
+            {/* Advocate */}
+            <select
+              name="advocateId"
+              value={form.advocateId}
+              onChange={handleChange}
+              required
+              className="
+                w-full rounded-lg
+                border border-border
+                bg-bg
+                px-3 py-2
+                text-text-primary
+                focus:outline-none
+                focus:ring-2 focus:ring-primary/30
+              "
+            >
+              <option value="">Select Advocate</option>
+              {advocates.map((adv) => (
+                <option key={adv._id} value={adv._id}>
+                  {adv.name} ({adv.email})
+                </option>
+              ))}
+            </select>
 
-        {/* Time Slot */}
-        <select
-          name="timeSlot"
-          value={form.timeSlot}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        >
-          <option value="">Select Time Slot</option>
-          <option value="10:00 - 10:30">10:00 - 10:30</option>
-          <option value="10:30 - 11:00">10:30 - 11:00</option>
-          <option value="11:00 - 11:30">11:00 - 11:30</option>
-          <option value="11:30 - 12:00">11:30 - 12:00</option>
-        </select>
+            {/* Date */}
+            <input
+              type="date"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+              min={today}
+              required
+              className="
+                w-full rounded-lg
+                border border-border
+                bg-bg
+                px-3 py-2
+                text-text-primary
+                focus:outline-none
+                focus:ring-2 focus:ring-primary/30
+              "
+            />
 
-        {/* Purpose */}
-        <textarea
-          name="purpose"
-          placeholder="Purpose of appointment"
-          value={form.purpose}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        />
+            {/* Time Slot */}
+            <select
+              name="timeSlot"
+              value={form.timeSlot}
+              onChange={handleChange}
+              required
+              className="
+                w-full rounded-lg
+                border border-border
+                bg-bg
+                px-3 py-2
+                text-text-primary
+                focus:outline-none
+                focus:ring-2 focus:ring-primary/30
+              "
+            >
+              <option value="">Select Time Slot</option>
+              <option value="10:00 - 10:30">10:00 - 10:30</option>
+              <option value="10:30 - 11:00">10:30 - 11:00</option>
+              <option value="11:00 - 11:30">11:00 - 11:30</option>
+              <option value="11:30 - 12:00">11:30 - 12:00</option>
+            </select>
 
-        {error && <p className="text-red-500">{error}</p>}
+            {/* Purpose */}
+            <textarea
+              name="purpose"
+              placeholder="Purpose of appointment"
+              value={form.purpose}
+              onChange={handleChange}
+              required
+              rows={4}
+              className="
+                w-full rounded-lg
+                border border-border
+                bg-bg
+                px-3 py-2
+                text-text-primary
+                focus:outline-none
+                focus:ring-2 focus:ring-primary/30
+              "
+            />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-primary text-white px-4 py-2 rounded"
-        >
-          {loading ? "Booking..." : "Book Appointment"}
-        </button>
-      </form>
+            {error && (
+              <p className="text-sm text-error">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="
+                w-full rounded-lg
+                bg-primary
+                px-4 py-2
+                text-sm font-medium text-white
+                hover:bg-primary-hover
+                disabled:opacity-60
+                transition-colors
+              "
+            >
+              {loading ? "Booking..." : "Book Appointment"}
+            </button>
+          </form>
+        </div>
+      )}
     </DashboardLayout>
   );
 };

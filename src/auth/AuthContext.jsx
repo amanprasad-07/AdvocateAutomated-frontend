@@ -22,24 +22,28 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (formData) => {
-    const res = await api.post("/auth/login", formData);
-    setUser(res.data.user);
-    setRole(res.data.user.role);
-  };
+  const res = await api.post("/auth/login", formData);
+  setUser(res.data.user);
+  setRole(res.data.user.role);
+  return res.data.user; // 👈 return user
+};
+
 
   const register = async (formData) => {
     return api.post("/auth/register", formData);
   };
 
-  const logout = async () => {
+ const logout = async () => {
   try {
     await api.post("/auth/logout");
   } catch (err) {
     console.error("Logout failed");
   } finally {
     setUser(null);
+    setRole(null);
   }
 };
+
 
 
   useEffect(() => {

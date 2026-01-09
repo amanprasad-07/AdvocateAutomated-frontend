@@ -64,7 +64,11 @@ const CreateCase = () => {
   };
 
   if (loading) {
-    return <p className="p-6">Loading...</p>;
+    return (
+      <DashboardLayout title="Create Case">
+        <p className="p-6 text-text-muted">Loading…</p>
+      </DashboardLayout>
+    );
   }
 
   return (
@@ -76,27 +80,42 @@ const CreateCase = () => {
         { label: "My Cases", path: "/advocate/my-cases" },
       ]}
     >
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && (
+        <p className="mb-4 text-sm text-error">
+          {error}
+        </p>
+      )}
 
+      {/* ---------- Appointment Context ---------- */}
       {appointment && (
-        <div className="mb-6 border border-border p-4 rounded">
-          <p>
-            <strong>Client:</strong>{" "}
-            {appointment.client?.name} ({appointment.client?.email})
+        <div className="mb-6 rounded-xl border border-border bg-surface p-6">
+          <p className="font-semibold text-text-primary">
+            Client: {appointment.client?.name} (
+            {appointment.client?.email})
           </p>
-          <p>
-            <strong>Appointment Date:</strong> {appointment.date}
-          </p>
-          <p>
-            <strong>Time Slot:</strong> {appointment.timeSlot}
-          </p>
-          <p>
-            <strong>Purpose:</strong> {appointment.purpose}
-          </p>
+
+          <div className="mt-2 space-y-1 text-sm text-text-secondary">
+            <p>
+              <strong>Appointment Date:</strong>{" "}
+              {appointment.date}
+            </p>
+            <p>
+              <strong>Time Slot:</strong>{" "}
+              {appointment.timeSlot}
+            </p>
+            <p>
+              <strong>Purpose:</strong>{" "}
+              {appointment.purpose}
+            </p>
+          </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="max-w-md space-y-4">
+      {/* ---------- Create Case Form ---------- */}
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md space-y-4"
+      >
         <input
           type="text"
           name="title"
@@ -104,7 +123,16 @@ const CreateCase = () => {
           value={form.title}
           onChange={handleChange}
           required
-          className="w-full p-2 border rounded"
+          className="
+            w-full rounded-lg
+            border border-border
+            bg-bg
+            px-3 py-2
+            text-text-primary
+            placeholder:text-text-muted
+            focus:outline-none
+            focus:ring-2 focus:ring-primary/30
+          "
         />
 
         <textarea
@@ -113,7 +141,17 @@ const CreateCase = () => {
           value={form.description}
           onChange={handleChange}
           required
-          className="w-full p-2 border rounded"
+          rows={4}
+          className="
+            w-full rounded-lg
+            border border-border
+            bg-bg
+            px-3 py-2
+            text-text-primary
+            placeholder:text-text-muted
+            focus:outline-none
+            focus:ring-2 focus:ring-primary/30
+          "
         />
 
         <select
@@ -121,7 +159,15 @@ const CreateCase = () => {
           value={form.caseType}
           onChange={handleChange}
           required
-          className="w-full p-2 border rounded"
+          className="
+            w-full rounded-lg
+            border border-border
+            bg-bg
+            px-3 py-2
+            text-text-primary
+            focus:outline-none
+            focus:ring-2 focus:ring-primary/30
+          "
         >
           <option value="">Select Case Type</option>
           <option value="civil">Civil</option>
@@ -130,7 +176,14 @@ const CreateCase = () => {
 
         <button
           type="submit"
-          className="bg-primary text-white px-4 py-2 rounded"
+          className="
+            rounded-lg
+            bg-primary
+            px-4 py-2
+            text-sm font-medium text-white
+            hover:bg-primary-hover
+            transition-colors
+          "
         >
           Create Case
         </button>

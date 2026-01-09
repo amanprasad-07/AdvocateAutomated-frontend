@@ -3,7 +3,50 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Backgrounds & surfaces */
+    --bg: 0 0% 100%;
+    --surface: 0 0% 98%;
+    --surface-elevated: 0 0% 95%;
+
+    /* Borders */
+    --border: 220 10% 88%;
+
+    /* Text */
+    --text-primary: 220 15% 15%;
+    --text-secondary: 220 10% 35%;
+    --text-muted: 220 10% 55%;
+
+    /* Brand */
+    --primary: 220 70% 45%;
+    --primary-hover: 220 70% 40%;
+
+    /* Semantic */
+    --success: 145 45% 40%;
+    --warning: 38 70% 45%;
+    --error: 0 55% 45%;
+  }
+
+  .dark {
+    --bg: 220 15% 6%;
+    --surface: 220 15% 9%;
+    --surface-elevated: 220 15% 13%;
+
+    --border: 220 10% 20%;
+
+    --text-primary: 0 0% 96%;
+    --text-secondary: 220 10% 75%;
+    --text-muted: 220 10% 55%;
+
+    --primary: 220 65% 60%;
+    --primary-hover: 220 65% 65%;
+
+    --success: 145 40% 55%;
+    --warning: 38 65% 55%;
+    --error: 0 55% 60%;
+  }
+
   body {
-    @apply bg-background text-text-primary dark:bg-dark-background dark:text-dark-text-primary;
+    @apply bg-bg text-text-primary;
   }
 }
