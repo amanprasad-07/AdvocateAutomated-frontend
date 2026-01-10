@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 
 const Login = () => {
@@ -23,7 +23,52 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex flex-col min-h-screen items-center justify-center">
+    {/* ---------- Header ---------- */}
+      <header className="
+         sticky top-0 z-10
+    flex items-center justify-between
+    border-b border-border
+    bg-background/80 px-8 py-4
+    backdrop-blur w-full
+      ">
+        <h1 className="text-xl font-semibold tracking-tight text-primary">
+          Advocate Automated
+        </h1>
+        {/* Close / Back to Landing */}
+      <button
+        onClick={() => navigate("/")}
+        aria-label="Close login"
+        className="
+           top-4 right-4
+          flex items-center justify-center
+          w-10 h-10
+          rounded-lg border border-border
+          text-text-secondary
+          hover:bg-surfaceElevated
+          hover:text-text-primary
+          transition-colors
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      </header>
+    <div className="flex flex-1 items-center justify-center">
+
       <form
         onSubmit={handleSubmit}
         className="
@@ -35,7 +80,7 @@ const Login = () => {
           shadow-sm
         "
       >
-        <h2 className="mb-4 text-center text-xl font-semibold text-text-primary">
+        <h2 className="mb-4 text-center text-lg sm:text-xl font-semibold text-text-primary">
           Login
         </h2>
 
@@ -94,7 +139,19 @@ const Login = () => {
         >
           Login
         </button>
+
+        {/* Register link */}
+        <p className="mt-4 text-center text-sm text-text-secondary">
+          Don’t have an account?{" "}
+          <Link
+            to="/register"
+            className="font-medium text-primary hover:underline"
+          >
+            Register
+          </Link>
+        </p>
       </form>
+    </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 
 const Register = () => {
@@ -38,10 +38,55 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="
+    <div className=" flex flex-col min-h-screen items-center justify-center bg-background ">
+
+      {/* ---------- Header ---------- */}
+      <header className="
+         sticky top-0 z-10
+    flex items-center justify-between
+    border-b border-border
+    bg-background/80 px-8 py-4
+    backdrop-blur w-full
+      ">
+        <h1 className="text-xl font-semibold tracking-tight text-primary">
+          Advocate Automated
+        </h1>
+        {/* Close / Back to Landing */}
+        <button
+          onClick={() => navigate("/")}
+          aria-label="Close login"
+          className="
+           top-4 right-4
+          flex items-center justify-center
+          w-10 h-10
+          rounded-lg border border-border
+          text-text-secondary
+          hover:bg-surfaceElevated
+          hover:text-text-primary
+          transition-colors
+        "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </header>
+
+      <div className="flex flex-1 items-center justify-center">
+        <form
+          onSubmit={handleSubmit}
+          className="
           w-full max-w-md
           rounded-xl
           border border-border
@@ -49,24 +94,24 @@ const Register = () => {
           p-6
           shadow-sm
         "
-      >
-        <h2 className="mb-4 text-center text-xl font-semibold text-text-primary">
-          Register
-        </h2>
+        >
+          <h2 className="mb-4 text-center text-lg sm:text-xl font-semibold text-text-primary">
+            Register
+          </h2>
 
-        {error && (
-          <p className="mb-3 text-center text-sm text-error">
-            {error}
-          </p>
-        )}
+          {error && (
+            <p className="mb-3 text-center text-sm text-error">
+              {error}
+            </p>
+          )}
 
-        {/* ---------- Name ---------- */}
-        <input
-          name="name"
-          placeholder="Full Name"
-          onChange={handleChange}
-          required
-          className="
+          {/* ---------- Name ---------- */}
+          <input
+            name="name"
+            placeholder="Full Name"
+            onChange={handleChange}
+            required
+            className="
             mb-3 w-full rounded-lg
             border border-border
             bg-bg
@@ -76,16 +121,16 @@ const Register = () => {
             focus:outline-none
             focus:ring-2 focus:ring-primary/30
           "
-        />
+          />
 
-        {/* ---------- Email ---------- */}
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-          className="
+          {/* ---------- Email ---------- */}
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+            className="
             mb-3 w-full rounded-lg
             border border-border
             bg-bg
@@ -95,15 +140,15 @@ const Register = () => {
             focus:outline-none
             focus:ring-2 focus:ring-primary/30
           "
-        />
+          />
 
-        {/* ---------- Address ---------- */}
-        <input
-          name="address"
-          placeholder="Address"
-          onChange={handleChange}
-          required
-          className="
+          {/* ---------- Address ---------- */}
+          <input
+            name="address"
+            placeholder="Address"
+            onChange={handleChange}
+            required
+            className="
             mb-3 w-full rounded-lg
             border border-border
             bg-bg
@@ -113,15 +158,15 @@ const Register = () => {
             focus:outline-none
             focus:ring-2 focus:ring-primary/30
           "
-        />
+          />
 
-        {/* ---------- Phone ---------- */}
-        <input
-          name="phone"
-          placeholder="Phone"
-          onChange={handleChange}
-          required
-          className="
+          {/* ---------- Phone ---------- */}
+          <input
+            name="phone"
+            placeholder="Phone"
+            onChange={handleChange}
+            required
+            className="
             mb-3 w-full rounded-lg
             border border-border
             bg-bg
@@ -131,16 +176,16 @@ const Register = () => {
             focus:outline-none
             focus:ring-2 focus:ring-primary/30
           "
-        />
+          />
 
-        {/* ---------- Password ---------- */}
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          className="
+          {/* ---------- Password ---------- */}
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+            className="
             mb-3 w-full rounded-lg
             border border-border
             bg-bg
@@ -150,16 +195,16 @@ const Register = () => {
             focus:outline-none
             focus:ring-2 focus:ring-primary/30
           "
-        />
+          />
 
-        {/* ---------- Confirm Password ---------- */}
-        <input
-          name="passwordConfirm"
-          type="password"
-          placeholder="Confirm Password"
-          onChange={handleChange}
-          required
-          className="
+          {/* ---------- Confirm Password ---------- */}
+          <input
+            name="passwordConfirm"
+            type="password"
+            placeholder="Confirm Password"
+            onChange={handleChange}
+            required
+            className="
             mb-3 w-full rounded-lg
             border border-border
             bg-bg
@@ -169,13 +214,13 @@ const Register = () => {
             focus:outline-none
             focus:ring-2 focus:ring-primary/30
           "
-        />
+          />
 
-        {/* ---------- Role ---------- */}
-        <select
-          name="role"
-          onChange={handleChange}
-          className="
+          {/* ---------- Role ---------- */}
+          <select
+            name="role"
+            onChange={handleChange}
+            className="
             mb-4 w-full rounded-lg
             border border-border
             bg-bg
@@ -184,16 +229,16 @@ const Register = () => {
             focus:outline-none
             focus:ring-2 focus:ring-primary/30
           "
-        >
-          <option value="client">Client</option>
-          <option value="advocate">Advocate</option>
-          <option value="junior_advocate">Junior Advocate</option>
-        </select>
+          >
+            <option value="client">Client</option>
+            <option value="advocate">Advocate</option>
+            <option value="junior_advocate">Junior Advocate</option>
+          </select>
 
-        {/* ---------- Submit ---------- */}
-        <button
-          type="submit"
-          className="
+          {/* ---------- Submit ---------- */}
+          <button
+            type="submit"
+            className="
             w-full rounded-lg
             bg-primary
             py-2
@@ -201,10 +246,22 @@ const Register = () => {
             hover:bg-primary-hover
             transition-colors
           "
-        >
-          Register
-        </button>
-      </form>
+          >
+            Register
+          </button>
+
+          {/* Login link */}
+          <p className="mt-4 text-center text-sm text-text-secondary">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-medium text-primary hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };

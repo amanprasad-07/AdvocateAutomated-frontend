@@ -114,7 +114,7 @@ const CreateCase = () => {
       {/* ---------- Create Case Form ---------- */}
       <form
         onSubmit={handleSubmit}
-        className="max-w-md space-y-4"
+        className="max-w-md lg:max-w-lg space-y-4"
       >
         <input
           type="text"

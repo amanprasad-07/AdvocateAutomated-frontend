@@ -76,7 +76,7 @@ const BookAppointment = () => {
       {loading && <LoadingSpinner />}
 
       {!loading && (
-        <div className="max-w-md">
+        <div className="mx-auto sm:mx-0 w-full max-w-md sm:max-w-lg">
           <form
             onSubmit={handleSubmit}
             className="
@@ -160,7 +160,7 @@ const BookAppointment = () => {
               value={form.purpose}
               onChange={handleChange}
               required
-              rows={4}
+              rows={5}
               className="
                 w-full rounded-lg
                 border border-border

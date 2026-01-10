@@ -78,7 +78,7 @@ const AdvocateCaseBills = () => {
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
-          <div className="mb-4 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-row flex-wrap gap-3 justify-center lg:justify-normal">
             <button
               onClick={() => setFilter(null)}
               className={`
@@ -155,11 +155,11 @@ const AdvocateCaseBills = () => {
                   ${STATUS_STYLES[bill.status] || ""}
                 `}
               >
-                <p className="text-lg font-semibold text-text-primary">
+                <p className="text-base sm:text-lg font-semibold text-text-primary">
                   ₹{bill.amount}
                 </p>
 
-                <div className="mt-1 space-y-1 text-sm text-text-secondary">
+                <div className="mt-1 space-y-1 sm:space-y-2 text-sm text-text-secondary">
                   <p>
                     <strong>For:</strong> {bill.paymentFor}
                   </p>
@@ -176,10 +176,10 @@ const AdvocateCaseBills = () => {
                   <button
                     onClick={() => handleDelete(bill._id)}
                     className="
-                      mt-3 rounded-lg
-                      border border-border
+                      mt-3 w-full sm:w-auto rounded-lg
+                      border border-error
                       px-3 py-1
-                      text-sm text-text-secondary
+                      text-sm text-error
                       hover:bg-surfaceElevated
                       hover:text-text-primary
                       transition-colors

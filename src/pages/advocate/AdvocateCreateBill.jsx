@@ -54,7 +54,7 @@ const AdvocateCreateBill = () => {
       {loading && <LoadingSpinner />}
 
       {!loading && (
-        <div className="max-w-md space-y-5">
+        <div className="max-w-md lg:max-w-lg space-y-5">
           {/* ---------- Amount ---------- */}
           <div>
             <label className="mb-1 block font-medium text-text-primary">
@@ -112,11 +112,12 @@ const AdvocateCreateBill = () => {
           )}
 
           {/* ---------- Actions ---------- */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleSubmit}
               disabled={loading}
               className="
+                w-full sm:w-auto
                 rounded-lg
                 bg-primary
                 px-4 py-2
@@ -132,6 +133,7 @@ const AdvocateCreateBill = () => {
             <button
               onClick={() => navigate(-1)}
               className="
+                w-full sm:w-auto
                 rounded-lg
                 border border-border
                 px-4 py-2

@@ -65,7 +65,7 @@ const AdvocateMyCases = () => {
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
-          <div className="mb-4 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-row flex-wrap gap-2 justify-center lg:justify-normal">
             <button
               onClick={() => setFilter(null)}
               className={`

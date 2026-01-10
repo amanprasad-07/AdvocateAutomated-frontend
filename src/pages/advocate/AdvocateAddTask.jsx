@@ -56,7 +56,7 @@ const AdvocateAddTask = () => {
         },
       ]}
     >
-      <div className="max-w-md space-y-5">
+      <div className="mx-auto sm:mx-0 max-w-md space-y-5">
         {/* ---------- Task Title ---------- */}
         <input
           type="text"
@@ -80,7 +80,7 @@ const AdvocateAddTask = () => {
           placeholder="Description (optional)"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          rows={3}
+          rows={4}
           className="
             w-full rounded-lg
             border border-border
@@ -152,7 +152,7 @@ const AdvocateAddTask = () => {
         />
 
         {/* ---------- Actions ---------- */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
           <button
             onClick={handleSubmit}
             className="

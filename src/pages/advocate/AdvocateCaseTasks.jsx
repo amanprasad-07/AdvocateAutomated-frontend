@@ -69,7 +69,7 @@ const AdvocateCaseTasks = () => {
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
-          <div className="mb-4 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-row flex-wrap gap-2 justify-center lg:justify-normal">
             {[
               [null, "All"],
               ["pending", "Pending"],
@@ -122,11 +122,11 @@ const AdvocateCaseTasks = () => {
                   ${STATUS_STYLES[task.status] || ""}
                 `}
               >
-                <p className="font-medium text-text-primary">
+                <p className="text-sm sm:text-base font-medium text-text-primary">
                   {task.title}
                 </p>
 
-                <div className="mt-1 space-y-1 text-sm text-text-secondary">
+                <div className="mt-1 space-y-1 sm:space-y-2 text-sm text-text-secondary">
                   <p>
                     <strong>Assigned to:</strong>{" "}
                     {task.assignedTo?.name || "N/A"}

@@ -79,7 +79,7 @@ const MyAppointments = () => {
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
-          <div className="mb-4 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-wrap gap-3 justify-center">
             <button
               onClick={() => setFilter(null)}
               className={`

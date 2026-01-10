@@ -72,7 +72,7 @@ const PastAppointments = () => {
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
-          <div className="mb-4 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-wrap gap-3 justify-center lg:justify-normal">
             <button
               onClick={() => setFilter(null)}
               className={`

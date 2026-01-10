@@ -69,7 +69,7 @@ const AdvocateCaseEvidence = () => {
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
-          <div className="mb-4 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-row flex-wrap gap-2 justify-center lg:justify-normal">
             {[
               [null, "All"],
               ["document", "Documents"],
@@ -124,7 +124,7 @@ const AdvocateCaseEvidence = () => {
                   ${TYPE_STYLES[e.fileType] || TYPE_STYLES.other}
                 `}
               >
-                <p className="font-medium text-text-primary">
+                <p className="text-sm sm:text-base font-medium text-text-primary">
                   {e.title}
                 </p>
 
@@ -134,7 +134,7 @@ const AdvocateCaseEvidence = () => {
                   </p>
                 )}
 
-                <div className="mt-2 space-y-1 text-sm text-text-secondary">
+                <div className="mt-2 space-y-1 sm:space-y-2 text-sm text-text-secondary">
                   <p>
                     <strong>Uploaded by:</strong>{" "}
                     {e.uploadedBy?.name || "N/A"}

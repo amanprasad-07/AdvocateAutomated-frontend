@@ -144,7 +144,7 @@ const AdvocateMyAppointments = () => {
       )}
 
       {/* ---------- Filters ---------- */}
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-4 flex flex-row flex-wrap gap-2 justify-center lg:justify-normal">
         {[
           ["active", "Active"],
           ["rejected", "Rejected"],
@@ -283,7 +283,7 @@ const AdvocateMyAppointments = () => {
       {/* ---------- Reject Modal ---------- */}
       {showRejectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-96 rounded-xl border border-border bg-surface p-6">
+          <div className="w-full max-w-md rounded-xl border border-border bg-surface p-6">
             <h3 className="mb-2 font-semibold text-text-primary">
               Reject Appointment
             </h3>

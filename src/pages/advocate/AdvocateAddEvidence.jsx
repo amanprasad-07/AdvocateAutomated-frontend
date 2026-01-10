@@ -62,7 +62,7 @@ const AdvocateAddEvidence = () => {
       {loading && <LoadingSpinner />}
 
       {!loading && (
-        <div className="max-w-md space-y-5">
+        <div className="mx-auto sm:mx-0 max-w-md space-y-5">
           {/* ---------- File Upload ---------- */}
           <div>
             <label className="mb-1 block font-medium text-text-primary">
@@ -98,7 +98,7 @@ const AdvocateAddEvidence = () => {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              rows={3}
+              rows={4}
               placeholder="Brief context for this evidence"
               className="
                 w-full rounded-lg
@@ -121,7 +121,7 @@ const AdvocateAddEvidence = () => {
           )}
 
           {/* ---------- Actions ---------- */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3">
             <button
               onClick={handleSubmit}
               disabled={loading}

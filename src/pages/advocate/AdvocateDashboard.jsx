@@ -64,7 +64,7 @@ const AdvocateDashboard = () => {
         <>
           {/* ---------- Advocate Info ---------- */}
           <div className="mb-6 rounded-xl border border-border bg-surface p-6">
-            <p className="text-lg font-semibold text-text-primary">
+            <p className="text-base sm:text-lg font-semibold text-text-primary">
               Welcome, {user?.name}
             </p>
             <p className="pb-3 text-sm text-text-muted">
@@ -75,7 +75,7 @@ const AdvocateDashboard = () => {
           </div>
 
           {/* ---------- Metrics ---------- */}
-          <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
             <div
               onClick={() =>
                 navigate(
@@ -199,7 +199,7 @@ const AdvocateDashboard = () => {
           </div>
 
           {/* ---------- Quick Actions ---------- */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3">
             <button
               onClick={() =>
                 navigate(

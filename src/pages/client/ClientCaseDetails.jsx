@@ -120,7 +120,7 @@ const ClientCaseDetails = () => {
       ]}
     >
       {/* ---------- Case Info ---------- */}
-      <div className="mb-6 rounded-xl border border-border bg-surface p-6 space-y-2">
+      <div className="mb-6 rounded-xl border border-border bg-surface p-6 space-y-2 sm:space-y-3">
         <p>
           <span className="font-medium text-text-secondary">Case Number:</span>{" "}
           {caseData.caseNumber}
@@ -142,7 +142,7 @@ const ClientCaseDetails = () => {
       </div>
 
       {/* ---------- Pending Bills ---------- */}
-      <h3 className="mb-3 text-lg font-semibold text-text-primary">
+      <h3 className="mb-3 text-base sm:text-lg font-semibold text-text-primary">
         Pending Bills
       </h3>
 
@@ -162,7 +162,7 @@ const ClientCaseDetails = () => {
               ${BILL_STYLES.pending}
             `}
           >
-            <p className="text-lg font-semibold text-text-primary">
+            <p className="text-base sm:text-lg font-semibold text-text-primary">
               ₹{bill.amount}
             </p>
             <p className="text-text-secondary">
@@ -171,7 +171,7 @@ const ClientCaseDetails = () => {
 
             <button
               className="
-                mt-4 rounded-lg
+                mt-4 w-full sm:w-auto rounded-lg
                 bg-primary
                 px-4 py-2
                 text-sm font-medium text-white
@@ -187,7 +187,7 @@ const ClientCaseDetails = () => {
       </div>
 
       {/* ---------- Paid Bills ---------- */}
-      <h3 className="mt-8 mb-3 text-lg font-semibold text-text-primary">
+      <h3 className="mt-8 mb-3 text-base sm:text-lg font-semibold text-text-primary">
         Paid Bills
       </h3>
 
@@ -207,7 +207,7 @@ const ClientCaseDetails = () => {
               ${BILL_STYLES.paid}
             `}
           >
-            <p className="text-lg font-semibold text-text-primary">
+            <p className="text-base sm:text-lg font-semibold text-text-primary">
               ₹{bill.amount}
             </p>
             <p className="text-text-secondary">

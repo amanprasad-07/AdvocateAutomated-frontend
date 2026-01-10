@@ -72,7 +72,7 @@ const AdvocateCaseDetails = () => {
     >
       {/* ---------- Case Summary ---------- */}
       <div className="mb-6 rounded-xl border border-border bg-surface p-4">
-        <div className="space-y-1 text-sm text-text-secondary">
+        <div className="space-y-1 sm:space-y-2 text-sm text-text-secondary">
           <p>
             <strong>Case Number:</strong> {caseData.caseNumber}
           </p>
@@ -93,13 +93,13 @@ const AdvocateCaseDetails = () => {
 
         {/* ---------- Status Actions ---------- */}
         {!isClosed && (
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="mt-4 flex flex-col sm:flex-row flex-wrap gap-3">
             {caseData.status === "open" && (
               <button
                 disabled={updating}
                 onClick={() => updateStatus("in_progress")}
                 className="
-                  rounded-lg
+                  w-full sm:w-auto rounded-lg
                   bg-primary
                   px-4 py-2
                   text-sm font-medium text-white
@@ -117,7 +117,7 @@ const AdvocateCaseDetails = () => {
                 disabled={updating}
                 onClick={() => updateStatus("closed")}
                 className="
-                  rounded-lg
+                  w-full sm:w-auto rounded-lg
                   bg-primary
                   px-4 py-2
                   text-sm font-medium text-white
@@ -135,23 +135,7 @@ const AdvocateCaseDetails = () => {
 
       {/* ---------- Case Actions ---------- */}
       <div className="space-y-3">
-        <div className="flex flex-wrap gap-3">
-          <button
-            onClick={() =>
-              navigate(`/advocate/my-cases/${caseId}/tasks`)
-            }
-            className="
-              rounded-lg
-              border border-border
-              px-3 py-2
-              text-sm text-text-secondary
-              hover:bg-surfaceElevated
-              hover:text-text-primary
-              transition-colors
-            "
-          >
-            View Tasks
-          </button>
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
 
           {!isClosed && (
             <button
@@ -159,7 +143,7 @@ const AdvocateCaseDetails = () => {
                 navigate(`/advocate/my-cases/${caseId}/add-task`)
               }
               className="
-                rounded-lg
+                w-full sm:w-auto rounded-lg
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
@@ -171,15 +155,13 @@ const AdvocateCaseDetails = () => {
               Add Task
             </button>
           )}
-        </div>
 
-        <div className="flex flex-wrap gap-3">
           <button
             onClick={() =>
-              navigate(`/advocate/my-cases/${caseId}/evidence`)
+              navigate(`/advocate/my-cases/${caseId}/tasks`)
             }
             className="
-              rounded-lg
+              w-full sm:w-auto rounded-lg
               border border-border
               px-3 py-2
               text-sm text-text-secondary
@@ -188,16 +170,19 @@ const AdvocateCaseDetails = () => {
               transition-colors
             "
           >
-            View Evidence
+            View Tasks
           </button>
 
+        </div>
+
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
           {!isClosed && (
             <button
               onClick={() =>
                 navigate(`/advocate/my-cases/${caseId}/add-evidence`)
               }
               className="
-                rounded-lg
+                w-full sm:w-auto rounded-lg
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
@@ -209,16 +194,34 @@ const AdvocateCaseDetails = () => {
               Add Evidence
             </button>
           )}
+
+          <button
+            onClick={() =>
+              navigate(`/advocate/my-cases/${caseId}/evidence`)
+            }
+            className="
+              w-full sm:w-auto rounded-lg
+              border border-border
+              px-3 py-2
+              text-sm text-text-secondary
+              hover:bg-surfaceElevated
+              hover:text-text-primary
+              transition-colors
+            "
+          >
+            View Evidence
+          </button>
+
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
           {!isClosed && (
             <button
               onClick={() =>
                 navigate(`/advocate/my-cases/${caseId}/create-bill`)
               }
               className="
-                rounded-lg
+                w-full sm:w-auto rounded-lg
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
@@ -236,7 +239,7 @@ const AdvocateCaseDetails = () => {
               navigate(`/advocate/my-cases/${caseId}/bills`)
             }
             className="
-              rounded-lg
+              w-full sm:w-auto rounded-lg
               border border-border
               px-3 py-2
               text-sm text-text-secondary
