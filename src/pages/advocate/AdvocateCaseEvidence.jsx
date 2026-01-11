@@ -84,10 +84,9 @@ const AdvocateCaseEvidence = () => {
                 className={`
                   rounded-lg border border-border
                   px-3 py-1 text-sm
-                  ${
-                    typeParam === key || (!key && !typeParam)
-                      ? "bg-surfaceElevated text-text-primary"
-                      : "text-text-secondary hover:bg-surfaceElevated"
+                  ${typeParam === key || (!key && !typeParam)
+                    ? "bg-surfaceElevated text-text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                   }
                   transition-colors
                 `}
@@ -143,6 +142,24 @@ const AdvocateCaseEvidence = () => {
                   <p className="capitalize">
                     <strong>Type:</strong> {e.fileType}
                   </p>
+                </div>
+                <div className="mt-3">
+                  <a
+                    href={e.filePath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      inline-flex items-center
+                      rounded-lg border border-border
+                      px-3 py-1.5
+                      text-sm
+                      text-primary
+                      hover:bg-surfaceElevated
+                      transition-colors
+                    "
+                  >
+                    Open Evidence
+                  </a>
                 </div>
               </div>
             ))}
