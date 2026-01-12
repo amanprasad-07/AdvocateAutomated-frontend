@@ -45,7 +45,7 @@ const Login = () => {
           w-10 h-10
           rounded-lg border border-border
           text-text-secondary
-          hover:bg-surface-elevated
+          hover:bg-surfaceElevated
           hover:text-text-primary
           transition-colors
         "
@@ -132,7 +132,7 @@ const Login = () => {
             w-full rounded-lg
             bg-primary
             py-2
-            text-sm font-medium text-white
+            text-sm font-medium text-text-primary
             hover:bg-primary-hover
             transition-colors
           "

@@ -85,8 +85,8 @@ const AdvocateCaseEvidence = () => {
                   rounded-lg border border-border
                   px-3 py-1 text-sm
                   ${typeParam === key || (!key && !typeParam)
-                    ? "bg-surface-elevated text-text-primary"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                   }
                   transition-colors
                 `}
@@ -154,7 +154,7 @@ const AdvocateCaseEvidence = () => {
                       px-3 py-1.5
                       text-sm
                       text-primary
-                      hover:bg-surface-elevated
+                      hover:bg-surfaceElevated
                       transition-colors
                     "
                   >

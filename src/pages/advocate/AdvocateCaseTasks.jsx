@@ -84,8 +84,8 @@ const AdvocateCaseTasks = () => {
                   px-3 py-1 text-sm
                   ${
                     statusParam === key || (!key && !statusParam)
-                      ? "bg-surface-elevated text-text-primary"
-                      : "text-text-secondary hover:bg-surface-elevated"
+                      ? "bg-surfaceElevated text-text-primary"
+                      : "text-text-secondary hover:bg-surfaceElevated"
                   }
                   transition-colors
                 `}

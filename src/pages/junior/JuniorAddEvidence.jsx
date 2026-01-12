@@ -116,7 +116,7 @@ const JuniorAddEvidence = () => {
               rounded-lg
               bg-primary
               px-4 py-2
-              text-sm font-medium text-white
+              text-sm font-medium text-text-primary
               hover:bg-primary-hover
               disabled:opacity-50
               transition-colors
@@ -132,7 +132,7 @@ const JuniorAddEvidence = () => {
               border border-border
               px-4 py-2
               text-sm text-text-secondary
-              hover:bg-surface-elevated
+              hover:bg-surfaceElevated
               hover:text-text-primary
               transition-colors
             "

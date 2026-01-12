@@ -86,8 +86,8 @@ const AdvocateCaseBills = () => {
                 px-3 py-1 text-sm
                 ${
                   !statusParam
-                    ? "bg-primary text-white"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-primary text-text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -102,8 +102,8 @@ const AdvocateCaseBills = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "pending"
-                    ? "bg-surface-elevated text-warning"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-warning"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -118,8 +118,8 @@ const AdvocateCaseBills = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "paid"
-                    ? "bg-surface-elevated text-success"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-success"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -180,7 +180,7 @@ const AdvocateCaseBills = () => {
                       border border-error
                       px-3 py-1
                       text-sm text-error
-                      hover:bg-surface-elevated
+                      hover:bg-surfaceElevated
                       hover:text-text-primary
                       transition-colors
                     "

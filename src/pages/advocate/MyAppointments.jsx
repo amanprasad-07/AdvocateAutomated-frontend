@@ -4,6 +4,20 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
+/* ---------- Status Styles (Semantic) ---------- */
+const STATUS_STYLES = {
+  requested: "border-l-warning text-warning",
+  approved: "border-l-primary text-primary",
+  rejected: "border-l-error text-error",
+  completed: "border-l-success text-success",
+};
+const FILTER_STYLES = {
+  requested: "text-warning",
+  approved: "text-primary",
+  rejected: "text-error",
+  completed: "text-success",
+};
+
 const AdvocateMyAppointments = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +31,7 @@ const AdvocateMyAppointments = () => {
   const [rejectReason, setRejectReason] = useState("");
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
 
+  /* ---------- Data Fetch ---------- */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,7 +43,7 @@ const AdvocateMyAppointments = () => {
         setAppointments(apptRes.data.data || []);
         setCases(caseRes.data.data || []);
       } catch {
-        setError("Failed to load data");
+        setError("Failed to load appointments.");
       } finally {
         setLoading(false);
       }
@@ -46,45 +61,22 @@ const AdvocateMyAppointments = () => {
         : c.appointment?._id === appointmentId
     );
 
-  const getStatusStyles = (status) => {
-    switch (status) {
-      case "requested":
-        return "border-l-warning text-warning";
-      case "approved":
-        return "border-l-success text-success";
-      case "rejected":
-        return "border-l-error text-error";
-      default:
-        return "";
+  /* ---------- Filters (Status-driven, consistent with My Cases) ---------- */
+
+  const statusParam = searchParams.get("status");
+
+  const filteredAppointments = statusParam
+    ? appointments.filter((a) =>
+      statusParam.split(",").includes(a.status)
+    )
+    : appointments;
+
+  const setFilter = (status) => {
+    if (!status) {
+      setSearchParams({});
+    } else {
+      setSearchParams({ status });
     }
-  };
-
-  /* ---------- Filters ---------- */
-
-  const filter = searchParams.get("filter") || "active";
-
-  const visibleAppointments = appointments.filter((appt) => {
-    const hasCase = caseExistsForAppointment(appt._id);
-
-    switch (filter) {
-      case "active":
-        return (
-          appt.status === "requested" ||
-          (appt.status === "approved" && !hasCase)
-        );
-      case "rejected":
-        return appt.status === "rejected";
-      case "with_case":
-        return appt.status === "approved" && hasCase;
-      case "all":
-        return true;
-      default:
-        return true;
-    }
-  });
-
-  const setFilter = (value) => {
-    setSearchParams({ filter: value });
   };
 
   /* ---------- Actions ---------- */
@@ -137,6 +129,7 @@ const AdvocateMyAppointments = () => {
       ]}
     >
       {loading && <LoadingSpinner />}
+
       {error && (
         <p className="mb-3 text-sm text-error">
           {error}
@@ -145,39 +138,49 @@ const AdvocateMyAppointments = () => {
 
       {/* ---------- Filters ---------- */}
       <div className="mb-4 flex flex-wrap gap-3 justify-center">
-        {[
-          ["active", "Active"],
-          ["rejected", "Rejected"],
-          ["with_case", "With Case"],
-          ["all", "All"],
-        ].map(([key, label]) => (
+        <button
+          onClick={() => setFilter(null)}
+          className={`
+            rounded-lg border border-border
+            px-3 py-1 text-sm
+            ${!statusParam
+              ? "bg-surfaceElevated text-primary"
+              : "text-text-secondary hover:bg-surfaceElevated"
+            }
+            transition-colors
+          `}
+        >
+          All
+        </button>
+
+        {["requested", "approved", "rejected", "completed"].map((status) => (
           <button
-            key={key}
-            onClick={() => setFilter(key)}
+            key={status}
+            onClick={() => setFilter(status)}
             className={`
               rounded-lg border border-border
-              px-3 py-1 text-sm
-              ${filter === key
-                ? "bg-primary text-white"
-                : "text-text-secondary hover:bg-surface-elevated"
+              px-3 py-1 text-sm capitalize
+              ${statusParam === status
+                ? `bg-surfaceElevated ${FILTER_STYLES[status]}`
+                : "text-text-secondary hover:bg-surfaceElevated"
               }
               transition-colors
             `}
           >
-            {label}
+            {status.replace("_", " ")}
           </button>
         ))}
       </div>
 
-      {visibleAppointments.length === 0 && (
+      {filteredAppointments.length === 0 && (
         <p className="text-text-muted">
           No appointments match this filter.
         </p>
       )}
 
-      {/* ---------- List ---------- */}
+      {/* ---------- Appointment List ---------- */}
       <div className="space-y-4">
-        {visibleAppointments.map((appt) => {
+        {filteredAppointments.map((appt) => {
           const hasCase = caseExistsForAppointment(appt._id);
 
           return (
@@ -188,7 +191,9 @@ const AdvocateMyAppointments = () => {
                 border-l-4
                 bg-surface
                 p-4
-                ${getStatusStyles(appt.status)}
+                hover:bg-surfaceElevated
+                transition-colors
+                ${STATUS_STYLES[appt.status] || ""}
               `}
             >
               <p className="font-semibold text-text-primary">
@@ -196,18 +201,12 @@ const AdvocateMyAppointments = () => {
               </p>
 
               <div className="mt-1 space-y-1 text-sm text-text-secondary">
-                <p>
-                  <strong>Date:</strong> {appt.date}
-                </p>
-                <p>
-                  <strong>Time Slot:</strong> {appt.timeSlot}
-                </p>
-                <p>
-                  <strong>Purpose:</strong> {appt.purpose}
-                </p>
+                <p><strong>Date:</strong> {appt.date}</p>
+                <p><strong>Time Slot:</strong> {appt.timeSlot}</p>
+                <p><strong>Purpose:</strong> {appt.purpose}</p>
                 <p className="capitalize">
                   <strong>Status:</strong>{" "}
-                  {appt.status.replace("_", " ")}
+                  {appt.status.replace(/_/g, " ")}
                 </p>
               </div>
 
@@ -215,14 +214,12 @@ const AdvocateMyAppointments = () => {
                 {appt.status === "requested" && (
                   <>
                     <button
-                      onClick={() =>
-                        approveAppointment(appt._id)
-                      }
+                      onClick={() => approveAppointment(appt._id)}
                       className="
                         rounded-lg
                         bg-success
                         px-3 py-1
-                        text-sm font-medium text-white
+                        text-sm font-medium text-text-primary
                         transition-colors
                       "
                     >
@@ -239,7 +236,7 @@ const AdvocateMyAppointments = () => {
                         border border-border
                         px-3 py-1
                         text-sm text-text-secondary
-                        hover:bg-surface-elevated
+                        hover:bg-surfaceElevated
                         hover:text-text-primary
                         transition-colors
                       "
@@ -252,15 +249,13 @@ const AdvocateMyAppointments = () => {
                 {appt.status === "approved" && !hasCase && (
                   <button
                     onClick={() =>
-                      navigate(
-                        `/advocate/create-case/${appt._id}`
-                      )
+                      navigate(`/advocate/create-case/${appt._id}`)
                     }
                     className="
                       rounded-lg
                       bg-primary
                       px-3 py-1
-                      text-sm font-medium text-white
+                      text-sm font-medium text-text-primary
                       hover:bg-primary-hover
                       transition-colors
                     "
@@ -272,6 +267,12 @@ const AdvocateMyAppointments = () => {
                 {appt.status === "approved" && hasCase && (
                   <span className="text-sm font-medium text-success">
                     Case already created
+                  </span>
+                )}
+
+                {appt.status === "completed" && (
+                  <span className="text-sm italic text-text-muted">
+                    Appointment completed
                   </span>
                 )}
               </div>
@@ -290,9 +291,8 @@ const AdvocateMyAppointments = () => {
 
             <textarea
               value={rejectReason}
-              onChange={(e) =>
-                setRejectReason(e.target.value)
-              }
+              onChange={(e) => setRejectReason(e.target.value)}
+              rows={3}
               className="
                 mb-4 w-full rounded-lg
                 border border-border
@@ -302,7 +302,6 @@ const AdvocateMyAppointments = () => {
                 focus:outline-none
                 focus:ring-2 focus:ring-primary/30
               "
-              rows={3}
             />
 
             <div className="flex justify-end gap-2">
@@ -317,7 +316,7 @@ const AdvocateMyAppointments = () => {
                   border border-border
                   px-3 py-1
                   text-sm text-text-secondary
-                  hover:bg-surface-elevated
+                  hover:bg-surfaceElevated
                   transition-colors
                 "
               >
@@ -330,7 +329,7 @@ const AdvocateMyAppointments = () => {
                   rounded-lg
                   bg-error
                   px-3 py-1
-                  text-sm font-medium text-white
+                  text-sm font-medium text-text-primary
                   transition-colors
                 "
               >

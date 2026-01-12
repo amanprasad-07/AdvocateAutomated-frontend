@@ -51,7 +51,7 @@ const Landing = () => {
             to="/register"
             className="
               rounded-lg bg-primary px-4 py-2
-              text-sm font-medium text-white
+              text-sm font-medium text-text-primary
               hover:opacity-90 transition
             "
           >
@@ -142,7 +142,7 @@ const Landing = () => {
               onClick={() => setMenuOpen(false)}
               className="
                 rounded-lg bg-primary px-4 py-2
-                text-sm font-medium text-white
+                text-sm font-medium text-text-primary
                 hover:opacity-90
               "
             >
@@ -167,13 +167,13 @@ const Landing = () => {
 
         <div className="z-10 relative ">
           {/* Hero heading */}
-          <h2 className="mx-auto mb-6 max-w-3xl text-3xl sm:text-4xl font-semibold leading-tigh text-white">
+          <h2 className="mx-auto mb-6 max-w-3xl text-3xl sm:text-4xl font-semibold leading-tigh text-text-primary">
             Legal Work. Structured. Transparent.
             <span className="text-primary"> Human.</span>
           </h2>
 
           {/* Hero description */}
-          <p className="mx-auto mb-10 max-w-2xl text-lg text-white/80">
+          <p className="mx-auto mb-10 max-w-2xl text-lg text-text-primary/80">
             Advocate Automated is a modern legal services platform built to remove
             confusion, delays, and opacity from legal work — connecting clients
             with verified advocates through a system that values clarity,
@@ -200,7 +200,7 @@ const Landing = () => {
               className="
               rounded-xl border border-border
               px-6 py-3 bg-black/30
-              text-lg font-medium text-white
+              text-lg font-medium text-text-primary
               hover:bg-black/80 hover:shadow-md
               transition
             "
@@ -343,7 +343,7 @@ const Landing = () => {
           to="/register"
           className="
             inline-block rounded-xl bg-primary px-8 py-3
-            text-lg font-medium text-white
+            text-lg font-medium text-text-primary
             hover:opacity-90 transition
           "
         >

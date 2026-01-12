@@ -111,7 +111,7 @@ const AdminPendingApprovals = () => {
                   onClick={() => approveUser(user._id)}
                   className="
                     rounded-lg bg-primary px-3 py-1
-                    text-sm font-medium text-white
+                    text-sm font-medium text-text-primary
                     transition-opacity hover:opacity-90
                   "
                 >
@@ -123,7 +123,7 @@ const AdminPendingApprovals = () => {
                   className="
                     rounded-lg border border-border px-3 py-1
                     text-sm text-text-secondary
-                    hover:bg-surface-elevated hover:text-text-primary
+                    hover:bg-surfaceElevated hover:text-text-primary
                     transition-colors
                   "
                 >

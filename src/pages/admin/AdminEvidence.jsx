@@ -102,7 +102,7 @@ const AdminEvidence = () => {
                     inline-block rounded-lg border border-border
                     px-3 py-1.5 text-sm
                     text-text-secondary
-                    hover:bg-surface-elevated hover:text-text-primary
+                    hover:bg-surfaceElevated hover:text-text-primary
                     transition-colors
                   "
                 >

@@ -84,7 +84,7 @@ const ClientDashboard = () => {
                 rounded-xl border border-border
                 bg-surface
                 p-4
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 transition-colors
               "
             >
@@ -103,7 +103,7 @@ const ClientDashboard = () => {
                 rounded-xl border border-border
                 bg-surface
                 p-4
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 transition-colors
               "
             >
@@ -124,7 +124,7 @@ const ClientDashboard = () => {
                 rounded-xl border border-border
                 bg-surface
                 p-4
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 transition-colors
               "
             >
@@ -143,7 +143,7 @@ const ClientDashboard = () => {
                 rounded-xl border border-border
                 bg-surface
                 p-4
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 transition-colors
               "
             >
@@ -191,7 +191,7 @@ const ClientDashboard = () => {
                 rounded-lg
                 bg-primary
                 px-4 py-2
-                text-sm font-medium text-white
+                text-sm font-medium text-text-primary
                 hover:bg-primary-hover
                 transition-colors
               "
@@ -206,7 +206,7 @@ const ClientDashboard = () => {
                 border border-border
                 px-4 py-2
                 text-sm text-text-secondary
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -223,7 +223,7 @@ const ClientDashboard = () => {
                 border border-border
                 px-4 py-2
                 text-sm text-text-secondary
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 hover:text-text-primary
                 transition-colors
               "

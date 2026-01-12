@@ -87,8 +87,8 @@ const MyAppointments = () => {
                 px-3 py-1 text-sm
                 ${
                   !statusParam
-                    ? "bg-primary text-white"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-primary text-text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -103,8 +103,8 @@ const MyAppointments = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "requested"
-                    ? "bg-surface-elevated text-warning"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-warning"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -119,8 +119,8 @@ const MyAppointments = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "approved"
-                    ? "bg-surface-elevated text-success"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-success"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -135,8 +135,8 @@ const MyAppointments = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "rejected"
-                    ? "bg-surface-elevated text-error"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-error"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -210,7 +210,7 @@ const MyAppointments = () => {
                       border border-border
                       px-3 py-1 text-sm
                       text-text-secondary
-                      hover:bg-surface-elevated
+                      hover:bg-surfaceElevated
                       hover:text-text-primary
                       transition-colors
                     "

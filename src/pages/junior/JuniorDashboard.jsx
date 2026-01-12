@@ -108,7 +108,7 @@ const JuniorDashboard = () => {
                 className="
                   cursor-pointer rounded-xl border border-border
                   bg-surface p-4 transition
-                  hover:bg-surface-elevated
+                  hover:bg-surfaceElevated
                 "
               >
                 <p className="text-sm text-text-secondary">
@@ -146,7 +146,7 @@ const JuniorDashboard = () => {
               }
               className="
                 rounded-lg bg-primary px-4 py-2
-                text-sm font-medium text-white
+                text-sm font-medium text-text-primary
                 transition-opacity hover:opacity-90
               "
             >

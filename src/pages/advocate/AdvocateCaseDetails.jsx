@@ -102,7 +102,7 @@ const AdvocateCaseDetails = () => {
                   w-full sm:w-auto rounded-lg
                   bg-primary
                   px-4 py-2
-                  text-sm font-medium text-white
+                  text-sm font-medium text-text-primary
                   hover:bg-primary-hover
                   disabled:opacity-50
                   transition-colors
@@ -120,7 +120,7 @@ const AdvocateCaseDetails = () => {
                   w-full sm:w-auto rounded-lg
                   bg-primary
                   px-4 py-2
-                  text-sm font-medium text-white
+                  text-sm font-medium text-text-primary
                   hover:bg-primary-hover
                   disabled:opacity-50
                   transition-colors
@@ -147,7 +147,7 @@ const AdvocateCaseDetails = () => {
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -165,7 +165,7 @@ const AdvocateCaseDetails = () => {
               border border-border
               px-3 py-2
               text-sm text-text-secondary
-              hover:bg-surface-elevated
+              hover:bg-surfaceElevated
               hover:text-text-primary
               transition-colors
             "
@@ -186,7 +186,7 @@ const AdvocateCaseDetails = () => {
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -204,7 +204,7 @@ const AdvocateCaseDetails = () => {
               border border-border
               px-3 py-2
               text-sm text-text-secondary
-              hover:bg-surface-elevated
+              hover:bg-surfaceElevated
               hover:text-text-primary
               transition-colors
             "
@@ -225,7 +225,7 @@ const AdvocateCaseDetails = () => {
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
-                hover:bg-surface-elevated
+                hover:bg-surfaceElevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -243,7 +243,7 @@ const AdvocateCaseDetails = () => {
               border border-border
               px-3 py-2
               text-sm text-text-secondary
-              hover:bg-surface-elevated
+              hover:bg-surfaceElevated
               hover:text-text-primary
               transition-colors
             "

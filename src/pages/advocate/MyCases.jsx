@@ -73,8 +73,8 @@ const AdvocateMyCases = () => {
                 px-3 py-1 text-sm
                 ${
                   !statusParam
-                    ? "bg-primary text-white"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -89,8 +89,8 @@ const AdvocateMyCases = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "open"
-                    ? "bg-surface-elevated text-primary"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -105,8 +105,8 @@ const AdvocateMyCases = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "in_progress"
-                    ? "bg-surface-elevated text-warning"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-warning"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -121,8 +121,8 @@ const AdvocateMyCases = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "closed"
-                    ? "bg-surface-elevated text-success"
-                    : "text-text-secondary hover:bg-surface-elevated"
+                    ? "bg-surfaceElevated text-success"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -159,7 +159,7 @@ const AdvocateMyCases = () => {
                   border-l-4
                   bg-surface
                   p-4
-                  hover:bg-surface-elevated
+                  hover:bg-surfaceElevated
                   transition-colors
                   ${STATUS_STYLES[c.status] || ""}
                 `}
