@@ -52,7 +52,7 @@ const ClientDashboard = () => {
     <DashboardLayout
       title="Client Dashboard"
       navItems={[
-        { label: "Home", path: "/client" },
+        { label: "Dashboard", path: "/client" },
         { label: "Book Appointment", path: "/client/book-appointment" },
         { label: "My Appointments", path: "/client/my-appointments" },
         { label: "Past Appointments", path: "/client/past-appointments" },
@@ -84,7 +84,7 @@ const ClientDashboard = () => {
                 rounded-xl border border-border
                 bg-surface
                 p-4
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 transition-colors
               "
             >
@@ -103,7 +103,7 @@ const ClientDashboard = () => {
                 rounded-xl border border-border
                 bg-surface
                 p-4
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 transition-colors
               "
             >
@@ -124,7 +124,7 @@ const ClientDashboard = () => {
                 rounded-xl border border-border
                 bg-surface
                 p-4
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 transition-colors
               "
             >
@@ -143,7 +143,7 @@ const ClientDashboard = () => {
                 rounded-xl border border-border
                 bg-surface
                 p-4
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 transition-colors
               "
             >
@@ -206,7 +206,7 @@ const ClientDashboard = () => {
                 border border-border
                 px-4 py-2
                 text-sm text-text-secondary
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -223,7 +223,7 @@ const ClientDashboard = () => {
                 border border-border
                 px-4 py-2
                 text-sm text-text-secondary
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 hover:text-text-primary
                 transition-colors
               "

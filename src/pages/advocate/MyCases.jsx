@@ -55,7 +55,7 @@ const AdvocateMyCases = () => {
     <DashboardLayout
       title="My Cases"
       navItems={[
-        { label: "Home", path: "/advocate" },
+        { label: "Dashboard", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
         { label: "My Cases", path: "/advocate/my-cases" },
       ]}
@@ -74,7 +74,7 @@ const AdvocateMyCases = () => {
                 ${
                   !statusParam
                     ? "bg-primary text-white"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -89,8 +89,8 @@ const AdvocateMyCases = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "open"
-                    ? "bg-surfaceElevated text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    ? "bg-surface-elevated text-primary"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -105,8 +105,8 @@ const AdvocateMyCases = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "in_progress"
-                    ? "bg-surfaceElevated text-warning"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    ? "bg-surface-elevated text-warning"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -121,8 +121,8 @@ const AdvocateMyCases = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "closed"
-                    ? "bg-surfaceElevated text-success"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    ? "bg-surface-elevated text-success"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -159,7 +159,7 @@ const AdvocateMyCases = () => {
                   border-l-4
                   bg-surface
                   p-4
-                  hover:bg-surfaceElevated
+                  hover:bg-surface-elevated
                   transition-colors
                   ${STATUS_STYLES[c.status] || ""}
                 `}

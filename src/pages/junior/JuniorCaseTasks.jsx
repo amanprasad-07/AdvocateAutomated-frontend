@@ -92,7 +92,7 @@ const JuniorCaseTasks = () => {
     <DashboardLayout
       title="Case Tasks"
       navItems={[
-        { label: "Home", path: "/junior_advocate" },
+        { label: "Dashboard", path: "/junior_advocate" },
         { label: "My Cases", path: "/junior_advocate/cases" },
         {
           label: "Back to Case",
@@ -116,8 +116,8 @@ const JuniorCaseTasks = () => {
               px-3 py-1 text-sm
               ${
                 statusParam === key || (!key && !statusParam)
-                  ? "bg-surfaceElevated text-text-primary"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                  ? "bg-surface-elevated text-text-primary"
+                  : "text-text-secondary hover:bg-surface-elevated"
               }
               transition-colors
             `}
@@ -176,7 +176,7 @@ const JuniorCaseTasks = () => {
                     rounded-lg border border-border
                     px-3 py-1 text-sm
                     text-text-secondary
-                    hover:bg-surfaceElevated hover:text-text-primary
+                    hover:bg-surface-elevated hover:text-text-primary
                     disabled:opacity-50
                     transition-colors
                   "
@@ -195,7 +195,7 @@ const JuniorCaseTasks = () => {
                     rounded-lg border border-border
                     px-3 py-1 text-sm
                     text-text-secondary
-                    hover:bg-surfaceElevated hover:text-text-primary
+                    hover:bg-surface-elevated hover:text-text-primary
                     disabled:opacity-50
                     transition-colors
                   "

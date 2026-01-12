@@ -46,7 +46,7 @@ const JuniorAddEvidence = () => {
     <DashboardLayout
       title="Add Evidence"
       navItems={[
-        { label: "Home", path: "/junior_advocate" },
+        { label: "Dashboard", path: "/junior_advocate" },
         { label: "My Cases", path: "/junior_advocate/cases" },
         {
           label: "Back to Case",
@@ -132,7 +132,7 @@ const JuniorAddEvidence = () => {
               border border-border
               px-4 py-2
               text-sm text-text-secondary
-              hover:bg-surfaceElevated
+              hover:bg-surface-elevated
               hover:text-text-primary
               transition-colors
             "

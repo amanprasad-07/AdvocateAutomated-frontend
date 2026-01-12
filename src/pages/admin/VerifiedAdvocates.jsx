@@ -84,7 +84,7 @@ const VerifiedAdvocates = () => {
                   className="
                     rounded-xl border border-border
                     bg-surface p-4
-                    transition hover:bg-surfaceElevated
+                    transition hover:bg-surface-elevated
                   "
                 >
                   <div className="flex items-start justify-between gap-3">

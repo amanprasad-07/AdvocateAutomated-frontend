@@ -55,7 +55,7 @@ const AdvocateCaseEvidence = () => {
     <DashboardLayout
       title="Case Evidence"
       navItems={[
-        { label: "Home", path: "/advocate" },
+        { label: "Dashboard", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
         { label: "My Cases", path: "/advocate/my-cases" },
         {
@@ -85,8 +85,8 @@ const AdvocateCaseEvidence = () => {
                   rounded-lg border border-border
                   px-3 py-1 text-sm
                   ${typeParam === key || (!key && !typeParam)
-                    ? "bg-surfaceElevated text-text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    ? "bg-surface-elevated text-text-primary"
+                    : "text-text-secondary hover:bg-surface-elevated"
                   }
                   transition-colors
                 `}
@@ -154,7 +154,7 @@ const AdvocateCaseEvidence = () => {
                       px-3 py-1.5
                       text-sm
                       text-primary
-                      hover:bg-surfaceElevated
+                      hover:bg-surface-elevated
                       transition-colors
                     "
                   >

@@ -73,7 +73,7 @@ const JuniorCaseEvidence = () => {
     <DashboardLayout
       title="Case Evidence"
       navItems={[
-        { label: "Home", path: "/junior_advocate" },
+        { label: "Dashboard", path: "/junior_advocate" },
         { label: "My Cases", path: "/junior_advocate/cases" },
         {
           label: "Back to Case",
@@ -98,8 +98,8 @@ const JuniorCaseEvidence = () => {
               rounded-lg border border-border
               px-3 py-1 text-sm
               ${typeParam === key || (!key && !typeParam)
-                ? "bg-surfaceElevated text-text-primary"
-                : "text-text-secondary hover:bg-surfaceElevated"
+                ? "bg-surface-elevated text-text-primary"
+                : "text-text-secondary hover:bg-surface-elevated"
               }
               transition-colors
             `}
@@ -165,7 +165,7 @@ const JuniorCaseEvidence = () => {
                       px-3 py-1.5
                       text-sm
                       text-primary
-                      hover:bg-surfaceElevated
+                      hover:bg-surface-elevated
                       transition-colors
                     "
               >

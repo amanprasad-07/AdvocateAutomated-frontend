@@ -67,7 +67,7 @@ const DashboardLayout = ({ title, navItems, children }) => {
                   className="
                     block rounded-lg px-3 py-2
                     text-text-secondary
-                    hover:bg-surfaceElevated
+                    hover:bg-surface-elevated
                     hover:text-text-primary
                     transition-colors
                   "
@@ -108,7 +108,7 @@ const DashboardLayout = ({ title, navItems, children }) => {
               className="
                 block rounded-lg px-3 py-2
                 text-text-secondary
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -177,7 +177,7 @@ const DashboardLayout = ({ title, navItems, children }) => {
                 rounded-lg border border-border
                 px-3 py-2
                 text-sm text-text-secondary
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 hover:text-text-primary
                 transition-colors
               "

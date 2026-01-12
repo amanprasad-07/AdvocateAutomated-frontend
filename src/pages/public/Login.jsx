@@ -29,7 +29,7 @@ const Login = () => {
          sticky top-0 z-10
     flex items-center justify-between
     border-b border-border
-    bg-background/80 px-8 py-4
+    bg-bg/80 px-8 py-4
     backdrop-blur w-full
       ">
         <h1 className="text-xl font-semibold tracking-tight text-primary">
@@ -45,7 +45,7 @@ const Login = () => {
           w-10 h-10
           rounded-lg border border-border
           text-text-secondary
-          hover:bg-surfaceElevated
+          hover:bg-surface-elevated
           hover:text-text-primary
           transition-colors
         "

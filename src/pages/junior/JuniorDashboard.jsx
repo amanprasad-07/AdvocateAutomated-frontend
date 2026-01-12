@@ -47,7 +47,7 @@ const JuniorDashboard = () => {
     <DashboardLayout
       title="Junior Advocate Dashboard"
       navItems={[
-        { label: "Home", path: "/junior_advocate" },
+        { label: "Dashboard", path: "/junior_advocate" },
         { label: "My Cases", path: "/junior_advocate/cases" },
       ]}
     >
@@ -108,7 +108,7 @@ const JuniorDashboard = () => {
                 className="
                   cursor-pointer rounded-xl border border-border
                   bg-surface p-4 transition
-                  hover:bg-surfaceElevated
+                  hover:bg-surface-elevated
                 "
               >
                 <p className="text-sm text-text-secondary">

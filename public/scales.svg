@@ -1,0 +1,35 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 60 60"
+  fill=""
+>
+  <!-- Vertical pillar -->
+  <rect x="30" y="10" width="4" height="36" rx="2" fill="currentColor"/>
+
+  <!-- Top beam -->
+  <rect x="14" y="12" width="36" height="4" rx="2" fill="currentColor"/>
+
+  <!-- Left chain -->
+  <line x1="20" y1="16" x2="16" y2="28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <line x1="20" y1="16" x2="24" y2="28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Right chain -->
+  <line x1="44" y1="16" x2="40" y2="28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <line x1="44" y1="16" x2="48" y2="28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Left scale -->
+  <path
+    d="M10 30c2 6 14 6 16 0H10z"
+    fill="currentColor"
+  />
+
+  <!-- Right scale -->
+  <path
+    d="M38 30c2 6 14 6 16 0H38z"
+    fill="currentColor"
+  />
+
+  <!-- Base -->
+  <rect x="22" y="48" width="20" height="4" rx="2" fill="currentColor"/>
+</svg>
+

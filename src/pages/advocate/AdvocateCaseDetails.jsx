@@ -65,7 +65,7 @@ const AdvocateCaseDetails = () => {
     <DashboardLayout
       title="Case Details"
       navItems={[
-        { label: "Home", path: "/advocate" },
+        { label: "Dashboard", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
         { label: "My Cases", path: "/advocate/my-cases" },
       ]}
@@ -147,7 +147,7 @@ const AdvocateCaseDetails = () => {
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -165,7 +165,7 @@ const AdvocateCaseDetails = () => {
               border border-border
               px-3 py-2
               text-sm text-text-secondary
-              hover:bg-surfaceElevated
+              hover:bg-surface-elevated
               hover:text-text-primary
               transition-colors
             "
@@ -186,7 +186,7 @@ const AdvocateCaseDetails = () => {
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -204,7 +204,7 @@ const AdvocateCaseDetails = () => {
               border border-border
               px-3 py-2
               text-sm text-text-secondary
-              hover:bg-surfaceElevated
+              hover:bg-surface-elevated
               hover:text-text-primary
               transition-colors
             "
@@ -225,7 +225,7 @@ const AdvocateCaseDetails = () => {
                 border border-border
                 px-3 py-2
                 text-sm text-text-secondary
-                hover:bg-surfaceElevated
+                hover:bg-surface-elevated
                 hover:text-text-primary
                 transition-colors
               "
@@ -243,7 +243,7 @@ const AdvocateCaseDetails = () => {
               border border-border
               px-3 py-2
               text-sm text-text-secondary
-              hover:bg-surfaceElevated
+              hover:bg-surface-elevated
               hover:text-text-primary
               transition-colors
             "

@@ -60,7 +60,7 @@ const PastAppointments = () => {
     <DashboardLayout
       title="Past Appointments"
       navItems={[
-        { label: "Home", path: "/client" },
+        { label: "Dashboard", path: "/client" },
         { label: "Book Appointment", path: "/client/book-appointment" },
         { label: "My Appointments", path: "/client/my-appointments" },
         { label: "Past Appointments", path: "/client/past-appointments" },
@@ -81,7 +81,7 @@ const PastAppointments = () => {
                 ${
                   !statusParam
                     ? "bg-primary text-white"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -96,8 +96,8 @@ const PastAppointments = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "completed"
-                    ? "bg-surfaceElevated text-success"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    ? "bg-surface-elevated text-success"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -112,8 +112,8 @@ const PastAppointments = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "rejected"
-                    ? "bg-surfaceElevated text-error"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    ? "bg-surface-elevated text-error"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -188,7 +188,7 @@ const PastAppointments = () => {
                       border border-border
                       px-3 py-1 text-sm
                       text-text-secondary
-                      hover:bg-surfaceElevated
+                      hover:bg-surface-elevated
                       hover:text-text-primary
                       transition-colors
                     "

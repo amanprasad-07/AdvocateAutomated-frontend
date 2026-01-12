@@ -112,7 +112,7 @@ const ClientCaseDetails = () => {
     <DashboardLayout
       title="Case Details"
       navItems={[
-        { label: "Home", path: "/client" },
+        { label: "Dashboard", path: "/client" },
         { label: "Book Appointment", path: "/client/book-appointment" },
         { label: "My Appointments", path: "/client/my-appointments" },
         { label: "Past Appointments", path: "/client/past-appointments" },

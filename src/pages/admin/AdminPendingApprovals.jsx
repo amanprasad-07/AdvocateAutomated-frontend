@@ -123,7 +123,7 @@ const AdminPendingApprovals = () => {
                   className="
                     rounded-lg border border-border px-3 py-1
                     text-sm text-text-secondary
-                    hover:bg-surfaceElevated hover:text-text-primary
+                    hover:bg-surface-elevated hover:text-text-primary
                     transition-colors
                   "
                 >

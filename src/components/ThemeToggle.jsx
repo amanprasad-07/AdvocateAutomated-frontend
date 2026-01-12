@@ -13,7 +13,7 @@ const ThemeToggle = () => {
         w-10 h-10
         rounded-full border border-border
         text-text-secondary
-        hover:bg-surfaceElevated
+        hover:bg-surface-elevated
         hover:text-text-primary
         transition-colors
       "

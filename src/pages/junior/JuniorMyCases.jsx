@@ -53,7 +53,7 @@ const JuniorMyCases = () => {
     <DashboardLayout
       title="My Assigned Cases"
       navItems={[
-        { label: "Home", path: "/junior_advocate" },
+        { label: "Dashboard", path: "/junior_advocate" },
         { label: "My Cases", path: "/junior_advocate/cases" },
       ]}
     >
@@ -70,7 +70,7 @@ const JuniorMyCases = () => {
                 px-3 py-1 text-sm
                 ${!statusParam
                   ? "bg-primary text-white"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                  : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -84,8 +84,8 @@ const JuniorMyCases = () => {
                 rounded-lg border border-border
                 px-3 py-1 text-sm
                 ${statusParam === "open"
-                  ? "bg-surfaceElevated text-primary"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                  ? "bg-surface-elevated text-primary"
+                  : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -99,8 +99,8 @@ const JuniorMyCases = () => {
                 rounded-lg border border-border
                 px-3 py-1 text-sm
                 ${statusParam === "in_progress"
-                  ? "bg-surfaceElevated text-warning"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                  ? "bg-surface-elevated text-warning"
+                  : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -114,8 +114,8 @@ const JuniorMyCases = () => {
                 rounded-lg border border-border
                 px-3 py-1 text-sm
                 ${statusParam === "closed"
-                  ? "bg-surfaceElevated text-success"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                  ? "bg-surface-elevated text-success"
+                  : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -152,7 +152,7 @@ const JuniorMyCases = () => {
                   border-l-4
                   bg-surface
                   p-4
-                  hover:bg-surfaceElevated
+                  hover:bg-surface-elevated
                   transition-colors
                   ${STATUS_STYLES[c.status] || ""}
                 `}

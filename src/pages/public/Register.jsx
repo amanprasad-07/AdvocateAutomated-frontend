@@ -26,6 +26,11 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
+    if (form.password !== form.passwordConfirm) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
       await register(form);
       alert("Registered successfully. Please login.");
@@ -38,14 +43,14 @@ const Register = () => {
   };
 
   return (
-    <div className=" flex flex-col min-h-screen items-center justify-center bg-background ">
+    <div className=" flex flex-col min-h-screen items-center justify-center bg-bg ">
 
       {/* ---------- Header ---------- */}
       <header className="
          sticky top-0 z-10
     flex items-center justify-between
     border-b border-border
-    bg-background/80 px-8 py-4
+    bg-bg/80 px-8 py-4
     backdrop-blur w-full
       ">
         <h1 className="text-xl font-semibold tracking-tight text-primary">
@@ -61,7 +66,7 @@ const Register = () => {
           w-10 h-10
           rounded-lg border border-border
           text-text-secondary
-          hover:bg-surfaceElevated
+          hover:bg-surface-elevated
           hover:text-text-primary
           transition-colors
         "
@@ -163,6 +168,8 @@ const Register = () => {
           {/* ---------- Phone ---------- */}
           <input
             name="phone"
+            type="tel"
+            inputMode="numeric"
             placeholder="Phone"
             onChange={handleChange}
             required

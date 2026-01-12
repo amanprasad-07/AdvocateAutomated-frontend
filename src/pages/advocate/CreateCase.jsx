@@ -75,7 +75,7 @@ const CreateCase = () => {
     <DashboardLayout
       title="Create Case"
       navItems={[
-        { label: "Home", path: "/advocate" },
+        { label: "Dashboard", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
         { label: "My Cases", path: "/advocate/my-cases" },
       ]}

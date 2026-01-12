@@ -9,18 +9,18 @@ const VerificationStatusBanner = () => {
   if (user.verificationStatus === "not_required") return null;
 
   let styles =
-    "bg-surfaceElevated text-warning border border-warning";
+    "bg-surface-elevated text-warning border border-warning";
   let message = "Your account verification is pending.";
 
   if (user.verificationStatus === "approved") {
     styles =
-      "bg-surfaceElevated text-success border border-success";
+      "bg-surface-elevated text-success border border-success";
     message = "Verified user.";
   }
 
   if (user.verificationStatus === "rejected") {
     styles =
-      "bg-surfaceElevated text-error border border-error";
+      "bg-surface-elevated text-error border border-error";
     message =
       "Your verification was rejected. Please contact support or re-register.";
   }

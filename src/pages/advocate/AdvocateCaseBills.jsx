@@ -64,7 +64,7 @@ const AdvocateCaseBills = () => {
     <DashboardLayout
       title="Case Bills"
       navItems={[
-        { label: "Home", path: "/advocate" },
+        { label: "Dashboard", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
         { label: "My Cases", path: "/advocate/my-cases" },
         {
@@ -87,7 +87,7 @@ const AdvocateCaseBills = () => {
                 ${
                   !statusParam
                     ? "bg-primary text-white"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -102,8 +102,8 @@ const AdvocateCaseBills = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "pending"
-                    ? "bg-surfaceElevated text-warning"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    ? "bg-surface-elevated text-warning"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -118,8 +118,8 @@ const AdvocateCaseBills = () => {
                 px-3 py-1 text-sm
                 ${
                   statusParam === "paid"
-                    ? "bg-surfaceElevated text-success"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                    ? "bg-surface-elevated text-success"
+                    : "text-text-secondary hover:bg-surface-elevated"
                 }
                 transition-colors
               `}
@@ -180,7 +180,7 @@ const AdvocateCaseBills = () => {
                       border border-error
                       px-3 py-1
                       text-sm text-error
-                      hover:bg-surfaceElevated
+                      hover:bg-surface-elevated
                       hover:text-text-primary
                       transition-colors
                     "

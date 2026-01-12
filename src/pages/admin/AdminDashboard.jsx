@@ -84,7 +84,7 @@ const AdminDashboard = () => {
                 className="
                   cursor-pointer rounded-xl border border-border
                   bg-surface p-4 transition
-                  hover:bg-surfaceElevated
+                  hover:bg-surface-elevated
                 "
               >
                 <p className="text-sm text-text-secondary">
@@ -128,7 +128,7 @@ const AdminDashboard = () => {
               className="
                 rounded-lg border border-border px-4 py-2
                 text-sm text-text-secondary
-                hover:bg-surfaceElevated hover:text-text-primary
+                hover:bg-surface-elevated hover:text-text-primary
                 transition-colors
               "
             >
@@ -140,7 +140,7 @@ const AdminDashboard = () => {
               className="
                 rounded-lg border border-border px-4 py-2
                 text-sm text-text-secondary
-                hover:bg-surfaceElevated hover:text-text-primary
+                hover:bg-surface-elevated hover:text-text-primary
                 transition-colors
               "
             >

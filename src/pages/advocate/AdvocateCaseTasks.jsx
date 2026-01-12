@@ -55,7 +55,7 @@ const AdvocateCaseTasks = () => {
     <DashboardLayout
       title="Case Tasks"
       navItems={[
-        { label: "Home", path: "/advocate" },
+        { label: "Dashboard", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
         { label: "My Cases", path: "/advocate/my-cases" },
         {
@@ -84,8 +84,8 @@ const AdvocateCaseTasks = () => {
                   px-3 py-1 text-sm
                   ${
                     statusParam === key || (!key && !statusParam)
-                      ? "bg-surfaceElevated text-text-primary"
-                      : "text-text-secondary hover:bg-surfaceElevated"
+                      ? "bg-surface-elevated text-text-primary"
+                      : "text-text-secondary hover:bg-surface-elevated"
                   }
                   transition-colors
                 `}

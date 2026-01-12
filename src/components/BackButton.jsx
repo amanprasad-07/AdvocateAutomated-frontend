@@ -16,7 +16,7 @@ const BackButton = () => {
         rounded-full border border-border
         w-10 h-10
         text-text-secondary
-        hover:bg-surfaceElevated
+        hover:bg-surface-elevated
         hover:text-text-primary
         transition-colors
       "

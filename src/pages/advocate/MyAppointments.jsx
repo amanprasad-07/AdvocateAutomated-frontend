@@ -131,7 +131,7 @@ const AdvocateMyAppointments = () => {
     <DashboardLayout
       title="My Appointments"
       navItems={[
-        { label: "Home", path: "/advocate" },
+        { label: "Dashboard", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
         { label: "My Cases", path: "/advocate/my-cases" },
       ]}
@@ -159,7 +159,7 @@ const AdvocateMyAppointments = () => {
               px-3 py-1 text-sm
               ${filter === key
                 ? "bg-primary text-white"
-                : "text-text-secondary hover:bg-surfaceElevated"
+                : "text-text-secondary hover:bg-surface-elevated"
               }
               transition-colors
             `}
@@ -239,7 +239,7 @@ const AdvocateMyAppointments = () => {
                         border border-border
                         px-3 py-1
                         text-sm text-text-secondary
-                        hover:bg-surfaceElevated
+                        hover:bg-surface-elevated
                         hover:text-text-primary
                         transition-colors
                       "
@@ -317,7 +317,7 @@ const AdvocateMyAppointments = () => {
                   border border-border
                   px-3 py-1
                   text-sm text-text-secondary
-                  hover:bg-surfaceElevated
+                  hover:bg-surface-elevated
                   transition-colors
                 "
               >
