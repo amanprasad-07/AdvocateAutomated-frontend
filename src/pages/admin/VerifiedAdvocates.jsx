@@ -6,16 +6,25 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 const VerifiedAdvocates = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [roleFilter, setRoleFilter] = useState("all");
 
   useEffect(() => {
     const fetchVerified = async () => {
-      const res = await api.get("/admin/verified-advocates");
-      setUsers(res.data.data || []);
-      setLoading(false);
+      try {
+        const res = await api.get("/admin/verified-advocates");
+        setUsers(res.data.data || []);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchVerified();
   }, []);
+
+  const filteredUsers =
+    roleFilter === "all"
+      ? users
+      : users.filter((u) => u.role === roleFilter);
 
   return (
     <DashboardLayout
@@ -40,52 +49,80 @@ const VerifiedAdvocates = () => {
       )}
 
       {!loading && users.length > 0 && (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {users.map((u) => (
-            <div
-              key={u._id}
+        <>
+          {/* ---------- Filter ---------- */}
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <p className="text-sm font-medium text-text-secondary">
+              Showing {filteredUsers.length} advocate(s)
+            </p>
+
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
               className="
-                rounded-xl border border-border
-                bg-surface p-4
-                transition hover:bg-surfaceElevated
+                rounded-lg border border-border
+                bg-surface px-3 py-2 text-sm
+                focus:outline-none focus:ring-1 focus:ring-primary
               "
             >
-              <div className="flex items-start justify-between gap-3">
-                {/* ---------- Identity ---------- */}
-                <div className="space-y-1 text-sm">
-                  <p className="text-base font-semibold text-text-primary">
-                    {u.name}
-                  </p>
+              <option value="all">All</option>
+              <option value="advocate">Advocates</option>
+              <option value="junior_advocate">Junior Advocates</option>
+            </select>
+          </div>
 
-                  <p className="text-text-secondary">
-                    {u.email}
-                  </p>
-
-                  <p className="capitalize text-text-secondary">
-                    Role: {u.role.replace("_", " ")}
-                  </p>
-                </div>
-
-                {/* ---------- Status Badge ---------- */}
-                <span
+          {/* ---------- List ---------- */}
+          {filteredUsers.length === 0 ? (
+            <p className="text-sm text-muted">
+              No advocates match the selected role.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {filteredUsers.map((u) => (
+                <div
+                  key={u._id}
                   className="
-                    rounded-full bg-green-100 px-2 py-0.5
-                    text-xs font-medium text-green-700
+                    rounded-xl border border-border
+                    bg-surface p-4
+                    transition hover:bg-surfaceElevated
                   "
                 >
-                  Verified
-                </span>
-              </div>
+                  <div className="flex items-start justify-between gap-3">
+                    {/* ---------- Identity ---------- */}
+                    <div className="space-y-1 text-sm">
+                      <p className="text-base font-semibold text-text-primary">
+                        {u.name}
+                      </p>
 
-              <p className="mt-3 text-xs text-muted">
-                Verified on{" "}
-                {new Date(
-                  u.verificationReviewedAt
-                ).toLocaleDateString()}
-              </p>
+                      <p className="text-text-secondary">
+                        {u.email}
+                      </p>
+
+                      <p className="capitalize text-text-secondary">
+                        Role: {u.role.replace("_", " ")}
+                      </p>
+                    </div>
+
+                    {/* ---------- Status ---------- */}
+                    <span className="
+                      rounded-full bg-green-100 px-2 py-0.5
+                      text-xs font-medium text-green-700
+                    ">
+                      Verified
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-xs text-muted">
+                    Verified on{" "}
+                    {new Date(
+                      u.verificationReviewedAt
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </DashboardLayout>
   );

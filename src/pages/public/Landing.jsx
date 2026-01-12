@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import ThemeToggle from "../../components/ThemeToggle";
 import heroImage from "../../assets/hero001.webp";
+import Footer from "../../components/Footer";
 
 
 const Landing = () => {
@@ -97,15 +98,15 @@ const Landing = () => {
                 Menu
               </span>
               <div className="flex ">
-              <ThemeToggle />
-              <button
-                onClick={() => setMenuOpen(false)}
-                className="text-text-secondary hover:text-text-primary px-3 ml-3 rounded-lg border border-border text-center"
-              >
-                ✕
-              </button>
-            </div>
-              
+                <ThemeToggle />
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="text-text-secondary hover:text-text-primary px-3 ml-3 rounded-lg border border-border text-center"
+                >
+                  ✕
+                </button>
+              </div>
+
             </div>
 
             <Link
@@ -130,7 +131,7 @@ const Landing = () => {
           hover:opacity-90
         "
             >
-              Get Started
+              Register
             </Link>
           </div>
         </div>
@@ -149,14 +150,12 @@ const Landing = () => {
         <div className="absolute inset-0 bg-black/60 -z-10" />
 
         <h2 className="mx-auto mb-6 max-w-3xl text-3xl sm:text-4xl font-semibold leading-tigh text-white">
-          A Structured Legal Workflow
-          <span className="text-primary"> From Appointment to Closure</span>
+          Legal Work. Structured. Transparent.
+          <span className="text-primary"> Human.</span>
         </h2>
 
         <p className="mx-auto mb-10 max-w-2xl text-lg text-white/80">
-          Advocate Automated is a role-based legal case management system
-          designed to bring clarity, accountability, and structure to how
-          clients, advocates, and junior advocates work together.
+          Advocate Automated is a modern legal services platform built to remove confusion, delays, and opacity from legal work — connecting clients with verified advocates through a system that values clarity, accountability, and trust.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -189,31 +188,27 @@ const Landing = () => {
       {/* ---------- How It Works ---------- */}
       <section className="bg-surface px-8 py-24 dark:bg-dark-surface">
         <h3 className="mb-14 text-center text-2xl font-semibold">
-          How the System Works
+          Why Choose Advocate Automated
         </h3>
 
         <div className="mx-auto grid max-w-5xl gap-10 sm:grid-cols-2 md:grid-cols-4">
           {[
             {
-              step: "01",
-              title: "Book Appointment",
-              desc: "Clients request appointments with verified advocates through a structured workflow.",
+              title: "Verified Legal Professionals",
+              desc: "Every advocate on our platform goes through structured verification to ensure credibility, experience, and accountability."
             },
             {
-              step: "02",
-              title: "Case Creation",
-              desc: "Advocates convert approved appointments into formal legal cases.",
+              title: "Transparency by Design",
+              desc: "From case progress to payments, everything is visible, traceable, and documented — no guesswork, no blind trust."
             },
             {
-              step: "03",
-              title: "Execution & Evidence",
-              desc: "Tasks, junior assignments, and evidence are tracked in one place.",
+              title: "Built for Real Legal Work",
+              desc: "Designed in collaboration with advocates, the platform reflects how legal work actually happens — not how software imagines it."
             },
             {
-              step: "04",
-              title: "Billing & Closure",
-              desc: "Transparent billing, secure payments, and case lifecycle tracking.",
-            },
+              title: "Client-First Ethics",
+              desc: "Clear billing, defined responsibilities, and controlled access ensure clients stay informed without being overwhelmed."
+            }
           ].map((item) => (
             <div
               key={item.step}
@@ -235,53 +230,53 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ---------- Role-Based Value ---------- */}
+      {/* ---------- Who We Serve ---------- */}
       <section className="px-8 py-24">
         <h3 className="mb-14 text-center text-2xl font-semibold">
-          Designed for Every Role
+          Who We Serve
         </h3>
 
         <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 md:grid-cols-3">
           {[
             {
-              title: "For Clients",
+              title: "Clients",
               points: [
-                "Verified advocates only",
-                "Transparent case status",
-                "Clear billing & payments",
-                "Secure evidence sharing",
+                "Access to verified legal professionals",
+                "Clear visibility into case progress",
+                "Transparent and documented billing",
+                "Confidential handling of sensitive information",
               ],
             },
             {
-              title: "For Advocates",
+              title: "Advocates",
               points: [
-                "Appointment control",
-                "Case & task delegation",
-                "Junior advocate management",
-                "Billing & payment tracking",
+                "Engage with informed and serious clients",
+                "Structured case handling and communication",
+                "Clear documentation and responsibility boundaries",
+                "Professional, ethics-first working environment",
               ],
             },
             {
-              title: "For Junior Advocates",
+              title: "Law Practices & Chambers",
               points: [
-                "Assigned tasks only",
-                "Controlled evidence access",
-                "Clear responsibilities",
-                "Progress-based workflows",
+                "Organised case and client management",
+                "Clear delegation and accountability",
+                "Consistent communication standards",
+                "Support for compliant and ethical operations",
               ],
             },
-          ].map((role) => (
+          ].map((group) => (
             <div
-              key={role.title}
+              key={group.title}
               className="
-                rounded-xl border border-border bg-surface p-6
-              "
+          rounded-xl border border-border bg-surface p-6
+        "
             >
               <h4 className="mb-4 text-lg font-semibold">
-                {role.title}
+                {group.title}
               </h4>
               <ul className="space-y-2 text-sm text-text-secondary">
-                {role.points.map((p) => (
+                {group.points.map((p) => (
                   <li key={p}>• {p}</li>
                 ))}
               </ul>
@@ -290,16 +285,15 @@ const Landing = () => {
         </div>
       </section>
 
+
       {/* ---------- Trust Section ---------- */}
       <section className="bg-surface px-8 py-20 dark:bg-dark-surface">
         <div className="mx-auto max-w-4xl text-center">
           <h3 className="mb-4 text-2xl font-semibold">
-            Built for Accountability
+            Built on Trust, Accountability, and Ethics
           </h3>
           <p className="text-text-secondary">
-            Role-based access control, audit logs, verification workflows,
-            and payment traceability ensure that every action in the system
-            is intentional, visible, and accountable.
+            Legal work demands trust. That’s why Advocate Automated is designed with clear accountability, role-based access, audit trails, and ethical safeguards — ensuring every action is intentional, visible, and responsible.
           </p>
         </div>
       </section>
@@ -307,7 +301,7 @@ const Landing = () => {
       {/* ---------- Final CTA ---------- */}
       <section className="px-8 py-24 text-center">
         <h3 className="mb-6 text-2xl font-semibold">
-          Bring Structure to Legal Work
+          A Better Way to Experience Legal Services
         </h3>
 
         <Link
@@ -323,9 +317,7 @@ const Landing = () => {
       </section>
 
       {/* ---------- Footer ---------- */}
-      <footer className="border-t border-border px-8 py-6 text-center text-sm text-text-muted">
-        © {new Date().getFullYear()} Advocate Automated. All rights reserved.
-      </footer>
+      <Footer />
     </div>
   );
 };

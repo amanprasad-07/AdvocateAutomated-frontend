@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import ThemeToggle from "./ThemeToggle";
 import BackButton from "./BackButton";
+import Footer from "./Footer";
 
 const DashboardLayout = ({ title, navItems, children }) => {
   const { logout } = useAuth();
@@ -190,6 +191,7 @@ const DashboardLayout = ({ title, navItems, children }) => {
         <main className="flex-1 p-6 bg-bg">
           {children}
         </main>
+        <Footer />
       </div>
     </div>
   );

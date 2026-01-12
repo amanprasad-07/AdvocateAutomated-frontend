@@ -10,11 +10,15 @@ const STATUS_COLOR = {
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const fetchUsers = async () => {
-    const res = await api.get("/admin/users");
-    setUsers(res.data.data || []);
-    setLoading(false);
+    try {
+      const res = await api.get("/admin/users");
+      setUsers(res.data.data || []);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleStatus = async (userId) => {
@@ -25,6 +29,13 @@ const AdminUsers = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const filteredUsers =
+    statusFilter === "all"
+      ? users
+      : users.filter((u) =>
+          statusFilter === "active" ? u.isActive : !u.isActive
+        );
 
   return (
     <DashboardLayout
@@ -53,70 +64,100 @@ const AdminUsers = () => {
       )}
 
       {!loading && users.length > 0 && (
-        <div className="space-y-3">
-          {users.map((u) => {
-            const statusKey = u.isActive ? "active" : "inactive";
+        <>
+          {/* ---------- Filter ---------- */}
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <p className="text-sm font-medium text-text-secondary">
+              Showing {filteredUsers.length} user(s)
+            </p>
 
-            return (
-              <div
-                key={u._id}
-                className="
-                  rounded-xl border border-border
-                  bg-surface p-4
-                  flex items-start justify-between gap-4
-                "
-              >
-                {/* ---------- User Info ---------- */}
-                <div className="space-y-1 text-sm">
-                  <p className="text-base font-semibold text-text-primary">
-                    {u.name}
-                  </p>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="
+                rounded-lg border border-border
+                bg-surface px-3 py-2 text-sm
+                focus:outline-none focus:ring-1 focus:ring-primary
+              "
+            >
+              <option value="all">All Users</option>
+              <option value="active">Active Users</option>
+              <option value="inactive">Inactive Users</option>
+            </select>
+          </div>
 
-                  <p className="text-text-secondary">
-                    {u.email}
-                  </p>
+          {/* ---------- List ---------- */}
+          {filteredUsers.length === 0 ? (
+            <p className="text-sm text-muted">
+              No users match the selected filter.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {filteredUsers.map((u) => {
+                const statusKey = u.isActive ? "active" : "inactive";
 
-                  <p className="capitalize text-text-secondary">
-                    Role: {u.role.replace("_", " ")}
-                  </p>
-
-                  <p className="text-xs">
-                    Status:{" "}
-                    <span
-                      className={`font-medium ${STATUS_COLOR[statusKey]}`}
-                    >
-                      {u.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </p>
-
-                  {u.role !== "client" && (
-                    <p className="text-xs capitalize text-text-secondary">
-                      Verification: {u.verificationStatus}
-                    </p>
-                  )}
-                </div>
-
-                {/* ---------- Controls ---------- */}
-                {u.role !== "admin" && (
-                  <button
-                    onClick={() => toggleStatus(u._id)}
-                    className={`
-                      rounded-lg px-3 py-1 text-xs font-medium
-                      transition-colors
-                      ${
-                        u.isActive
-                          ? "border border-red-500 text-red-600 hover:bg-red-50"
-                          : "border border-green-500 text-green-600 hover:bg-green-50"
-                      }
-                    `}
+                return (
+                  <div
+                    key={u._id}
+                    className="
+                      rounded-xl border border-border
+                      bg-surface p-4
+                      flex items-start justify-between gap-4
+                    "
                   >
-                    {u.isActive ? "Deactivate" : "Activate"}
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                    {/* ---------- User Info ---------- */}
+                    <div className="space-y-1 text-sm">
+                      <p className="text-base font-semibold text-text-primary">
+                        {u.name}
+                      </p>
+
+                      <p className="text-text-secondary">
+                        {u.email}
+                      </p>
+
+                      <p className="capitalize text-text-secondary">
+                        Role: {u.role.replace("_", " ")}
+                      </p>
+
+                      <p className="text-xs">
+                        Status:{" "}
+                        <span
+                          className={`font-medium ${STATUS_COLOR[statusKey]}`}
+                        >
+                          {u.isActive ? "Active" : "Inactive"}
+                        </span>
+                      </p>
+
+                      {u.role !== "client" && (
+                        <p className="text-xs capitalize text-text-secondary">
+                          Verification: {u.verificationStatus}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* ---------- Controls ---------- */}
+                    {u.role !== "admin" && (
+                      <button
+                        onClick={() => toggleStatus(u._id)}
+                        className={`
+                          rounded-lg px-3 py-1 text-xs font-medium
+                          transition-colors
+                          ${
+                            u.isActive
+                              ? "border border-red-500 text-red-600 hover:bg-red-50"
+                              : "border border-green-500 text-green-600 hover:bg-green-50"
+                          }
+                        `}
+                      >
+                        {u.isActive ? "Deactivate" : "Activate"}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
     </DashboardLayout>
   );

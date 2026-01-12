@@ -10,21 +10,25 @@ const STATUS_BADGE = {
 
 const AdminPayments = () => {
   const [payments, setPayments] = useState([]);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("all");
   const [loading, setLoading] = useState(true);
 
   const fetchPayments = async () => {
     setLoading(true);
 
-    const res = await api.get("/payments");
-    let data = res.data.data;
+    try {
+      const res = await api.get("/payments");
+      const allPayments = res.data.data || [];
 
-    if (status) {
-      data = data.filter((p) => p.status === status);
+      const filtered =
+        status === "all"
+          ? allPayments
+          : allPayments.filter((p) => p.status === status);
+
+      setPayments(filtered);
+    } finally {
+      setLoading(false);
     }
-
-    setPayments(data);
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -45,8 +49,12 @@ const AdminPayments = () => {
         { label: "Audit Logs", path: "/admin/audit-logs" },
       ]}
     >
-      {/* ---------- Filter ---------- */}
-      <div className="mb-4">
+      {/* ---------- Filter + Count ---------- */}
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <p className="text-sm font-medium text-text-secondary">
+          Showing {payments.length} payment(s)
+        </p>
+
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
@@ -54,9 +62,10 @@ const AdminPayments = () => {
             rounded-lg border border-border
             bg-surface px-3 py-2 text-sm
             text-text-primary
+            focus:outline-none focus:ring-1 focus:ring-primary
           "
         >
-          <option value="">All payments</option>
+          <option value="all">All payments</option>
           <option value="pending">Pending</option>
           <option value="paid">Paid</option>
           <option value="failed">Failed</option>
@@ -85,7 +94,7 @@ const AdminPayments = () => {
                 bg-surface p-4
               "
             >
-              {/* Header */}
+              {/* ---------- Header ---------- */}
               <div className="flex items-start justify-between gap-4">
                 <p className="text-lg font-semibold text-text-primary">
                   ₹{p.amount}{" "}
@@ -103,7 +112,7 @@ const AdminPayments = () => {
                 </span>
               </div>
 
-              {/* Details */}
+              {/* ---------- Details ---------- */}
               <div className="mt-2 space-y-1 text-sm text-text-secondary">
                 <p>
                   <strong className="font-medium text-text-primary">
@@ -134,7 +143,7 @@ const AdminPayments = () => {
                 </p>
               </div>
 
-              {/* Timestamp */}
+              {/* ---------- Timestamp ---------- */}
               {p.paidAt && (
                 <p className="mt-3 text-xs text-muted">
                   Paid on{" "}
