@@ -121,7 +121,11 @@ const JuniorVerificationProfile = () => {
             </p>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className=" max-w-md
+            rounded-xl
+            bg-surface
+            p-6
+            shadow-sm">
             <div>
               <label className="block text-sm text-text-secondary">
                 Enrollment Number *

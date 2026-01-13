@@ -34,6 +34,7 @@ export default {
           primary: "hsl(var(--text-primary))",
           secondary: "hsl(var(--text-secondary))",
           muted: "hsl(var(--text-muted))",
+          form: "hsl(var(--text-form))",
         },
 
         /* Brand / primary action colors */

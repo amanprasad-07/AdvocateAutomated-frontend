@@ -23,6 +23,7 @@
     --text-primary: 220 15% 10%;
     --text-secondary: 220 10% 35%;
     --text-muted: 220 10% 45%;
+    --text-form: 220 15% 10%;
 
     /* ---------------- Brand Colors ---------------- */
     --primary: 220 70% 45%;
@@ -50,6 +51,7 @@
     --text-primary: 0 0% 96%;
     --text-secondary: 220 10% 75%;
     --text-muted: 220 10% 55%;
+    --text-form: 220 15% 10%;
 
     --primary: 220 70% 55%;
     --primary-hover: 220 65% 65%;

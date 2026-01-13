@@ -102,7 +102,11 @@ const VerificationProfile = () => {
             </p>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className=" max-w-md
+            rounded-xl
+            bg-surface
+            p-6
+            shadow-sm">
             <div>
               <label className="block text-sm text-text-secondary">
                 Enrollment Number *
@@ -112,7 +116,14 @@ const VerificationProfile = () => {
                 name="enrollmentNumber"
                 value={formData.enrollmentNumber}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                className="mb-3 w-full rounded-lg
+              border border-border
+              bg-bg
+              px-3 py-2
+              text-text-primary
+              placeholder:text-text-muted
+              focus:outline-none
+              focus:ring-2 focus:ring-primary/30"
                 required
               />
             </div>
@@ -126,7 +137,14 @@ const VerificationProfile = () => {
                 name="barCouncil"
                 value={formData.barCouncil}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                className="mb-3 w-full rounded-lg
+              border border-border
+              bg-bg
+              px-3 py-2
+              text-text-primary
+              placeholder:text-text-muted
+              focus:outline-none
+              focus:ring-2 focus:ring-primary/30"
                 required
               />
             </div>
@@ -141,7 +159,14 @@ const VerificationProfile = () => {
                 min="0"
                 value={formData.experienceYears}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                className="mb-3 w-full rounded-lg
+              border border-border
+              bg-bg
+              px-3 py-2
+              text-text-primary
+              placeholder:text-text-muted
+              focus:outline-none
+              focus:ring-2 focus:ring-primary/30"
               />
             </div>
 
