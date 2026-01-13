@@ -6,20 +6,27 @@ import api from "../../api/axios";
 import { useAuth } from "../../auth/AuthContext";
 
 const VerificationProfile = () => {
+  // Router navigation helper
   const navigate = useNavigate();
+
+  // Auth context for accessing logged-in user data
   const { user } = useAuth();
 
+  // Form state for advocate verification details
   const [formData, setFormData] = useState({
     enrollmentNumber: "",
     barCouncil: "",
     experienceYears: "",
-    documents: []
+    documents: [],
   });
 
+  // UI state for async handling and error feedback
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Safety guard (UI-level)
+  /* ---------- Safety Guard (UI-level) ---------- */
+  /* Prevent access if verification is already approved
+     or details have already been submitted */
   if (
     user?.verificationStatus === "approved" ||
     user?.advocateProfile?.submittedAt
@@ -28,18 +35,23 @@ const VerificationProfile = () => {
     return null;
   }
 
+  /* ---------- Input Change Handler ---------- */
+  /* Updates individual form fields dynamically */
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
+  /* ---------- Form Submission ---------- */
+  /* Validates required fields and submits verification data */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    // Basic required-field validation
     if (!formData.enrollmentNumber || !formData.barCouncil) {
       setError("Enrollment number and bar council are required");
       return;
@@ -48,18 +60,21 @@ const VerificationProfile = () => {
     try {
       setLoading(true);
 
+      // Submit verification details to backend
       await api.patch("/verification/profile", {
         enrollmentNumber: formData.enrollmentNumber,
         barCouncil: formData.barCouncil,
         experienceYears: Number(formData.experienceYears),
-        documents: formData.documents
+        documents: formData.documents,
       });
 
+      // Redirect back to advocate dashboard on success
       navigate("/advocate");
     } catch (err) {
+      // Surface backend or fallback error message
       setError(
         err?.response?.data?.message ||
-        "Failed to submit verification details"
+          "Failed to submit verification details"
       );
     } finally {
       setLoading(false);
@@ -69,15 +84,14 @@ const VerificationProfile = () => {
   return (
     <DashboardLayout
       title="Advocate Verification"
-      navItems={[
-        { label: "Dashboard", path: "/advocate" }
-      ]}
+      navItems={[{ label: "Dashboard", path: "/advocate" }]}
     >
+      {/* ---------- Loading Overlay ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <div className="max-w-xl rounded-xl border border-border bg-surface p-6">
-          {/* Card Heading */}
+          {/* ---------- Card Heading ---------- */}
           <h2 className="mb-1 text-lg font-semibold text-text-primary">
             Submit Verification Details
           </h2>
@@ -86,12 +100,14 @@ const VerificationProfile = () => {
             Provide your professional details to complete advocate verification.
           </p>
 
+          {/* ---------- Error Feedback ---------- */}
           {error && (
             <p className="mb-3 text-sm text-error">
               {error}
             </p>
           )}
 
+          {/* ---------- Verification Form ---------- */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Enrollment Number */}
             <div>
@@ -138,20 +154,18 @@ const VerificationProfile = () => {
               />
             </div>
 
-           
-
-            {/* Action Buttons */}
+            {/* ---------- Action Buttons ---------- */}
             <div className="flex gap-3 pt-2">
               <button
                 type="submit"
                 className="
-          rounded-lg
-          bg-primary
-          px-4 py-2
-          text-sm font-medium
-          text-text-primary
-          hover:opacity-90
-        "
+                  rounded-lg
+                  bg-primary
+                  px-4 py-2
+                  text-sm font-medium
+                  text-text-primary
+                  hover:opacity-90
+                "
               >
                 Submit for Verification
               </button>
@@ -160,20 +174,20 @@ const VerificationProfile = () => {
                 type="button"
                 onClick={() => navigate("/advocate")}
                 className="
-          rounded-lg
-          border border-border
-          px-4 py-2
-          text-sm
-          text-text-secondary
-          hover:bg-surfaceElevated
-        "
+                  rounded-lg
+                  border border-border
+                  px-4 py-2
+                  text-sm
+                  text-text-secondary
+                  hover:bg-surfaceElevated
+                "
               >
                 Cancel
               </button>
             </div>
           </form>
 
-          {/* Info Section (non-blocking) */}
+          {/* ---------- Informational Note ---------- */}
           <div className="mt-6 rounded-lg bg-surfaceElevated p-3 text-xs text-text-muted">
             <p>
               Once submitted, your details will be reviewed by an administrator.
@@ -181,7 +195,6 @@ const VerificationProfile = () => {
             </p>
           </div>
         </div>
-
       )}
     </DashboardLayout>
   );

@@ -5,18 +5,40 @@ import ThemeToggle from "./ThemeToggle";
 import BackButton from "./BackButton";
 import Footer from "./Footer";
 
+/**
+ * DashboardLayout Component
+ *
+ * Provides a unified layout for all dashboard-style pages.
+ * Handles:
+ * - Responsive sidebar navigation (desktop and mobile)
+ * - Header with title, theme toggle, and logout
+ * - Role-specific navigation items
+ * - Consistent page structure and footer
+ */
 const DashboardLayout = ({ title, navItems, children }) => {
+  // Access logout handler from authentication context
   const { logout } = useAuth();
+
+  // React Router navigation utility
   const navigate = useNavigate();
 
+  // Controls mobile sidebar visibility
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Defensive fallback to prevent runtime errors if navItems is undefined
   const safeNavItems = navItems || [];
 
+  /**
+   * Handles user logout and redirects to login page
+   */
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
+  /**
+   * Navigates back one step in browser history
+   */
   const handleBack = () => {
     navigate(-1);
   };
@@ -24,16 +46,16 @@ const DashboardLayout = ({ title, navItems, children }) => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-bg text-text-primary">
 
-      {/* ================= Mobile Sidebar (RIGHT) ================= */}
+      {/* ================= Mobile Sidebar (Right Drawer) ================= */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
-          {/* Backdrop */}
+          {/* Semi-transparent backdrop */}
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setSidebarOpen(false)}
           />
 
-          {/* Drawer (RIGHT SIDE) */}
+          {/* Slide-in drawer from the right */}
           <aside
             className="
               ml-auto relative z-50 w-64
@@ -42,12 +64,14 @@ const DashboardLayout = ({ title, navItems, children }) => {
               animate-slideInRight
             "
           >
+            {/* Sidebar header */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold text-primary">
                 Menu
               </h2>
+
+              {/* Theme toggle and close button */}
               <div className="flex">
-                {/* Theme toggle (icon-sized by component styling) */}
                 <ThemeToggle />
                 <button
                   onClick={() => setSidebarOpen(false)}
@@ -58,6 +82,7 @@ const DashboardLayout = ({ title, navItems, children }) => {
               </div>
             </div>
 
+            {/* Navigation links */}
             <nav className="space-y-1 mb-6">
               {safeNavItems.map((item) => (
                 <Link
@@ -77,7 +102,7 @@ const DashboardLayout = ({ title, navItems, children }) => {
               ))}
             </nav>
 
-            {/* Logout INSIDE mobile menu */}
+            {/* Logout button inside mobile sidebar */}
             <button
               onClick={handleLogout}
               className="
@@ -100,6 +125,7 @@ const DashboardLayout = ({ title, navItems, children }) => {
           Advocate Automated
         </h2>
 
+        {/* Desktop navigation */}
         <nav className="space-y-1">
           {safeNavItems.map((item) => (
             <Link
@@ -119,42 +145,41 @@ const DashboardLayout = ({ title, navItems, children }) => {
         </nav>
       </aside>
 
-      {/* ================= Main Section ================= */}
+      {/* ================= Main Content Area ================= */}
       <div className="flex-1 flex flex-col">
 
         {/* Header */}
         <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface">
 
-          {/* Left */}
+          {/* Left section: back button and page title */}
           <div className="flex items-center gap-3">
             <BackButton />
 
             <div className="flex flex-col leading-tight">
-              {/* Brand (always visible, smaller than title) */}
+              {/* Brand label for mobile view */}
               <span className="
-      text-xs sm:text-sm
-      font-medium
-      text-primary 
-      md:hidden
-    ">
+                text-xs sm:text-sm
+                font-medium
+                text-primary 
+                md:hidden
+              ">
                 Advocate Automated
               </span>
 
-              {/* Page Title (primary focus) */}
+              {/* Current page title */}
               <h1 className="text-base sm:text-lg font-semibold text-text-primary">
                 {title}
               </h1>
             </div>
           </div>
 
-
-          {/* Right */}
+          {/* Right section: theme toggle, logout, hamburger */}
           <div className="flex items-center gap-4">
             
-            {/* Theme toggle (icon-sized by component styling) */}
+            {/* Theme toggle control */}
             <ThemeToggle />
 
-            {/* Logout ONLY on desktop */}
+            {/* Logout button visible only on desktop */}
             <button
               onClick={handleLogout}
               className="
@@ -169,7 +194,7 @@ const DashboardLayout = ({ title, navItems, children }) => {
               Logout
             </button>
 
-            {/* Hamburger (mobile/tablet only, RIGHT side) */}
+            {/* Hamburger menu for mobile and tablet */}
             <button
               onClick={() => setSidebarOpen(true)}
               className="
@@ -187,10 +212,12 @@ const DashboardLayout = ({ title, navItems, children }) => {
           </div>
         </header>
 
-        {/* Content */}
+        {/* Page-specific content */}
         <main className="flex-1 p-6 bg-bg">
           {children}
         </main>
+
+        {/* Global footer */}
         <Footer />
       </div>
     </div>

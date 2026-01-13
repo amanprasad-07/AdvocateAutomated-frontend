@@ -5,13 +5,26 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const JuniorCaseDetails = () => {
+  // Extract the case ID from the route parameters
   const { caseId } = useParams();
+
+  // Navigation helper for programmatic route changes
   const navigate = useNavigate();
 
+  // Holds the fetched case details
   const [caseData, setCaseData] = useState(null);
+
+  // Indicates whether the case data is still being loaded
   const [loading, setLoading] = useState(true);
+
+  // Stores error messages related to fetching or access issues
   const [error, setError] = useState("");
 
+  /**
+   * Fetch case details for the given case ID.
+   * Access is role-restricted on the backend, so failures may
+   * indicate missing permissions or a non-existent case.
+   */
   useEffect(() => {
     const fetchCase = async () => {
       try {
@@ -28,6 +41,7 @@ const JuniorCaseDetails = () => {
   }, [caseId]);
 
   /* ---------- Loading ---------- */
+  // Show a loading indicator while data is being fetched
   if (loading) {
     return (
       <DashboardLayout title="Case Details">
@@ -37,6 +51,7 @@ const JuniorCaseDetails = () => {
   }
 
   /* ---------- Error ---------- */
+  // Handle missing or inaccessible case data
   if (error || !caseData) {
     return (
       <DashboardLayout title="Case Details">
@@ -47,6 +62,7 @@ const JuniorCaseDetails = () => {
     );
   }
 
+  // Determine whether the case is closed to restrict further actions
   const isClosed = caseData.status === "closed";
 
   return (
@@ -58,6 +74,7 @@ const JuniorCaseDetails = () => {
       ]}
     >
       {/* ---------- Case Summary ---------- */}
+      {/* Displays high-level, read-only information about the case */}
       <div className="mb-6 rounded-xl border border-border bg-surface p-4">
         <div className="space-y-1 text-sm text-text-secondary">
           <p>
@@ -83,6 +100,7 @@ const JuniorCaseDetails = () => {
       </div>
 
       {/* ---------- Actions ---------- */}
+      {/* Navigation actions available to the junior advocate */}
       <div className="flex flex-wrap gap-3">
         <button
           onClick={() =>
@@ -118,6 +136,7 @@ const JuniorCaseDetails = () => {
           View Evidence
         </button>
 
+        {/* Allow evidence upload only if the case is not closed */}
         {!isClosed && (
           <button
             onClick={() =>

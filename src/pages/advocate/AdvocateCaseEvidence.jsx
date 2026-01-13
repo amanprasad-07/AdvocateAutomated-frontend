@@ -4,7 +4,10 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-/* ---------- Evidence Type Styles (Semantic) ---------- */
+/* ---------- Evidence Type Styles (Semantic) ----------
+   Maps evidence file types to left-border styles
+   for quick visual differentiation in the UI.
+---------------------------------------------------- */
 const TYPE_STYLES = {
   document: "border-l-primary",
   image: "border-l-success",
@@ -14,13 +17,25 @@ const TYPE_STYLES = {
 };
 
 const AdvocateCaseEvidence = () => {
+  // Extract case ID from route parameters
   const { caseId } = useParams();
+
+  // URL search params for filter persistence
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Stores evidence list for the case
   const [evidence, setEvidence] = useState([]);
+
+  // Indicates loading state while fetching evidence
   const [loading, setLoading] = useState(true);
+
+  // Stores fetch or processing errors
   const [error, setError] = useState("");
 
+  /**
+   * Fetch evidence associated with the given case ID
+   * Runs on initial mount and when caseId changes
+   */
   useEffect(() => {
     const fetchEvidence = async () => {
       try {
@@ -36,13 +51,21 @@ const AdvocateCaseEvidence = () => {
     fetchEvidence();
   }, [caseId]);
 
-  /* ---------- Filters ---------- */
+  /* ---------- Filters ----------
+     Evidence can be filtered by file type
+     using URL query parameters.
+  ----------------------------- */
   const typeParam = searchParams.get("type");
 
+  // Apply type filter if present
   const filteredEvidence = typeParam
     ? evidence.filter((e) => e.fileType === typeParam)
     : evidence;
 
+  /**
+   * Updates the URL search params to reflect
+   * selected evidence type filter.
+   */
   const setFilter = (type) => {
     if (!type) {
       setSearchParams({});
@@ -64,6 +87,7 @@ const AdvocateCaseEvidence = () => {
         },
       ]}
     >
+      {/* ---------- Loading ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
@@ -84,9 +108,10 @@ const AdvocateCaseEvidence = () => {
                 className={`
                   rounded-lg border border-border
                   px-3 py-1 text-sm
-                  ${typeParam === key || (!key && !typeParam)
-                    ? "bg-surfaceElevated text-text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                  ${
+                    typeParam === key || (!key && !typeParam)
+                      ? "bg-surfaceElevated text-text-primary"
+                      : "text-text-secondary hover:bg-surfaceElevated"
                   }
                   transition-colors
                 `}
@@ -123,16 +148,19 @@ const AdvocateCaseEvidence = () => {
                   ${TYPE_STYLES[e.fileType] || TYPE_STYLES.other}
                 `}
               >
+                {/* Evidence title */}
                 <p className="text-sm sm:text-base font-medium text-text-primary">
                   {e.title}
                 </p>
 
+                {/* Optional description */}
                 {e.description && (
                   <p className="mt-1 text-sm text-text-muted">
                     {e.description}
                   </p>
                 )}
 
+                {/* Metadata */}
                 <div className="mt-2 space-y-1 sm:space-y-2 text-sm text-text-secondary">
                   <p>
                     <strong>Uploaded by:</strong>{" "}
@@ -143,6 +171,8 @@ const AdvocateCaseEvidence = () => {
                     <strong>Type:</strong> {e.fileType}
                   </p>
                 </div>
+
+                {/* Evidence access link */}
                 <div className="mt-3">
                   <a
                     href={e.filePath}

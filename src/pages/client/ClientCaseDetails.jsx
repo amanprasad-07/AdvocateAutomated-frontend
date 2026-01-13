@@ -5,33 +5,52 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 /* ---------- Bill Status Styles (Semantic) ---------- */
+/**
+ * Visual styles mapped to bill payment status.
+ * Used to provide quick semantic feedback to the client.
+ */
 const BILL_STYLES = {
   pending: "border-l-warning text-warning",
   paid: "border-l-success text-success",
 };
 
 const ClientCaseDetails = () => {
+  // Extract case ID from route parameters
   const { caseId } = useParams();
 
+  // Stores the selected case details
   const [caseData, setCaseData] = useState(null);
+
+  // Stores all payment records related to this case
   const [payments, setPayments] = useState([]);
+
+  // Global loading state for the page
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Fetch case details and related payments on mount
+   *
+   * - Retrieves all accessible cases and finds the matching case by ID
+   * - Retrieves all payments and filters those linked to the case
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch all cases visible to the client
         const caseRes = await api.get("/cases");
         const found = caseRes.data.data.find(
           (c) => c._id === caseId
         );
         setCaseData(found || null);
 
+        // Fetch all payments and filter by case ID
         const payRes = await api.get("/payments");
         const casePayments = payRes.data.data.filter(
           (p) => p.case?._id === caseId
         );
         setPayments(casePayments);
       } finally {
+        // Ensure loading stops even if one request fails
         setLoading(false);
       }
     };
@@ -39,6 +58,7 @@ const ClientCaseDetails = () => {
     fetchData();
   }, [caseId]);
 
+  // Show loader while data is being fetched
   if (loading) {
     return (
       <DashboardLayout title="Case Details">
@@ -47,6 +67,7 @@ const ClientCaseDetails = () => {
     );
   }
 
+  // Handle case not found or inaccessible
   if (!caseData) {
     return (
       <DashboardLayout title="Case Details">
@@ -55,9 +76,16 @@ const ClientCaseDetails = () => {
     );
   }
 
+  // Separate bills based on payment status
   const pendingBills = payments.filter(p => p.status === "pending");
   const paidBills = payments.filter(p => p.status === "paid");
 
+  /**
+   * Dynamically load Razorpay checkout script
+   *
+   * Returns a promise that resolves once the script is loaded
+   * to avoid loading it globally or multiple times.
+   */
   const loadRazorpay = () =>
     new Promise((resolve) => {
       const script = document.createElement("script");
@@ -67,6 +95,14 @@ const ClientCaseDetails = () => {
       document.body.appendChild(script);
     });
 
+  /**
+   * Handle Razorpay payment flow for a pending bill
+   *
+   * - Loads Razorpay SDK
+   * - Creates an order on the backend
+   * - Opens Razorpay checkout
+   * - Verifies payment on successful completion
+   */
   const handlePayNow = async (bill) => {
     const loaded = await loadRazorpay();
     if (!loaded) {
@@ -74,6 +110,7 @@ const ClientCaseDetails = () => {
       return;
     }
 
+    // Create Razorpay order on the backend
     const orderRes = await api.post(
       "/payments/create-order",
       { amount: bill.amount }
@@ -81,12 +118,13 @@ const ClientCaseDetails = () => {
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: bill.amount * 100,
+      amount: bill.amount * 100, // Convert to paise
       currency: "INR",
       name: "Advocate Automated System",
       description: bill.paymentFor,
       order_id: orderRes.data.order.id,
 
+      // Called by Razorpay on successful payment
       handler: async function (response) {
         await api.post("/payments/verify", {
           razorpay_order_id: response.razorpay_order_id,
@@ -96,14 +134,17 @@ const ClientCaseDetails = () => {
         });
 
         alert("Payment successful");
+        // Reload to reflect updated payment status
         window.location.reload();
       },
 
+      // Razorpay UI theming
       theme: {
         color: "#1d4ed8",
       },
     };
 
+    // Open Razorpay checkout modal
     const razorpay = new window.Razorpay(options);
     razorpay.open();
   };

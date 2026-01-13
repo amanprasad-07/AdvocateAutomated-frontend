@@ -4,26 +4,40 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-/* ---------- Status Styles (Semantic) ---------- */
+/* ---------- Bill Status Styles (Semantic) ----------
+   Maps bill payment status to left-border and text color styles
+*/
 const STATUS_STYLES = {
   pending: "border-l-warning text-warning",
   paid: "border-l-success text-success",
 };
 
 const AdvocateCaseBills = () => {
+  // Extract the case identifier from route params
   const { caseId } = useParams();
+
+  // Navigation helper
   const navigate = useNavigate();
 
+  // Bills related to the current case
   const [bills, setBills] = useState([]);
+
+  // Loading and error handling states
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // URL query params handler (used for filtering)
   const [searchParams, setSearchParams] = useSearchParams();
 
+  /**
+   * Fetch all payments and filter them by the current case ID
+   * This keeps backend API simple while scoping data at the UI layer
+   */
   const fetchBills = async () => {
     try {
       const res = await api.get("/payments");
 
+      // Narrow down bills to only those belonging to this case
       const caseBills = res.data.data.filter(
         (p) => p.case?._id === caseId
       );
@@ -36,17 +50,24 @@ const AdvocateCaseBills = () => {
     }
   };
 
+  // Fetch bills whenever caseId changes
   useEffect(() => {
     fetchBills();
   }, [caseId]);
 
-  /* ---------- Filters ---------- */
+  /* ---------- Filters ----------
+     Allows filtering bills by payment status using URL query params
+  */
   const statusParam = searchParams.get("status");
 
   const filteredBills = statusParam
     ? bills.filter((b) => b.status === statusParam)
     : bills;
 
+  /**
+   * Updates the URL query parameter for filtering
+   * Passing null resets filters
+   */
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -55,6 +76,10 @@ const AdvocateCaseBills = () => {
     }
   };
 
+  /**
+   * Deletes a pending bill and refreshes the list
+   * Only applicable to unpaid (pending) bills
+   */
   const handleDelete = async (id) => {
     await api.delete(`/payments/${id}`);
     fetchBills();
@@ -73,6 +98,7 @@ const AdvocateCaseBills = () => {
         },
       ]}
     >
+      {/* ---------- Loading ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
@@ -155,10 +181,12 @@ const AdvocateCaseBills = () => {
                   ${STATUS_STYLES[bill.status] || ""}
                 `}
               >
+                {/* Bill Amount */}
                 <p className="text-base sm:text-lg font-semibold text-text-primary">
                   ₹{bill.amount}
                 </p>
 
+                {/* Bill Metadata */}
                 <div className="mt-1 space-y-1 sm:space-y-2 text-sm text-text-secondary">
                   <p>
                     <strong>For:</strong> {bill.paymentFor}
@@ -172,6 +200,7 @@ const AdvocateCaseBills = () => {
                   </p>
                 </div>
 
+                {/* ---------- Actions ---------- */}
                 {bill.status === "pending" && (
                   <button
                     onClick={() => handleDelete(bill._id)}

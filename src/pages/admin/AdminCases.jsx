@@ -4,6 +4,7 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 /* ---------- Status Colors ---------- */
+/* Maps case status to semantic text color for admin visibility */
 const STATUS_BADGE = {
   open: "text-blue-600",
   in_progress: "text-yellow-600",
@@ -11,19 +12,30 @@ const STATUS_BADGE = {
 };
 
 const AdminCases = () => {
+  // Stores fetched cases for admin oversight
   const [cases, setCases] = useState([]);
+
+  // Tracks selected status filter value
   const [status, setStatus] = useState("");
+
+  // Controls loading state during API requests
   const [loading, setLoading] = useState(true);
 
+  /* ---------- Fetch Cases ---------- */
+  /* Retrieves cases from admin endpoint, optionally filtered by status */
   const fetchCases = async () => {
     setLoading(true);
+
     const res = await api.get("/admin/cases", {
       params: status ? { status } : {},
     });
+
     setCases(res.data.data || []);
     setLoading(false);
   };
 
+  /* ---------- Side Effects ---------- */
+  /* Re-fetch cases whenever the status filter changes */
   useEffect(() => {
     fetchCases();
   }, [status]);
@@ -43,6 +55,7 @@ const AdminCases = () => {
       ]}
     >
       {/* ---------- Filters ---------- */}
+      {/* Allows admin to filter cases by lifecycle status */}
       <div className="mb-5 flex items-center gap-3">
         <label className="text-sm font-medium text-text-secondary">
           Filter by status
@@ -63,14 +76,17 @@ const AdminCases = () => {
         </select>
       </div>
 
+      {/* ---------- Loading State ---------- */}
       {loading && <LoadingSpinner />}
 
+      {/* ---------- Empty State ---------- */}
       {!loading && cases.length === 0 && (
         <p className="text-sm text-muted">
           No cases match the selected criteria.
         </p>
       )}
 
+      {/* ---------- Case List ---------- */}
       {!loading && cases.length > 0 && (
         <div className="space-y-3">
           {cases.map((c) => (
@@ -82,6 +98,7 @@ const AdminCases = () => {
               "
             >
               {/* Header */}
+              {/* Displays core case identity and current status */}
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-medium text-text-primary">
@@ -93,14 +110,16 @@ const AdminCases = () => {
                 </div>
 
                 <span
-                  className={`text-sm font-medium capitalize ${STATUS_BADGE[c.status] || "text-muted"
-                    }`}
+                  className={`text-sm font-medium capitalize ${
+                    STATUS_BADGE[c.status] || "text-muted"
+                  }`}
                 >
                   {c.status.replace("_", " ")}
                 </span>
               </div>
 
-              {/* Meta */}
+              {/* Meta Information */}
+              {/* Shows contextual ownership and creation timestamp */}
               <div className="mt-2 text-xs text-muted space-y-0.5">
                 <p>
                   Client: {c.client?.name || "N/A"} • Advocate:{" "}

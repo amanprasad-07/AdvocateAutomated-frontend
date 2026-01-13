@@ -5,28 +5,46 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AdvocateCaseDetails = () => {
+  // Extract case ID from route parameters
   const { caseId } = useParams();
+
+  // Navigation helper for route transitions
   const navigate = useNavigate();
 
+  // Stores fetched case details
   const [caseData, setCaseData] = useState(null);
+
+  // Indicates initial data loading state
   const [loading, setLoading] = useState(true);
+
+  // Indicates case status update in progress
   const [updating, setUpdating] = useState(false);
 
+  /**
+   * Fetch case details for the given case ID
+   * Handles both successful fetch and access denial scenarios
+   */
   const fetchCase = async () => {
     try {
       const res = await api.get(`/cases/${caseId}`);
       setCaseData(res.data.data);
     } catch {
+      // Null caseData indicates access denied or case not found
       setCaseData(null);
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch case details when component mounts or caseId changes
   useEffect(() => {
     fetchCase();
   }, [caseId]);
 
+  /**
+   * Update case status (open → in_progress → closed)
+   * Refreshes case data after successful update
+   */
   const updateStatus = async (newStatus) => {
     try {
       setUpdating(true);
@@ -59,6 +77,7 @@ const AdvocateCaseDetails = () => {
     );
   }
 
+  // Determines if case is already closed
   const isClosed = caseData.status === "closed";
 
   return (
@@ -136,7 +155,7 @@ const AdvocateCaseDetails = () => {
       {/* ---------- Case Actions ---------- */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-
+          {/* Task-related actions */}
           {!isClosed && (
             <button
               onClick={() =>
@@ -172,10 +191,10 @@ const AdvocateCaseDetails = () => {
           >
             View Tasks
           </button>
-
         </div>
 
         <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+          {/* Evidence-related actions */}
           {!isClosed && (
             <button
               onClick={() =>
@@ -211,10 +230,10 @@ const AdvocateCaseDetails = () => {
           >
             View Evidence
           </button>
-
         </div>
 
         <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+          {/* Billing-related actions */}
           {!isClosed && (
             <button
               onClick={() =>

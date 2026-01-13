@@ -1,7 +1,19 @@
 import { useTheme } from "../theme/ThemeContext";
 
+/**
+ * ThemeToggle Component
+ *
+ * Provides a UI control to toggle between
+ * light and dark themes.
+ *
+ * Uses ThemeContext to read and update
+ * the current theme state.
+ */
 const ThemeToggle = () => {
+  // Access current theme and toggle handler from context
   const { theme, toggleTheme } = useTheme();
+
+  // Determine whether the active theme is light
   const isLight = theme === "light";
 
   return (
@@ -18,7 +30,7 @@ const ThemeToggle = () => {
         transition-colors
       "
     >
-      {/* Sun Icon */}
+      {/* Sun icon (visible in light mode) */}
       <span
         className={`
           absolute
@@ -51,7 +63,7 @@ const ThemeToggle = () => {
         </svg>
       </span>
 
-      {/* Moon Icon */}
+      {/* Moon icon (visible in dark mode) */}
       <span
         className={`
           absolute

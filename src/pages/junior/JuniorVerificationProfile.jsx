@@ -6,9 +6,13 @@ import api from "../../api/axios";
 import { useAuth } from "../../auth/AuthContext";
 
 const JuniorVerificationProfile = () => {
+  // Router navigation helper
   const navigate = useNavigate();
+
+  // Auth context access for user state and refresh hook
   const { user, refreshUser } = useAuth();
 
+  // Local form state for verification details
   const [formData, setFormData] = useState({
     enrollmentNumber: "",
     barCouncil: "",
@@ -16,10 +20,19 @@ const JuniorVerificationProfile = () => {
     documents: []
   });
 
+  // UI state flags
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Safety guard (UI-level)
+  /**
+   * Safety guard (UI-level)
+   *
+   * Prevents access to this page if:
+   * - The user is already approved, OR
+   * - Verification details were already submitted
+   *
+   * Redirects the user back to their dashboard.
+   */
   if (
     user?.verificationStatus === "approved" ||
     user?.advocateProfile?.submittedAt
@@ -28,6 +41,11 @@ const JuniorVerificationProfile = () => {
     return null;
   }
 
+  /**
+   * Generic input change handler
+   *
+   * Updates form state dynamically based on input name.
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -36,10 +54,19 @@ const JuniorVerificationProfile = () => {
     }));
   };
 
+  /**
+   * Form submission handler
+   *
+   * - Performs basic client-side validation
+   * - Submits verification details to backend
+   * - Refreshes authenticated user data on success
+   * - Redirects back to junior advocate dashboard
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    // Minimal required field validation
     if (!formData.enrollmentNumber || !formData.barCouncil) {
       setError("Enrollment number and bar council are required");
       return;
@@ -55,7 +82,7 @@ const JuniorVerificationProfile = () => {
         documents: formData.documents
       });
 
-      // 🔄 Refresh logged-in user data
+      // Refresh logged-in user state to reflect submission status
       await refreshUser();
 
       navigate("/junior_advocate");
@@ -76,11 +103,12 @@ const JuniorVerificationProfile = () => {
         { label: "Dashboard", path: "/junior_advocate" }
       ]}
     >
+      {/* ---------- Loading State ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <div className="max-w-xl rounded-xl border border-border bg-surface p-6">
-          {/* Card Heading */}
+          {/* ---------- Card Heading ---------- */}
           <h2 className="mb-1 text-lg font-semibold text-text-primary">
             Submit Verification Details
           </h2>
@@ -89,6 +117,7 @@ const JuniorVerificationProfile = () => {
             Provide your professional details to complete junior advocate verification.
           </p>
 
+          {/* ---------- Error Message ---------- */}
           {error && (
             <p className="mb-3 text-sm text-error">
               {error}
@@ -96,7 +125,7 @@ const JuniorVerificationProfile = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Enrollment Number */}
+            {/* ---------- Enrollment Number ---------- */}
             <div>
               <label className="block text-sm text-text-secondary">
                 Enrollment Number *
@@ -112,7 +141,7 @@ const JuniorVerificationProfile = () => {
               />
             </div>
 
-            {/* Bar Council */}
+            {/* ---------- Bar Council ---------- */}
             <div>
               <label className="block text-sm text-text-secondary">
                 Bar Council *
@@ -128,7 +157,7 @@ const JuniorVerificationProfile = () => {
               />
             </div>
 
-            {/* Experience */}
+            {/* ---------- Experience ---------- */}
             <div>
               <label className="block text-sm text-text-secondary">
                 Years of Experience
@@ -144,7 +173,7 @@ const JuniorVerificationProfile = () => {
               />
             </div>
 
-            {/* Action Buttons */}
+            {/* ---------- Action Buttons ---------- */}
             <div className="flex gap-3 pt-2">
               <button
                 type="submit"
@@ -180,7 +209,7 @@ const JuniorVerificationProfile = () => {
             </div>
           </form>
 
-          {/* Info Section (non-blocking) */}
+          {/* ---------- Informational Note ---------- */}
           <div className="mt-6 rounded-lg bg-surfaceElevated p-3 text-xs text-text-muted">
             <p>
               Once submitted, your details will be reviewed by an administrator.
@@ -188,7 +217,6 @@ const JuniorVerificationProfile = () => {
             </p>
           </div>
         </div>
-
       )}
     </DashboardLayout>
   );

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 
+/* ---------- File Type Badge Styles ---------- */
+/* Maps evidence file types to semantic text colors for quick visual scanning */
 const FILE_TYPE_BADGE = {
   document: "text-blue-600",
   image: "text-green-600",
@@ -11,15 +13,21 @@ const FILE_TYPE_BADGE = {
 };
 
 const AdminEvidence = () => {
+  // Stores all evidence records fetched for audit purposes
   const [evidence, setEvidence] = useState([]);
+
+  // Tracks loading state while evidence data is being retrieved
   const [loading, setLoading] = useState(true);
 
+  /* ---------- Fetch Evidence ---------- */
+  /* Retrieves all uploaded evidence for admin read-only review */
   const fetchEvidence = async () => {
     const res = await api.get("/evidence");
     setEvidence(res.data.data);
     setLoading(false);
   };
 
+  /* Fetch evidence once on initial render */
   useEffect(() => {
     fetchEvidence();
   }, []);
@@ -38,18 +46,21 @@ const AdminEvidence = () => {
         { label: "Audit Logs", path: "/admin/audit-logs" },
       ]}
     >
+      {/* ---------- Loading State ---------- */}
       {loading && (
         <p className="text-sm text-muted">
           Loading evidence records…
         </p>
       )}
 
+      {/* ---------- Empty State ---------- */}
       {!loading && evidence.length === 0 && (
         <p className="text-sm text-muted">
           No evidence has been uploaded yet.
         </p>
       )}
 
+      {/* ---------- Evidence List ---------- */}
       {!loading && evidence.length > 0 && (
         <div className="space-y-3">
           {evidence.map((e) => (
@@ -60,7 +71,8 @@ const AdminEvidence = () => {
                 bg-surface p-4
               "
             >
-              {/* Header */}
+              {/* ---------- Header ---------- */}
+              {/* Displays evidence title, associated case, and file type */}
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-medium text-text-primary">
@@ -73,14 +85,16 @@ const AdminEvidence = () => {
                 </div>
 
                 <span
-                  className={`text-xs font-medium capitalize ${FILE_TYPE_BADGE[e.fileType] || "text-muted"
-                    }`}
+                  className={`text-xs font-medium capitalize ${
+                    FILE_TYPE_BADGE[e.fileType] || "text-muted"
+                  }`}
                 >
                   {e.fileType}
                 </span>
               </div>
 
-              {/* Metadata */}
+              {/* ---------- Metadata ---------- */}
+              {/* Shows uploader identity and upload timestamp */}
               <div className="mt-3 text-xs text-muted space-y-0.5">
                 <p>
                   Uploaded by: {e.uploadedBy?.name || "N/A"} (
@@ -92,7 +106,8 @@ const AdminEvidence = () => {
                 </p>
               </div>
 
-              {/* Action */}
+              {/* ---------- Action ---------- */}
+              {/* Read-only access to the stored evidence file */}
               <div className="mt-3">
                 <a
                   href={`http://localhost:5000/${e.filePath}`}

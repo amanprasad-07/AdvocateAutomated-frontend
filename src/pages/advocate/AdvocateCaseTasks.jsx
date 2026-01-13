@@ -4,7 +4,10 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-/* ---------- Status Styles (Semantic) ---------- */
+/* ---------- Status Styles (Semantic) ----------
+   Maps task status values to semantic border colors
+   for quick visual identification.
+------------------------------------------------ */
 const STATUS_STYLES = {
   pending: "border-l-border",
   in_progress: "border-l-warning",
@@ -12,15 +15,28 @@ const STATUS_STYLES = {
 };
 
 const AdvocateCaseTasks = () => {
+  // Extract case ID from route parameters
   const { caseId } = useParams();
+
+  // Navigation helper for programmatic routing
   const navigate = useNavigate();
 
+  // Holds task list for the current case
   const [tasks, setTasks] = useState([]);
+
+  // Indicates loading state while fetching tasks
   const [loading, setLoading] = useState(true);
+
+  // Stores API or processing errors
   const [error, setError] = useState("");
- 
+
+  // URL search params used for task status filtering
   const [searchParams, setSearchParams] = useSearchParams();
 
+  /**
+   * Fetch tasks associated with the given case ID.
+   * Runs on initial mount and whenever caseId changes.
+   */
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -36,13 +52,21 @@ const AdvocateCaseTasks = () => {
     fetchTasks();
   }, [caseId]);
 
-  /* ---------- Filters ---------- */
+  /* ---------- Filters ----------
+     Supports filtering tasks by status
+     using URL query parameters.
+  ----------------------------- */
   const statusParam = searchParams.get("status");
 
+  // Apply status filter if present
   const filteredTasks = statusParam
     ? tasks.filter((t) => t.status === statusParam)
     : tasks;
 
+  /**
+   * Updates URL search params to reflect
+   * selected task status filter.
+   */
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -64,6 +88,7 @@ const AdvocateCaseTasks = () => {
         },
       ]}
     >
+      {/* ---------- Loading ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
@@ -122,16 +147,19 @@ const AdvocateCaseTasks = () => {
                   ${STATUS_STYLES[task.status] || ""}
                 `}
               >
+                {/* Task title */}
                 <p className="text-sm sm:text-base font-medium text-text-primary">
                   {task.title}
                 </p>
 
+                {/* Task metadata */}
                 <div className="mt-1 space-y-1 sm:space-y-2 text-sm text-text-secondary">
                   <p>
                     <strong>Assigned to:</strong>{" "}
                     {task.assignedTo?.name || "N/A"}
                   </p>
 
+                  {/* Optional due date */}
                   {task.dueDate && (
                     <p>
                       <strong>Due:</strong>{" "}

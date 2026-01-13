@@ -1,8 +1,19 @@
 import { useNavigate } from "react-router-dom";
 
+/**
+ * BackButton Component
+ *
+ * Provides a reusable navigation control that
+ * moves the user back to the previous route
+ * in the browser history.
+ */
 const BackButton = () => {
+  // React Router navigation hook
   const navigate = useNavigate();
 
+  /**
+   * Navigates one step back in the browser history
+   */
   const handleBack = () => {
     navigate(-1);
   };
@@ -21,6 +32,7 @@ const BackButton = () => {
         transition-colors
       "
     >
+      {/* Left arrow icon representing backward navigation */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="18"

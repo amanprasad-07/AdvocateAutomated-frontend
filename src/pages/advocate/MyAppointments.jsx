@@ -5,12 +5,15 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 /* ---------- Status Styles (Semantic) ---------- */
+/* Visual cues for appointment cards based on current status */
 const STATUS_STYLES = {
   requested: "border-l-warning text-warning",
   approved: "border-l-primary text-primary",
   rejected: "border-l-error text-error",
   completed: "border-l-success text-success",
 };
+
+/* Visual cues for active filter buttons */
 const FILTER_STYLES = {
   requested: "text-warning",
   approved: "text-primary",
@@ -19,19 +22,25 @@ const FILTER_STYLES = {
 };
 
 const AdvocateMyAppointments = () => {
+  // Router helpers
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Core data state
   const [cases, setCases] = useState([]);
   const [appointments, setAppointments] = useState([]);
+
+  // UI state
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Rejection modal state
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
 
   /* ---------- Data Fetch ---------- */
+  /* Fetch appointments and cases in parallel to enable case-existence checks */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,6 +63,10 @@ const AdvocateMyAppointments = () => {
 
   /* ---------- Helpers ---------- */
 
+  /**
+   * Determines whether a case already exists for a given appointment.
+   * Handles both populated and non-populated appointment references.
+   */
   const caseExistsForAppointment = (appointmentId) =>
     cases.some((c) =>
       typeof c.appointment === "string"
@@ -63,14 +76,17 @@ const AdvocateMyAppointments = () => {
 
   /* ---------- Filters (Status-driven, consistent with My Cases) ---------- */
 
+  // Active status filter from query params
   const statusParam = searchParams.get("status");
 
+  // Apply status-based filtering when a filter is active
   const filteredAppointments = statusParam
     ? appointments.filter((a) =>
-      statusParam.split(",").includes(a.status)
-    )
+        statusParam.split(",").includes(a.status)
+      )
     : appointments;
 
+  // Update query params to reflect selected filter
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -81,6 +97,9 @@ const AdvocateMyAppointments = () => {
 
   /* ---------- Actions ---------- */
 
+  /**
+   * Approves a requested appointment and updates local state optimistically.
+   */
   const approveAppointment = async (appointmentId) => {
     await api.patch(`/appointments/${appointmentId}/status`, {
       status: "approved",
@@ -95,6 +114,9 @@ const AdvocateMyAppointments = () => {
     );
   };
 
+  /**
+   * Submits a rejection with notes and updates local state.
+   */
   const submitRejection = async () => {
     if (!rejectReason.trim()) return;
 
@@ -114,6 +136,7 @@ const AdvocateMyAppointments = () => {
       )
     );
 
+    // Reset modal state after submission
     setShowRejectModal(false);
     setRejectReason("");
     setSelectedAppointmentId(null);
@@ -128,8 +151,10 @@ const AdvocateMyAppointments = () => {
         { label: "My Cases", path: "/advocate/my-cases" },
       ]}
     >
+      {/* ---------- Loading ---------- */}
       {loading && <LoadingSpinner />}
 
+      {/* ---------- Error ---------- */}
       {error && (
         <p className="mb-3 text-sm text-error">
           {error}
@@ -143,9 +168,10 @@ const AdvocateMyAppointments = () => {
           className={`
             rounded-lg border border-border
             px-3 py-1 text-sm
-            ${!statusParam
-              ? "bg-surfaceElevated text-primary"
-              : "text-text-secondary hover:bg-surfaceElevated"
+            ${
+              !statusParam
+                ? "bg-surfaceElevated text-primary"
+                : "text-text-secondary hover:bg-surfaceElevated"
             }
             transition-colors
           `}
@@ -160,9 +186,10 @@ const AdvocateMyAppointments = () => {
             className={`
               rounded-lg border border-border
               px-3 py-1 text-sm capitalize
-              ${statusParam === status
-                ? `bg-surfaceElevated ${FILTER_STYLES[status]}`
-                : "text-text-secondary hover:bg-surfaceElevated"
+              ${
+                statusParam === status
+                  ? `bg-surfaceElevated ${FILTER_STYLES[status]}`
+                  : "text-text-secondary hover:bg-surfaceElevated"
               }
               transition-colors
             `}
@@ -172,6 +199,7 @@ const AdvocateMyAppointments = () => {
         ))}
       </div>
 
+      {/* ---------- Empty State ---------- */}
       {filteredAppointments.length === 0 && (
         <p className="text-text-muted">
           No appointments match this filter.
@@ -210,6 +238,7 @@ const AdvocateMyAppointments = () => {
                 </p>
               </div>
 
+              {/* ---------- Contextual Actions ---------- */}
               <div className="mt-3 flex flex-wrap gap-2">
                 {appt.status === "requested" && (
                   <>

@@ -4,7 +4,10 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-/* ---------- Status Styles ---------- */
+/* ---------- Case Status Styles (Semantic Mapping) ----------
+   Maps case status values to left-border and text color styles
+   for quick visual differentiation in the UI.
+*/
 const STATUS_STYLES = {
   open: "border-l-primary text-primary",
   in_progress: "border-l-warning text-warning",
@@ -12,19 +15,32 @@ const STATUS_STYLES = {
 };
 
 const JuniorMyCases = () => {
+  // Stores cases assigned to the junior advocate
   const [cases, setCases] = useState([]);
+
+  // Controls loading spinner visibility
   const [loading, setLoading] = useState(true);
+
+  // Stores any error message (future-safe, even if not always set)
   const [error, setError] = useState("");
 
+  // Navigation helper for case detail routing
   const navigate = useNavigate();
+
+  // URL search params used for status-based filtering
   const [searchParams, setSearchParams] = useSearchParams();
 
+  /**
+   * Fetch all cases visible to the logged-in junior advocate.
+   * Backend already applies role-based filtering.
+   */
   useEffect(() => {
     const fetchCases = async () => {
       try {
         const res = await api.get("/cases");
         setCases(res.data.data || []);
       } finally {
+        // Ensure loading state is cleared regardless of request outcome
         setLoading(false);
       }
     };
@@ -32,15 +48,23 @@ const JuniorMyCases = () => {
     fetchCases();
   }, []);
 
-  /* ---------- Filter Logic ---------- */
+  /* ---------- Filter Logic ----------
+     Supports single or comma-separated status values via query params.
+     Example:
+       ?status=open
+       ?status=open,in_progress
+  */
   const statusParam = searchParams.get("status");
 
   const filteredCases = statusParam
     ? cases.filter((c) =>
-      statusParam.split(",").includes(c.status)
-    )
+        statusParam.split(",").includes(c.status)
+      )
     : cases;
 
+  /**
+   * Updates URL search params to apply or clear status filters.
+   */
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -57,20 +81,22 @@ const JuniorMyCases = () => {
         { label: "My Cases", path: "/junior_advocate/cases" },
       ]}
     >
+      {/* ---------- Loading State ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <>
-          {/* ---------- Filters ---------- */}
+          {/* ---------- Status Filters ---------- */}
           <div className="mb-4 flex flex-wrap gap-3 justify-center">
             <button
               onClick={() => setFilter(null)}
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${!statusParam
-                  ? "bg-primary text-text-primary"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                ${
+                  !statusParam
+                    ? "bg-primary text-text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -83,9 +109,10 @@ const JuniorMyCases = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${statusParam === "open"
-                  ? "bg-surfaceElevated text-primary"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                ${
+                  statusParam === "open"
+                    ? "bg-surfaceElevated text-primary"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -98,9 +125,10 @@ const JuniorMyCases = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${statusParam === "in_progress"
-                  ? "bg-surfaceElevated text-warning"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                ${
+                  statusParam === "in_progress"
+                    ? "bg-surfaceElevated text-warning"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -113,9 +141,10 @@ const JuniorMyCases = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${statusParam === "closed"
-                  ? "bg-surfaceElevated text-success"
-                  : "text-text-secondary hover:bg-surfaceElevated"
+                ${
+                  statusParam === "closed"
+                    ? "bg-surfaceElevated text-success"
+                    : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -124,7 +153,7 @@ const JuniorMyCases = () => {
             </button>
           </div>
 
-          {/* ---------- Error ---------- */}
+          {/* ---------- Error Message ---------- */}
           {error && (
             <p className="mb-3 text-sm text-error">
               {error}
@@ -140,7 +169,7 @@ const JuniorMyCases = () => {
 
           {/* ---------- Case List ---------- */}
           <div className="space-y-3">
-            {filteredCases.map(c => (
+            {filteredCases.map((c) => (
               <div
                 key={c._id}
                 onClick={() =>
@@ -157,10 +186,12 @@ const JuniorMyCases = () => {
                   ${STATUS_STYLES[c.status] || ""}
                 `}
               >
+                {/* Case Identifier */}
                 <p className="font-semibold text-text-primary">
                   {c.caseNumber} • {c.title}
                 </p>
 
+                {/* Case Metadata */}
                 <div className="mt-1 space-y-1 text-sm text-text-secondary">
                   <p>
                     <strong>Client:</strong>{" "}

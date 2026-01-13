@@ -4,9 +4,14 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AdminAuditLogs = () => {
+  // Holds fetched audit log entries
   const [logs, setLogs] = useState([]);
+
+  // Controls loading state while fetching logs
   const [loading, setLoading] = useState(true);
 
+  /* ---------- Fetch Audit Logs ---------- */
+  /* Retrieves system-wide audit logs for admin review */
   useEffect(() => {
     const fetchLogs = async () => {
       const res = await api.get("/admin/audit-logs");
@@ -31,14 +36,17 @@ const AdminAuditLogs = () => {
         { label: "Audit Logs", path: "/admin/audit-logs" },
       ]}
     >
+      {/* ---------- Loading State ---------- */}
       {loading && <LoadingSpinner />}
 
+      {/* ---------- Empty State ---------- */}
       {!loading && logs.length === 0 && (
         <p className="text-sm text-muted">
           No audit logs found.
         </p>
       )}
 
+      {/* ---------- Audit Log List ---------- */}
       {!loading && logs.length > 0 && (
         <div className="space-y-3">
           {logs.map((log) => (
@@ -49,17 +57,17 @@ const AdminAuditLogs = () => {
                 bg-surface p-4
               "
             >
-              {/* Action */}
+              {/* Action Summary */}
               <p className="font-medium text-text-primary">
                 {log.action}
               </p>
 
-              {/* Message */}
+              {/* Detailed Message */}
               <p className="mt-1 text-sm text-text-secondary">
                 {log.message}
               </p>
 
-              {/* Meta */}
+              {/* Metadata */}
               <div className="mt-2 text-xs text-muted space-y-0.5">
                 <p>
                   Performed by:{" "}

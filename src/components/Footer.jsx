@@ -1,3 +1,10 @@
+/**
+ * Footer Component
+ *
+ * Provides a simple, consistent footer displayed
+ * across application pages.
+ * Displays branding and the current year.
+ */
 const Footer = () => {
   return (
     <footer className="border-t border-border bg-bg px-8 py-6">

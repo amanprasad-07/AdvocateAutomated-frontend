@@ -4,10 +4,21 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
+/**
+ * BookAppointment Page
+ *
+ * Allows a client to book an appointment with a verified advocate.
+ * Handles advocate selection, date and time slot selection,
+ * basic client-side validation, and submission to the backend.
+ */
 const BookAppointment = () => {
+  // Navigation helper for redirects after successful booking
   const navigate = useNavigate();
 
+  // List of available advocates fetched from the backend
   const [advocates, setAdvocates] = useState([]);
+
+  // Controlled form state for appointment details
   const [form, setForm] = useState({
     advocateId: "",
     date: "",
@@ -15,11 +26,18 @@ const BookAppointment = () => {
     purpose: "",
   });
 
+  // UI state for loading indicator and error messages
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Today's date in YYYY-MM-DD format (used to restrict date input)
   const today = new Date().toISOString().split("T")[0];
 
-  // Fetch advocates
+  /**
+   * Fetch advocates on initial render
+   *
+   * Retrieves only approved advocates for appointment booking.
+   */
   useEffect(() => {
     const fetchAdvocates = async () => {
       try {
@@ -33,15 +51,29 @@ const BookAppointment = () => {
     fetchAdvocates();
   }, []);
 
+  /**
+   * Generic input change handler
+   *
+   * Updates the corresponding field in the form state
+   * using the input's name attribute.
+   */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  /**
+   * Form submit handler
+   *
+   * Performs client-side date validation,
+   * submits appointment data to the backend,
+   * and redirects on success.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
+    // Prevent booking appointments in the past
     const selectedDate = new Date(form.date);
     const todayDate = new Date();
     todayDate.setHours(0, 0, 0, 0);
@@ -53,7 +85,10 @@ const BookAppointment = () => {
     }
 
     try {
+      // Submit appointment request
       await api.post("/appointments", form);
+
+      // Redirect to appointments list after successful booking
       navigate("/client/my-appointments");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to book appointment");
@@ -73,8 +108,10 @@ const BookAppointment = () => {
         { label: "My Cases", path: "/client/my-cases" },
       ]}
     >
+      {/* Global loading indicator */}
       {loading && <LoadingSpinner />}
 
+      {/* Appointment booking form */}
       {!loading && (
         <div className="mx-auto sm:mx-0 w-full max-w-md sm:max-w-lg">
           <form
@@ -87,7 +124,7 @@ const BookAppointment = () => {
               p-6
             "
           >
-            {/* Advocate */}
+            {/* Advocate selection */}
             <select
               name="advocateId"
               value={form.advocateId}
@@ -111,7 +148,7 @@ const BookAppointment = () => {
               ))}
             </select>
 
-            {/* Date */}
+            {/* Appointment date */}
             <input
               type="date"
               name="date"
@@ -130,7 +167,7 @@ const BookAppointment = () => {
               "
             />
 
-            {/* Time Slot */}
+            {/* Time slot selection */}
             <select
               name="timeSlot"
               value={form.timeSlot}
@@ -153,7 +190,7 @@ const BookAppointment = () => {
               <option value="11:30 - 12:00">11:30 - 12:00</option>
             </select>
 
-            {/* Purpose */}
+            {/* Purpose / description */}
             <textarea
               name="purpose"
               placeholder="Purpose of appointment"
@@ -172,12 +209,14 @@ const BookAppointment = () => {
               "
             />
 
+            {/* Error message */}
             {error && (
               <p className="text-sm text-error">
                 {error}
               </p>
             )}
 
+            {/* Submit button */}
             <button
               type="submit"
               disabled={loading}

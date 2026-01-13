@@ -4,26 +4,42 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-/* ---------- Status Styles (Semantic) ---------- */
+/* ---------- Status Styles (Semantic) ----------
+   Maps past appointment statuses to semantic
+   border and text styles for clear visual cues.
+*/
 const STATUS_STYLES = {
   completed: "border-l-success text-success",
   rejected: "border-l-error text-error",
 };
 
 const PastAppointments = () => {
+  // Router helper for navigating to related case details
   const navigate = useNavigate();
 
+  // Stores past appointments (completed or rejected)
   const [appointments, setAppointments] = useState([]);
+
+  // Controls loading state during initial fetch
   const [loading, setLoading] = useState(true);
+
+  // Stores API or fetch-related errors
   const [error, setError] = useState("");
 
+  // URL query parameters used for status-based filtering
   const [searchParams, setSearchParams] = useSearchParams();
 
+  /**
+   * Fetches all appointments and derives
+   * only past appointments (completed or rejected).
+   * Runs once on component mount.
+   */
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         const res = await api.get("/appointments");
 
+        // Filter appointments that are considered "past"
         const past = res.data.data.filter(
           (appt) =>
             appt.status === "completed" ||
@@ -34,6 +50,7 @@ const PastAppointments = () => {
       } catch {
         setError("Failed to load past appointments.");
       } finally {
+        // Ensure loading state is cleared
         setLoading(false);
       }
     };
@@ -42,12 +59,21 @@ const PastAppointments = () => {
   }, []);
 
   /* ---------- Filters ---------- */
+
+  // Reads status filter from URL query parameters
   const statusParam = searchParams.get("status");
 
+  /**
+   * Applies status-based filtering when a filter is active.
+   * Defaults to showing all past appointments otherwise.
+   */
   const filteredAppointments = statusParam
     ? appointments.filter(a => a.status === statusParam)
     : appointments;
 
+  /**
+   * Updates URL query params to apply or clear filters.
+   */
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -67,11 +93,13 @@ const PastAppointments = () => {
         { label: "My Cases", path: "/client/my-cases" },
       ]}
     >
+      {/* Global loading indicator */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
+          {/* Status-based filtering controls */}
           <div className="mb-4 flex flex-wrap gap-3 justify-center">
             <button
               onClick={() => setFilter(null)}
@@ -120,6 +148,7 @@ const PastAppointments = () => {
           </div>
 
           {/* ---------- Error ---------- */}
+          {/* Displays API or fetch-related errors */}
           {error && (
             <p className="mb-3 text-sm text-error">
               {error}
@@ -127,6 +156,7 @@ const PastAppointments = () => {
           )}
 
           {/* ---------- Empty State ---------- */}
+          {/* Shown when no appointments match the active filter */}
           {filteredAppointments.length === 0 && (
             <p className="text-text-muted">
               No past appointments match this filter.
@@ -134,6 +164,7 @@ const PastAppointments = () => {
           )}
 
           {/* ---------- Appointment List ---------- */}
+          {/* Renders past appointment cards */}
           <div className="space-y-3">
             {filteredAppointments.map((appt) => (
               <div
@@ -144,7 +175,7 @@ const PastAppointments = () => {
                   bg-surface
                   p-4
                   hover:bg-surfaceElevated
-                transition-colors
+                  transition-colors
                   ${STATUS_STYLES[appt.status] || ""}
                 `}
               >
@@ -168,6 +199,7 @@ const PastAppointments = () => {
                 </div>
 
                 {/* ---------- Rejection Reason ---------- */}
+                {/* Displayed only when appointment is rejected */}
                 {appt.status === "rejected" && appt.notes && (
                   <p className="mt-2 text-sm text-error">
                     <strong>Reason:</strong> {appt.notes}
@@ -175,6 +207,7 @@ const PastAppointments = () => {
                 )}
 
                 {/* ---------- Case Link ---------- */}
+                {/* Available only when a completed appointment resulted in a case */}
                 {appt.status === "completed" && appt.linkedCase && (
                   <button
                     onClick={() =>

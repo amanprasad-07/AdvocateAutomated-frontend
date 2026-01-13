@@ -10,13 +10,19 @@ import ScrollReveal from "../../components/ScrollReveal";
 // ---------- Assets ----------
 import heroImage from "../../assets/hero001.webp";
 
+/**
+ * Landing Page
+ *
+ * Public-facing entry page of the application.
+ * Introduces the platform, its value proposition,
+ * and provides navigation to authentication flows.
+ */
 const Landing = () => {
-  // Controls mobile navigation drawer state
+  // Controls the visibility of the mobile navigation drawer
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-bg text-text-primary">
-
       {/* ================= Header / Navigation ================= */}
       <header
         className="
@@ -27,13 +33,14 @@ const Landing = () => {
           backdrop-blur
         "
       >
-        {/* Brand / Logo */}
-        <h1 className="text-xl font-semibold  text-primary tracking-wide">
+        {/* Brand / Application name */}
+        <h1 className="text-xl font-semibold text-primary tracking-wide">
           Advocate Automated
         </h1>
 
         {/* ---------- Desktop Navigation ---------- */}
         <nav className="hidden sm:flex items-center gap-3">
+          {/* Login navigation */}
           <Link
             to="/login"
             className="
@@ -47,6 +54,7 @@ const Landing = () => {
             Login
           </Link>
 
+          {/* Registration navigation */}
           <Link
             to="/register"
             className="
@@ -58,7 +66,7 @@ const Landing = () => {
             Register
           </Link>
 
-          {/* Dark / Light theme toggle */}
+          {/* Light / Dark theme toggle */}
           <ThemeToggle />
         </nav>
 
@@ -83,14 +91,13 @@ const Landing = () => {
       {/* ================= Mobile Slide-in Menu ================= */}
       {menuOpen && (
         <div className="fixed inset-0 z-50 sm:hidden">
-
-          {/* Backdrop overlay */}
+          {/* Backdrop overlay to close menu on outside click */}
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setMenuOpen(false)}
           />
 
-          {/* Side drawer panel */}
+          {/* Slide-in drawer */}
           <div
             className="
               absolute top-0 right-0
@@ -123,7 +130,7 @@ const Landing = () => {
               </div>
             </div>
 
-            {/* Drawer links */}
+            {/* Drawer navigation links */}
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
@@ -154,25 +161,23 @@ const Landing = () => {
 
       {/* ================= Hero Section ================= */}
       <section className="px-8 py-28 text-center relative">
-
         {/* Background image */}
         <img
           src={heroImage}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover "
+          className="absolute inset-0 w-full h-full object-cover"
         />
 
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/60 " />
+        {/* Overlay for contrast and readability */}
+        <div className="absolute inset-0 bg-black/60" />
 
-        <div className="z-10 relative ">
-          {/* Hero heading */}
+        {/* Hero content */}
+        <div className="z-10 relative">
           <h2 className="mx-auto mb-6 max-w-3xl text-3xl sm:text-4xl font-semibold leading-tigh text-text-primary">
             Legal Work. Structured. Transparent.
             <span className="text-primary"> Human.</span>
           </h2>
 
-          {/* Hero description */}
           <p className="mx-auto mb-10 max-w-2xl text-lg text-text-primary/80">
             Advocate Automated is a modern legal services platform built to remove
             confusion, delays, and opacity from legal work — connecting clients
@@ -180,17 +185,17 @@ const Landing = () => {
             accountability, and trust.
           </p>
 
-          {/* Primary CTAs */}
+          {/* Primary call-to-action buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               to="/register"
               className="
-              rounded-xl border border-primary
-              bg-gray-950/70 px-6 py-3
-              text-lg font-medium text-primary
-              hover:-translate-y-0.5 hover:shadow-md hover:bg-gray-950/95
-              transition
-            "
+                rounded-xl border border-primary
+                bg-gray-950/70 px-6 py-3
+                text-lg font-medium text-primary
+                hover:-translate-y-0.5 hover:shadow-md hover:bg-gray-950/95
+                transition
+              "
             >
               Register as Client
             </Link>
@@ -198,12 +203,12 @@ const Landing = () => {
             <Link
               to="/register"
               className="
-              rounded-xl border border-border
-              px-6 py-3 bg-black/30
-              text-lg font-medium text-text-primary
-              hover:bg-black/80 hover:shadow-md
-              transition
-            "
+                rounded-xl border border-border
+                px-6 py-3 bg-black/30
+                text-lg font-medium text-text-primary
+                hover:bg-black/80 hover:shadow-md
+                transition
+              "
             >
               Join as Advocate
             </Link>
@@ -214,10 +219,10 @@ const Landing = () => {
       {/* ================= Why Choose Us ================= */}
       <section className="bg-surface px-8 py-24 dark:bg-dark-surface">
         <h3 className="mb-14 text-center text-2xl font-semibold">
-          Why Choose <span className="text-primary">Advocate Automated</span> 
+          Why Choose <span className="text-primary">Advocate Automated</span>
         </h3>
 
-        {/* Feature cards grid */}
+        {/* Feature grid */}
         <div className="mx-auto grid max-w-5xl gap-10 sm:grid-cols-2 md:grid-cols-4 items-stretch">
           {[
             {
@@ -226,15 +231,15 @@ const Landing = () => {
             },
             {
               title: "Transparency by Design",
-              desc: "From case progress to payments, everything is visible, traceable, and documented — no guesswork, no blind trust.",
+              desc: "From case progress to payments, everything is visible, traceable, and documented.",
             },
             {
               title: "Built for Real Legal Work",
-              desc: "Designed in collaboration with advocates, the platform reflects how legal work actually happens — not how software imagines it.",
+              desc: "Designed with advocates to reflect real-world legal workflows.",
             },
             {
               title: "Client-First Ethics",
-              desc: "Clear billing, defined responsibilities, and controlled access ensure clients stay informed without being overwhelmed.",
+              desc: "Clear billing, defined responsibilities, and controlled access.",
             },
           ].map((item, index) => (
             <ScrollReveal key={item.title} delay={index * 0.1}>
@@ -264,7 +269,7 @@ const Landing = () => {
           Who We Serve
         </h3>
 
-        {/* Audience cards */}
+        {/* Audience groups */}
         <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 md:grid-cols-3 items-stretch">
           {[
             {
@@ -272,26 +277,26 @@ const Landing = () => {
               points: [
                 "Access to verified legal professionals",
                 "Clear visibility into case progress",
-                "Transparent and documented billing",
-                "Confidential handling of sensitive information",
+                "Transparent billing",
+                "Confidential data handling",
               ],
             },
             {
               title: "Advocates",
               points: [
-                "Engage with informed and serious clients",
-                "Structured case handling and communication",
-                "Clear documentation and responsibility boundaries",
-                "Professional, ethics-first working environment",
+                "Structured case handling",
+                "Professional communication",
+                "Clear documentation",
+                "Ethics-first environment",
               ],
             },
             {
               title: "Law Practices & Chambers",
               points: [
-                "Organised case and client management",
-                "Clear delegation and accountability",
-                "Consistent communication standards",
-                "Support for compliant and ethical operations",
+                "Organised case management",
+                "Clear delegation",
+                "Consistent standards",
+                "Compliance-focused workflows",
               ],
             },
           ].map((group, index) => (
@@ -325,15 +330,14 @@ const Landing = () => {
             Built on Trust, Accountability, and Ethics
           </h3>
           <p className="text-text-secondary">
-            Legal work demands trust. That’s why <span className="text-primary">Advocate Automated</span> is designed
-            with clear accountability, role-based access, audit trails, and
-            ethical safeguards — ensuring every action is intentional, visible,
-            and responsible.
+            Advocate Automated is designed with clear accountability,
+            role-based access, and audit trails to ensure responsible
+            and transparent legal workflows.
           </p>
         </div>
       </section>
 
-      {/* ================= Final CTA ================= */}
+      {/* ================= Final Call to Action ================= */}
       <section className="px-8 py-24 text-center">
         <h3 className="mb-6 text-2xl font-semibold">
           A Better Way to Experience Legal Services

@@ -4,16 +4,24 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const VerifiedAdvocates = () => {
+  // Stores the list of advocates who have completed verification
   const [users, setUsers] = useState([]);
+
+  // Indicates whether verified advocate data is still loading
   const [loading, setLoading] = useState(true);
+
+  // Controls client-side filtering by advocate role
   const [roleFilter, setRoleFilter] = useState("all");
 
+  /* ---------- Data Fetch ---------- */
+  // Fetches all verified advocates (including junior advocates) from admin endpoint
   useEffect(() => {
     const fetchVerified = async () => {
       try {
         const res = await api.get("/admin/verified-advocates");
         setUsers(res.data.data || []);
       } finally {
+        // Ensures loading state is cleared even if request fails
         setLoading(false);
       }
     };
@@ -21,6 +29,8 @@ const VerifiedAdvocates = () => {
     fetchVerified();
   }, []);
 
+  /* ---------- Derived Data ---------- */
+  // Applies role-based filtering without mutating the source dataset
   const filteredUsers =
     roleFilter === "all"
       ? users
@@ -40,17 +50,20 @@ const VerifiedAdvocates = () => {
         { label: "Audit Logs", path: "/admin/audit-logs" },
       ]}
     >
+      {/* ---------- Loading State ---------- */}
       {loading && <LoadingSpinner />}
 
+      {/* ---------- Empty System State ---------- */}
       {!loading && users.length === 0 && (
         <p className="text-sm text-muted">
           No verified advocates found.
         </p>
       )}
 
+      {/* ---------- Verified Advocate List ---------- */}
       {!loading && users.length > 0 && (
         <>
-          {/* ---------- Filter ---------- */}
+          {/* ---------- Role Filter ---------- */}
           <div className="mb-5 flex items-center justify-between gap-3">
             <p className="text-sm font-medium text-text-secondary">
               Showing {filteredUsers.length} advocate(s)
@@ -71,7 +84,7 @@ const VerifiedAdvocates = () => {
             </select>
           </div>
 
-          {/* ---------- List ---------- */}
+          {/* ---------- Filtered Results ---------- */}
           {filteredUsers.length === 0 ? (
             <p className="text-sm text-muted">
               No advocates match the selected role.
@@ -103,15 +116,18 @@ const VerifiedAdvocates = () => {
                       </p>
                     </div>
 
-                    {/* ---------- Status ---------- */}
-                    <span className="
-                      rounded-full bg-green-100 px-2 py-0.5
-                      text-xs font-medium text-green-700
-                    ">
+                    {/* ---------- Verification Status ---------- */}
+                    <span
+                      className="
+                        rounded-full bg-green-100 px-2 py-0.5
+                        text-xs font-medium text-green-700
+                      "
+                    >
                       Verified
                     </span>
                   </div>
 
+                  {/* ---------- Verification Timestamp ---------- */}
                   <p className="mt-3 text-xs text-muted">
                     Verified on{" "}
                     {new Date(

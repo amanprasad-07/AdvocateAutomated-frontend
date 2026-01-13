@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 
+/* ---------- Status Badge Colors ---------- */
+/* Semantic color mapping for payment statuses */
 const STATUS_BADGE = {
   paid: "text-green-600",
   pending: "text-yellow-600",
@@ -9,10 +11,17 @@ const STATUS_BADGE = {
 };
 
 const AdminPayments = () => {
+  // Holds the list of payments currently displayed (after filtering)
   const [payments, setPayments] = useState([]);
+
+  // Tracks the selected status filter ("all", "pending", "paid", "failed")
   const [status, setStatus] = useState("all");
+
+  // Controls loading state during API requests
   const [loading, setLoading] = useState(true);
 
+  /* ---------- Fetch Payments ---------- */
+  /* Retrieves all payments and applies status-based filtering client-side */
   const fetchPayments = async () => {
     setLoading(true);
 
@@ -20,6 +29,7 @@ const AdminPayments = () => {
       const res = await api.get("/payments");
       const allPayments = res.data.data || [];
 
+      // Apply status filter if not showing all payments
       const filtered =
         status === "all"
           ? allPayments
@@ -31,6 +41,7 @@ const AdminPayments = () => {
     }
   };
 
+  /* Re-fetch payments whenever the selected status filter changes */
   useEffect(() => {
     fetchPayments();
   }, [status]);
@@ -50,6 +61,7 @@ const AdminPayments = () => {
       ]}
     >
       {/* ---------- Filter + Count ---------- */}
+      {/* Displays total visible payments and allows status-based filtering */}
       <div className="mb-5 flex items-center justify-between gap-3">
         <p className="text-sm font-medium text-text-secondary">
           Showing {payments.length} payment(s)
@@ -72,18 +84,21 @@ const AdminPayments = () => {
         </select>
       </div>
 
+      {/* ---------- Loading State ---------- */}
       {loading && (
         <p className="text-sm text-muted">
           Loading payment records…
         </p>
       )}
 
+      {/* ---------- Empty State ---------- */}
       {!loading && payments.length === 0 && (
         <p className="text-sm text-muted">
           No payments match the selected filter.
         </p>
       )}
 
+      {/* ---------- Payment List ---------- */}
       {!loading && payments.length > 0 && (
         <div className="space-y-3">
           {payments.map((p) => (
@@ -95,6 +110,7 @@ const AdminPayments = () => {
               "
             >
               {/* ---------- Header ---------- */}
+              {/* Displays amount, currency, and payment status */}
               <div className="flex items-start justify-between gap-4">
                 <p className="text-lg font-semibold text-text-primary">
                   ₹{p.amount}{" "}
@@ -113,6 +129,7 @@ const AdminPayments = () => {
               </div>
 
               {/* ---------- Details ---------- */}
+              {/* Shows contextual metadata for audit purposes */}
               <div className="mt-2 space-y-1 text-sm text-text-secondary">
                 <p>
                   <strong className="font-medium text-text-primary">
@@ -144,6 +161,7 @@ const AdminPayments = () => {
               </div>
 
               {/* ---------- Timestamp ---------- */}
+              {/* Rendered only if payment has been completed */}
               {p.paidAt && (
                 <p className="mt-3 text-xs text-muted">
                   Paid on{" "}

@@ -2,34 +2,50 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 
+/* ---------- Status Color Mapping ---------- */
+// Maps user activity state to semantic text colors for quick visual scanning
 const STATUS_COLOR = {
   active: "text-green-600",
   inactive: "text-red-600",
 };
 
 const AdminUsers = () => {
+  // Holds the complete list of users fetched from the admin endpoint
   const [users, setUsers] = useState([]);
+
+  // Indicates whether the user registry is still being loaded
   const [loading, setLoading] = useState(true);
+
+  // Controls client-side filtering by active / inactive / all users
   const [statusFilter, setStatusFilter] = useState("all");
 
+  /* ---------- Data Fetch ---------- */
+  // Retrieves the full user registry for administrative oversight
   const fetchUsers = async () => {
     try {
       const res = await api.get("/admin/users");
       setUsers(res.data.data || []);
     } finally {
+      // Loading is stopped regardless of success or failure
       setLoading(false);
     }
   };
 
+  /* ---------- User State Toggle ---------- */
+  // Activates or deactivates a user account (admin-controlled lifecycle)
   const toggleStatus = async (userId) => {
     await api.patch(`/admin/users/${userId}/toggle-active`);
+    // Refresh user list to reflect updated activation state
     fetchUsers();
   };
 
+  // Initial load of users on component mount
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  /* ---------- Derived Data ---------- */
+  // Applies client-side filtering based on selected activity status
   const filteredUsers =
     statusFilter === "all"
       ? users
@@ -51,21 +67,24 @@ const AdminUsers = () => {
         { label: "Audit Logs", path: "/admin/audit-logs" },
       ]}
     >
+      {/* ---------- Loading State ---------- */}
       {loading && (
         <p className="text-sm text-muted">
           Loading user registry…
         </p>
       )}
 
+      {/* ---------- Empty System State ---------- */}
       {!loading && users.length === 0 && (
         <p className="text-sm text-muted">
           No users found in the system.
         </p>
       )}
 
+      {/* ---------- User List ---------- */}
       {!loading && users.length > 0 && (
         <>
-          {/* ---------- Filter ---------- */}
+          {/* ---------- Filter Controls ---------- */}
           <div className="mb-5 flex items-center justify-between gap-3">
             <p className="text-sm font-medium text-text-secondary">
               Showing {filteredUsers.length} user(s)
@@ -86,7 +105,7 @@ const AdminUsers = () => {
             </select>
           </div>
 
-          {/* ---------- List ---------- */}
+          {/* ---------- Filtered Results ---------- */}
           {filteredUsers.length === 0 ? (
             <p className="text-sm text-muted">
               No users match the selected filter.
@@ -94,6 +113,7 @@ const AdminUsers = () => {
           ) : (
             <div className="space-y-3">
               {filteredUsers.map((u) => {
+                // Derives a stable key for semantic status styling
                 const statusKey = u.isActive ? "active" : "inactive";
 
                 return (
@@ -105,7 +125,7 @@ const AdminUsers = () => {
                       flex items-start justify-between gap-4
                     "
                   >
-                    {/* ---------- User Info ---------- */}
+                    {/* ---------- User Identity & Metadata ---------- */}
                     <div className="space-y-1 text-sm">
                       <p className="text-base font-semibold text-text-primary">
                         {u.name}
@@ -128,6 +148,7 @@ const AdminUsers = () => {
                         </span>
                       </p>
 
+                      {/* Verification status is only relevant for non-clients */}
                       {u.role !== "client" && (
                         <p className="text-xs capitalize text-text-secondary">
                           Verification: {u.verificationStatus}
@@ -135,7 +156,8 @@ const AdminUsers = () => {
                       )}
                     </div>
 
-                    {/* ---------- Controls ---------- */}
+                    {/* ---------- Administrative Controls ---------- */}
+                    {/* Admin accounts cannot be disabled for system integrity */}
                     {u.role !== "admin" && (
                       <button
                         onClick={() => toggleStatus(u._id)}

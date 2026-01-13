@@ -4,7 +4,10 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-/* ---------- Status Styles (Semantic) ---------- */
+/* ---------- Status Styles (Semantic) ----------
+   Maps case status values to semantic border
+   and text colors for quick visual identification.
+*/
 const STATUS_STYLES = {
   open: "border-l-primary text-primary",
   in_progress: "border-l-warning text-warning",
@@ -12,13 +15,23 @@ const STATUS_STYLES = {
 };
 
 const ClientMyCases = () => {
+  // Stores all cases retrieved for the authenticated client
   const [cases, setCases] = useState([]);
+
+  // Controls loading state during initial data fetch
   const [loading, setLoading] = useState(true);
+
+  // Stores API or fetch-related errors
   const [error, setError] = useState("");
 
+  // Router helpers for navigation and URL-based filtering
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  /**
+   * Fetches all cases accessible to the client.
+   * Runs once on component mount.
+   */
   useEffect(() => {
     const fetchCases = async () => {
       try {
@@ -27,6 +40,7 @@ const ClientMyCases = () => {
       } catch {
         setError("Failed to load cases.");
       } finally {
+        // Ensures loading spinner is removed
         setLoading(false);
       }
     };
@@ -35,14 +49,23 @@ const ClientMyCases = () => {
   }, []);
 
   /* ---------- Filters ---------- */
+
+  // Reads the status filter from URL query parameters
   const statusParam = searchParams.get("status");
 
+  /**
+   * Filters cases based on selected status.
+   * Supports comma-separated values for multi-status filters.
+   */
   const filteredCases = statusParam
     ? cases.filter(c =>
         statusParam.split(",").includes(c.status)
       )
     : cases;
 
+  /**
+   * Updates URL query params to apply or clear case status filters
+   */
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -62,11 +85,13 @@ const ClientMyCases = () => {
         { label: "My Cases", path: "/client/my-cases" },
       ]}
     >
+      {/* Global loading indicator */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
+          {/* Status-based case filtering buttons */}
           <div className="mb-4 flex flex-wrap gap-3 justify-center">
             <button
               onClick={() => setFilter(null)}
@@ -134,6 +159,7 @@ const ClientMyCases = () => {
           </div>
 
           {/* ---------- Error ---------- */}
+          {/* Displays API or fetch errors */}
           {error && (
             <p className="mb-3 text-sm text-error">
               {error}
@@ -141,6 +167,7 @@ const ClientMyCases = () => {
           )}
 
           {/* ---------- Empty State ---------- */}
+          {/* Shown when no cases match current filter */}
           {filteredCases.length === 0 && (
             <p className="text-text-muted">
               No cases match this filter.
@@ -148,6 +175,7 @@ const ClientMyCases = () => {
           )}
 
           {/* ---------- Case List ---------- */}
+          {/* Renders clickable case cards */}
           <div className="space-y-3">
             {filteredCases.map(c => (
               <div

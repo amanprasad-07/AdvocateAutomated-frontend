@@ -5,15 +5,32 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AdvocateAddEvidence = () => {
+  // Extract case identifier from route params
   const { caseId } = useParams();
+
+  // Navigation helper
   const navigate = useNavigate();
 
+  // Local state for file input
   const [file, setFile] = useState(null);
+
+  // Optional textual description for the evidence
   const [description, setDescription] = useState("");
+
+  // UI state flags
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  /**
+   * Handles evidence submission
+   *
+   * - Validates file selection
+   * - Constructs multipart form payload
+   * - Uploads evidence to backend
+   * - Redirects back to case evidence view on success
+   */
   const handleSubmit = async () => {
+    // Client-side validation for mandatory file input
     if (!file) {
       setError("Please select a file to upload");
       return;
@@ -23,22 +40,27 @@ const AdvocateAddEvidence = () => {
       setLoading(true);
       setError("");
 
+      // Prepare multipart form payload
       const formData = new FormData();
       formData.append("file", file);
       formData.append("caseId", caseId);
 
+      // Append description only if provided
       if (description) {
         formData.append("description", description);
       }
 
+      // Submit evidence to backend
       await api.post("/evidence", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
+      // Redirect back to evidence listing for the case
       navigate(`/advocate/my-cases/${caseId}/evidence`);
     } catch (err) {
+      // Log error for debugging and show user-facing message
       console.error(err);
       setError("Failed to upload evidence");
     } finally {
@@ -59,6 +81,7 @@ const AdvocateAddEvidence = () => {
         },
       ]}
     >
+      {/* ---------- Loading State ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (

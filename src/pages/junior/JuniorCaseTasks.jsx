@@ -5,6 +5,7 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 /* ---------- Status Styles (Semantic) ---------- */
+// Maps task status to left-border styling for quick visual identification
 const STATUS_STYLES = {
   pending: "border-l-border",
   in_progress: "border-l-warning",
@@ -12,14 +13,28 @@ const STATUS_STYLES = {
 };
 
 const JuniorCaseTasks = () => {
+  // Extract case ID from route parameters
   const { caseId } = useParams();
+
+  // URL search params for status-based filtering
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Stores tasks assigned to the junior advocate for this case
   const [tasks, setTasks] = useState([]);
+
+  // Loading state while fetching tasks
   const [loading, setLoading] = useState(true);
+
+  // Error message for fetch/update failures
   const [error, setError] = useState("");
+
+  // Tracks which task is currently being updated to prevent double actions
   const [updatingTaskId, setUpdatingTaskId] = useState(null);
 
+  /**
+   * Fetch tasks related to the current case.
+   * Access is restricted by backend role and assignment rules.
+   */
   const fetchTasks = async () => {
     setLoading(true);
     setError("");
@@ -35,17 +50,21 @@ const JuniorCaseTasks = () => {
     }
   };
 
+  // Load tasks on initial render and when case ID changes
   useEffect(() => {
     fetchTasks();
   }, [caseId]);
 
   /* ---------- Filters ---------- */
+  // Current status filter from query params
   const statusParam = searchParams.get("status");
 
+  // Apply status-based filtering if active
   const filteredTasks = statusParam
     ? tasks.filter((t) => t.status === statusParam)
     : tasks;
 
+  // Update URL search params to reflect selected filter
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -54,6 +73,10 @@ const JuniorCaseTasks = () => {
     }
   };
 
+  /**
+   * Update task status.
+   * Prevents concurrent updates by locking on updatingTaskId.
+   */
   const updateStatus = async (taskId, status) => {
     if (updatingTaskId) return;
 
@@ -71,6 +94,7 @@ const JuniorCaseTasks = () => {
   };
 
   /* ---------- Loading ---------- */
+  // Display spinner while tasks are loading
   if (loading) {
     return (
       <DashboardLayout title="Case Tasks">
@@ -80,6 +104,7 @@ const JuniorCaseTasks = () => {
   }
 
   /* ---------- Error ---------- */
+  // Display error message if task fetch/update fails
   if (error) {
     return (
       <DashboardLayout title="Case Tasks">
@@ -101,6 +126,7 @@ const JuniorCaseTasks = () => {
       ]}
     >
       {/* ---------- Filters ---------- */}
+      {/* Allows filtering tasks by current progress status */}
       <div className="mb-4 flex flex-wrap gap-3 justify-center">
         {[
           [null, "All"],
@@ -128,6 +154,7 @@ const JuniorCaseTasks = () => {
       </div>
 
       {/* ---------- Empty State ---------- */}
+      {/* Displayed when no tasks match the current filter */}
       {filteredTasks.length === 0 && (
         <p className="text-text-muted">
           No tasks match this filter.
@@ -135,6 +162,7 @@ const JuniorCaseTasks = () => {
       )}
 
       {/* ---------- Task List ---------- */}
+      {/* Render each task with status-aware actions */}
       <div className="space-y-3">
         {filteredTasks.map((task) => (
           <div
@@ -151,12 +179,14 @@ const JuniorCaseTasks = () => {
               {task.title}
             </p>
 
+            {/* Optional task description */}
             {task.description && (
               <p className="mt-1 text-sm text-text-muted">
                 {task.description}
               </p>
             )}
 
+            {/* Task metadata */}
             <div className="mt-2 space-y-1 text-sm text-text-secondary">
               <p className="capitalize">
                 <strong>Status:</strong>{" "}
@@ -165,6 +195,7 @@ const JuniorCaseTasks = () => {
             </div>
 
             {/* ---------- Actions ---------- */}
+            {/* Status transitions allowed only in valid order */}
             <div className="mt-3 flex gap-2">
               {task.status === "pending" && (
                 <button

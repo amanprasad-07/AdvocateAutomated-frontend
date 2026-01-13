@@ -5,12 +5,20 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AdminDashboard = () => {
+  // Router navigation handler for dashboard quick actions
   const navigate = useNavigate();
 
+  // Holds aggregated admin statistics returned from the backend
   const [stats, setStats] = useState(null);
+
+  // Controls loading state while dashboard data is being fetched
   const [loading, setLoading] = useState(true);
+
+  // Stores error message if dashboard stats fail to load
   const [error, setError] = useState("");
 
+  /* ---------- Fetch Dashboard Statistics ---------- */
+  /* Loads high-level system metrics for admin overview */
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -37,20 +45,24 @@ const AdminDashboard = () => {
         { label: "Cases (Read Only)", path: "/admin/cases" },
         { label: "Payments", path: "/admin/payments" },
         { label: "Evidence", path: "/admin/evidence" },
-        { label: "Audit Logs", path: "/admin/audit-logs" }, 
+        { label: "Audit Logs", path: "/admin/audit-logs" },
       ]}
     >
+      {/* ---------- Loading State ---------- */}
       {loading && <LoadingSpinner />}
 
+      {/* ---------- Error State ---------- */}
       {error && (
         <p className="text-sm text-error">
           {error}
         </p>
       )}
 
+      {/* ---------- Dashboard Content ---------- */}
       {!loading && stats && (
         <>
           {/* ---------- Metrics ---------- */}
+          {/* High-level system KPIs with navigation shortcuts */}
           <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
             {[
               {
@@ -98,6 +110,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* ---------- System Note ---------- */}
+          {/* Clarifies admin permissions and read-only constraints */}
           <div className="rounded-xl border border-border bg-surface p-4">
             <p className="mb-1 font-medium text-text-primary">
               System Oversight Mode
@@ -109,6 +122,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* ---------- Quick Actions ---------- */}
+          {/* Frequently used admin navigation shortcuts */}
           <div className="mt-6 flex flex-wrap gap-3">
             <button
               onClick={() =>

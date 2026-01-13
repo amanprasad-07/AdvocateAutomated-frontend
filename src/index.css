@@ -2,31 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Base Theme Variables
+ *
+ * Defines CSS custom properties for light and dark themes.
+ * These variables are consumed by Tailwind utility classes
+ * to provide consistent theming across the application.
+ */
 @layer base {
   :root {
-    /* Backgrounds & surfaces */
+    /* ---------------- Backgrounds & Surfaces ---------------- */
     --bg: 0 0% 98%;
     --surface: 0 0% 95%;
     --surface-elevated: 0 0% 90%;
 
-    /* Borders */
+    /* ---------------- Borders ---------------- */
     --border: 220 10% 88%;
 
-    /* Text */
+    /* ---------------- Text Colors ---------------- */
     --text-primary: 220 15% 10%;
     --text-secondary: 220 10% 35%;
     --text-muted: 220 10% 45%;
 
-    /* Brand */
+    /* ---------------- Brand Colors ---------------- */
     --primary: 220 70% 45%;
     --primary-hover: 220 70% 40%;
 
-    /* Semantic */
+    /* ---------------- Semantic Colors ---------------- */
     --success: 145 45% 40%;
     --warning: 38 70% 45%;
     --error: 0 55% 45%;
   }
 
+  /**
+   * Dark Theme Overrides
+   *
+   * Activated when the "dark" class is applied
+   * to the root HTML element.
+   */
   .dark {
     --bg: 220 15% 6%;
     --surface: 220 15% 9%;
@@ -46,8 +59,13 @@
     --error: 0 55% 60%;
   }
 
+  /**
+   * Global Body Styles
+   *
+   * Applies background and primary text color
+   * using the active theme variables.
+   */
   body {
     @apply bg-bg text-text-primary;
   }
-
 }

@@ -5,6 +5,7 @@ import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 /* ---------- Status Styles (Semantic) ---------- */
+/* Left-border and text color mappings to visually distinguish case states */
 const STATUS_STYLES = {
   open: "border-l-primary text-primary",
   in_progress: "border-l-warning text-warning",
@@ -12,13 +13,19 @@ const STATUS_STYLES = {
 };
 
 const AdvocateMyCases = () => {
+  // Core data state
   const [cases, setCases] = useState([]);
+
+  // UI state
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Router helpers
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  /* ---------- Data Fetch ---------- */
+  /* Fetch all cases assigned to the logged-in advocate */
   useEffect(() => {
     const fetchCases = async () => {
       try {
@@ -35,14 +42,18 @@ const AdvocateMyCases = () => {
   }, []);
 
   /* ---------- Filters ---------- */
+
+  // Active status filter from query parameters (supports multi-status values)
   const statusParam = searchParams.get("status");
 
+  // Apply status-based filtering when a filter is active
   const filteredCases = statusParam
-    ? cases.filter(c =>
+    ? cases.filter((c) =>
         statusParam.split(",").includes(c.status)
       )
     : cases;
 
+  // Update URL query params to reflect selected filter
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -60,11 +71,13 @@ const AdvocateMyCases = () => {
         { label: "My Cases", path: "/advocate/my-cases" },
       ]}
     >
+      {/* ---------- Loading ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
+          {/* Status-based filters mirrored across dashboards for consistency */}
           <div className="mb-4 flex flex-wrap gap-3 justify-center">
             <button
               onClick={() => setFilter(null)}
@@ -146,8 +159,9 @@ const AdvocateMyCases = () => {
           )}
 
           {/* ---------- Case List ---------- */}
+          {/* Each case card is fully clickable for quick navigation */}
           <div className="space-y-3">
-            {filteredCases.map(c => (
+            {filteredCases.map((c) => (
               <div
                 key={c._id}
                 onClick={() =>

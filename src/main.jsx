@@ -6,10 +6,12 @@ import { ThemeProvider } from "./theme/ThemeContext";
 import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
 
+/* ---------------- Public Pages ---------------- */
 import Landing from "./pages/public/Landing";
 import Login from "./pages/public/Login";
 import Register from "./pages/public/Register";
 
+/* ---------------- Admin Pages ---------------- */
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminPendingApprovals from "./pages/admin/AdminPendingApprovals";
 import VerifiedAdvocates from "./pages/admin/VerifiedAdvocates";
@@ -19,6 +21,7 @@ import AdminPayments from "./pages/admin/AdminPayments";
 import AdminEvidence from "./pages/admin/AdminEvidence";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 
+/* ---------------- Advocate Pages ---------------- */
 import AdvocateDashboard from "./pages/advocate/AdvocateDashboard";
 import AdvocateMyAppointments from "./pages/advocate/MyAppointments";
 import CreateCase from "./pages/advocate/CreateCase";
@@ -32,6 +35,7 @@ import AdvocateCreateBill from "./pages/advocate/AdvocateCreateBill";
 import AdvocateCaseBills from "./pages/advocate/AdvocateCaseBills";
 import VerificationProfile from "./pages/advocate/VerificationProfile";
 
+/* ---------------- Client Pages ---------------- */
 import ClientDashboard from "./pages/client/ClientDashboard";
 import BookAppointment from "./pages/client/BookAppointment";
 import MyAppointments from "./pages/client/MyAppointments";
@@ -39,6 +43,7 @@ import PastAppointments from "./pages/client/PastAppointments";
 import ClientMyCases from "./pages/client/MyCases";
 import ClientCaseDetails from "./pages/client/ClientCaseDetails";
 
+/* ---------------- Junior Advocate Pages ---------------- */
 import JuniorDashboard from "./pages/junior/JuniorDashboard";
 import JuniorMyCases from "./pages/junior/JuniorMyCases";
 import JuniorCaseDetails from "./pages/junior/JuniorCaseDetails";
@@ -47,12 +52,28 @@ import JuniorAddEvidence from "./pages/junior/JuniorAddEvidence";
 import JuniorCaseEvidence from "./pages/junior/JuniorCaseEvidence";
 import JuniorVerificationProfile from "./pages/junior/JuniorVerificationProfile";
 
+/* ---------------- Global Styles ---------------- */
 import "./index.css";
 
-
-
-
+/**
+ * Application Router Configuration
+ *
+ * Defines all application routes with role-based
+ * access control enforced via ProtectedRoute.
+ *
+ * Public routes:
+ * - Landing
+ * - Login
+ * - Register
+ *
+ * Protected routes:
+ * - Admin
+ * - Advocate
+ * - Client
+ * - Junior Advocate
+ */
 const router = createBrowserRouter([
+  /* ---------------- Public Routes ---------------- */
   {
     path: "/",
     element: <Landing />,
@@ -65,6 +86,8 @@ const router = createBrowserRouter([
     path: "/register",
     element: <Register />,
   },
+
+  /* ---------------- Admin Routes ---------------- */
   {
     path: "/admin",
     element: (
@@ -130,6 +153,7 @@ const router = createBrowserRouter([
     ),
   },
 
+  /* ---------------- Advocate Routes ---------------- */
   {
     path: "/advocate",
     element: (
@@ -227,6 +251,7 @@ const router = createBrowserRouter([
     ),
   },
 
+  /* ---------------- Client Routes ---------------- */
   {
     path: "/client",
     element: (
@@ -276,6 +301,7 @@ const router = createBrowserRouter([
     ),
   },
 
+  /* ---------------- Junior Advocate Routes ---------------- */
   {
     path: "/junior_advocate",
     element: (
@@ -332,9 +358,16 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-
 ]);
 
+/**
+ * Application Bootstrap
+ *
+ * Renders the React application and wraps it with:
+ * - ThemeProvider for global theming
+ * - AuthProvider for authentication and authorization
+ * - RouterProvider for client-side routing
+ */
 ReactDOM.createRoot(document.getElementById("root")).render(
   <ThemeProvider>
     <AuthProvider>

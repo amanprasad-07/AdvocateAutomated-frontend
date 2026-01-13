@@ -6,13 +6,30 @@ import { useAuth } from "../../auth/AuthContext";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const ClientDashboard = () => {
+  // Router navigation helper
   const navigate = useNavigate();
+
+  // Authenticated user context
   const { user } = useAuth();
 
+  // Stores all appointments visible to the client
   const [appointments, setAppointments] = useState([]);
+
+  // Stores all cases associated with the client
   const [cases, setCases] = useState([]);
+
+  // Controls initial dashboard loading state
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Fetch dashboard data on initial render
+   *
+   * Retrieves:
+   * - All appointments for the authenticated client
+   * - All cases associated with the client
+   *
+   * Data is fetched in parallel for better performance.
+   */
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -24,6 +41,7 @@ const ClientDashboard = () => {
         setAppointments(apptRes.data.data || []);
         setCases(caseRes.data.data || []);
       } finally {
+        // Ensure loading state is cleared regardless of outcome
         setLoading(false);
       }
     };
@@ -33,18 +51,30 @@ const ClientDashboard = () => {
 
   /* ---------- Derived Data ---------- */
 
+  /**
+   * Active cases that are not yet closed
+   */
   const openCases = cases.filter(
     (c) => c.status === "open" || c.status === "in_progress"
   );
 
+  /**
+   * Appointments that have been approved by advocates
+   */
   const upcomingAppointments = appointments.filter(
     (a) => a.status === "approved"
   );
 
+  /**
+   * Appointment requests awaiting advocate response
+   */
   const pendingAppointments = appointments.filter(
     (a) => a.status === "requested"
   );
 
+  /**
+   * Next upcoming approved appointment, sorted by date
+   */
   const nextAppointment = [...upcomingAppointments]
     .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
 
@@ -59,11 +89,13 @@ const ClientDashboard = () => {
         { label: "My Cases", path: "/client/my-cases" },
       ]}
     >
+      {/* Global loading indicator */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <>
           {/* ---------- Client Info ---------- */}
+          {/* Displays authenticated client identity */}
           <div className="mb-6 rounded-xl border border-border bg-surface p-6">
             <p className="text-lg font-semibold text-text-primary">
               Welcome, {user?.name}
@@ -74,6 +106,7 @@ const ClientDashboard = () => {
           </div>
 
           {/* ---------- Metrics ---------- */}
+          {/* High-level summary cards with quick navigation */}
           <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
             <div
               onClick={() =>
@@ -155,6 +188,7 @@ const ClientDashboard = () => {
           </div>
 
           {/* ---------- Focus Section ---------- */}
+          {/* Highlights the next upcoming appointment */}
           <div className="mb-6 rounded-xl border border-border bg-surface p-6">
             <p className="mb-1 font-semibold text-text-primary">
               Next Appointment
@@ -182,6 +216,7 @@ const ClientDashboard = () => {
           </div>
 
           {/* ---------- Quick Actions ---------- */}
+          {/* Primary shortcuts for common client actions */}
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() =>

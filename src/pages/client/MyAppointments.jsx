@@ -4,7 +4,10 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-/* ---------- Status Styles (Semantic) ---------- */
+/* ---------- Status Styles (Semantic) ----------
+   Maps appointment status to visual indicators
+   for quick recognition and consistency.
+*/
 const STATUS_STYLES = {
   requested: "border-l-warning text-warning",
   approved: "border-l-success text-success",
@@ -12,16 +15,28 @@ const STATUS_STYLES = {
 };
 
 const MyAppointments = () => {
+  // Stores all fetched appointments for the client
   const [appointments, setAppointments] = useState([]);
+
+  // Tracks rejected appointments hidden by the user (persisted in localStorage)
   const [hiddenRejected, setHiddenRejected] = useState(() => {
     const stored = localStorage.getItem("hiddenRejectedAppointments");
     return stored ? JSON.parse(stored) : [];
   });
+
+  // Controls loading state for initial data fetch
   const [loading, setLoading] = useState(true);
+
+  // Stores API or fetch-related errors
   const [error, setError] = useState("");
 
+  // URL query parameter handler for filtering
   const [searchParams, setSearchParams] = useSearchParams();
 
+  /**
+   * Fetch all appointments for the authenticated client
+   * Runs once on component mount.
+   */
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -30,6 +45,7 @@ const MyAppointments = () => {
       } catch {
         setError("Failed to load appointments.");
       } finally {
+        // Ensure loading state is cleared
         setLoading(false);
       }
     };
@@ -38,14 +54,25 @@ const MyAppointments = () => {
   }, []);
 
   /* ---------- Filters ---------- */
+
+  // Extracts the current status filter from query params
   const statusParam = searchParams.get("status");
 
+  /**
+   * Applies visibility rules:
+   * - Hidden rejected appointments are excluded
+   * - Completed appointments are hidden by default
+   * - Status filter applied when present
+   */
   const visibleAppointments = appointments.filter((a) => {
     if (hiddenRejected.includes(a._id)) return false;
     if (!statusParam) return a.status !== "completed";
     return a.status === statusParam;
   });
 
+  /**
+   * Updates URL query params to apply or clear filters
+   */
   const setFilter = (status) => {
     if (!status) {
       setSearchParams({});
@@ -54,6 +81,10 @@ const MyAppointments = () => {
     }
   };
 
+  /**
+   * Hides a rejected appointment from the list
+   * and persists the choice in localStorage.
+   */
   const hideRejectedAppointment = (id) => {
     const updated = [...hiddenRejected, id];
     setHiddenRejected(updated);
@@ -74,11 +105,13 @@ const MyAppointments = () => {
         { label: "My Cases", path: "/client/my-cases" },
       ]}
     >
+      {/* Global loading indicator */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
+          {/* Status-based appointment filters */}
           <div className="mb-4 flex flex-wrap gap-3 justify-center">
             <button
               onClick={() => setFilter(null)}
@@ -87,8 +120,7 @@ const MyAppointments = () => {
                 px-3 py-1 text-sm
                 ${!statusParam
                   ? "bg-primary text-text-primary"
-                  : "text-text-secondary hover:bg-surfaceElevated"
-                }
+                  : "text-text-secondary hover:bg-surfaceElevated"}
                 transition-colors
               `}
             >
@@ -102,8 +134,7 @@ const MyAppointments = () => {
                 px-3 py-1 text-sm
                 ${statusParam === "requested"
                   ? "bg-surfaceElevated text-warning"
-                  : "text-text-secondary hover:bg-surfaceElevated"
-                }
+                  : "text-text-secondary hover:bg-surfaceElevated"}
                 transition-colors
               `}
             >
@@ -117,8 +148,7 @@ const MyAppointments = () => {
                 px-3 py-1 text-sm
                 ${statusParam === "approved"
                   ? "bg-surfaceElevated text-success"
-                  : "text-text-secondary hover:bg-surfaceElevated"
-                }
+                  : "text-text-secondary hover:bg-surfaceElevated"}
                 transition-colors
               `}
             >
@@ -132,8 +162,7 @@ const MyAppointments = () => {
                 px-3 py-1 text-sm
                 ${statusParam === "rejected"
                   ? "bg-surfaceElevated text-error"
-                  : "text-text-secondary hover:bg-surfaceElevated"
-                }
+                  : "text-text-secondary hover:bg-surfaceElevated"}
                 transition-colors
               `}
             >
@@ -142,6 +171,7 @@ const MyAppointments = () => {
           </div>
 
           {/* ---------- Error ---------- */}
+          {/* Displays fetch-related errors */}
           {error && (
             <p className="mb-3 text-sm text-error">
               {error}
@@ -149,6 +179,7 @@ const MyAppointments = () => {
           )}
 
           {/* ---------- Empty State ---------- */}
+          {/* Shown when no appointments match filters */}
           {visibleAppointments.length === 0 && (
             <p className="text-text-muted">
               No appointments match this filter.
@@ -156,6 +187,7 @@ const MyAppointments = () => {
           )}
 
           {/* ---------- Appointment List ---------- */}
+          {/* Renders filtered appointment cards */}
           <div className="space-y-3">
             {visibleAppointments.map((appt) => (
               <div
@@ -166,7 +198,7 @@ const MyAppointments = () => {
                   bg-surface 
                   p-4
                   hover:bg-surfaceElevated
-                transition-colors
+                  transition-colors
                   ${STATUS_STYLES[appt.status] || ""}
                 `}
               >
@@ -192,12 +224,14 @@ const MyAppointments = () => {
                   </p>
                 </div>
 
+                {/* Rejection reason display */}
                 {appt.status === "rejected" && appt.notes && (
                   <p className="mt-2 text-sm text-error">
                     <strong>Reason:</strong> {appt.notes}
                   </p>
                 )}
 
+                {/* Client-side removal of rejected appointment */}
                 {appt.status === "rejected" && (
                   <button
                     onClick={() =>

@@ -4,24 +4,39 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 
 const CreateCase = () => {
+  // Extract appointment ID from route params
   const { appointmentId } = useParams();
+
+  // Router navigation helper
   const navigate = useNavigate();
 
+  // Stores fetched appointment context
   const [appointment, setAppointment] = useState(null);
+
+  // Loading flag for initial data fetch
   const [loading, setLoading] = useState(true);
+
+  // Error message state for UI feedback
   const [error, setError] = useState("");
 
+  // Controlled form state for case creation
   const [form, setForm] = useState({
     title: "",
     description: "",
     caseType: "",
   });
 
-  // 🔹 Fetch appointment details
+  /**
+   * Fetch appointment details so the advocate
+   * can see client and appointment context
+   * before creating a case.
+   */
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
         const res = await api.get("/appointments");
+
+        // Locate the appointment matching the route param
         const found = res.data.data.find(
           (a) => a._id === appointmentId
         );
@@ -34,6 +49,7 @@ const CreateCase = () => {
       } catch {
         setError("Failed to load appointment");
       } finally {
+        // Stop loading state regardless of outcome
         setLoading(false);
       }
     };
@@ -41,10 +57,15 @@ const CreateCase = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+  // Generic form field handler
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  /**
+   * Submit case creation request.
+   * Links the case to the originating appointment.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -57,12 +78,14 @@ const CreateCase = () => {
         caseType: form.caseType,
       });
 
+      // Redirect advocate back to dashboard after success
       navigate("/advocate");
-    } catch { 
+    } catch {
       setError("Failed to create case");
     }
   };
 
+  /* ---------- Loading State ---------- */
   if (loading) {
     return (
       <DashboardLayout title="Create Case">
@@ -80,6 +103,7 @@ const CreateCase = () => {
         { label: "My Cases", path: "/advocate/my-cases" },
       ]}
     >
+      {/* ---------- Error Message ---------- */}
       {error && (
         <p className="mb-4 text-sm text-error">
           {error}
@@ -116,6 +140,7 @@ const CreateCase = () => {
         onSubmit={handleSubmit}
         className="max-w-md lg:max-w-lg space-y-4"
       >
+        {/* Case title input */}
         <input
           type="text"
           name="title"
@@ -135,6 +160,7 @@ const CreateCase = () => {
           "
         />
 
+        {/* Case description input */}
         <textarea
           name="description"
           placeholder="Case Description"
@@ -154,6 +180,7 @@ const CreateCase = () => {
           "
         />
 
+        {/* Case type selector */}
         <select
           name="caseType"
           value={form.caseType}
@@ -174,6 +201,7 @@ const CreateCase = () => {
           <option value="criminal">Criminal</option>
         </select>
 
+        {/* Submit action */}
         <button
           type="submit"
           className="
