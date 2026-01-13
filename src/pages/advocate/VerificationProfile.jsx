@@ -6,13 +6,9 @@ import api from "../../api/axios";
 import { useAuth } from "../../auth/AuthContext";
 
 const VerificationProfile = () => {
-  // Router navigation helper
   const navigate = useNavigate();
-
-  // Auth context for accessing logged-in user data
   const { user } = useAuth();
 
-  // Form state for advocate verification details
   const [formData, setFormData] = useState({
     enrollmentNumber: "",
     barCouncil: "",
@@ -20,26 +16,30 @@ const VerificationProfile = () => {
     documents: [],
   });
 
-  // UI state for async handling and error feedback
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  /* ---------- Safety Guard (UI-level) ---------- */
-  /* Redirects the user away from this page if:
-     - verification is already approved, OR
-     - verification details have already been submitted */
- useEffect(() => {
+  /* ---------- REDIRECT GUARD (FIXED LOGIC) ---------- */
+  useEffect(() => {
+    if (
+      user?.verificationStatus === "approved" ||
+      (user?.verificationStatus === "pending" &&
+        user?.advocateProfile?.submittedAt)
+    ) {
+      navigate("/advocate", { replace: true });
+    }
+  }, [user, navigate]);
+
+  /* ---------- PURE RENDER GUARD ---------- */
   if (
     user?.verificationStatus === "approved" ||
-    user?.advocateProfile?.submittedAt
+    (user?.verificationStatus === "pending" &&
+      user?.advocateProfile?.submittedAt)
   ) {
-    navigate("/advocate", { replace: true });
+    return null;
   }
-}, [user, navigate]);
 
-
-  /* ---------- Input Change Handler ---------- */
-  /* Updates individual form fields dynamically */
+  /* ---------- INPUT HANDLER ---------- */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -48,13 +48,11 @@ const VerificationProfile = () => {
     }));
   };
 
-  /* ---------- Form Submission ---------- */
-  /* Validates required fields and submits verification data */
+  /* ---------- SUBMIT HANDLER ---------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Basic required-field validation
     if (!formData.enrollmentNumber || !formData.barCouncil) {
       setError("Enrollment number and bar council are required");
       return;
@@ -63,7 +61,6 @@ const VerificationProfile = () => {
     try {
       setLoading(true);
 
-      // Submit verification details to backend
       await api.patch("/verification/profile", {
         enrollmentNumber: formData.enrollmentNumber,
         barCouncil: formData.barCouncil,
@@ -71,10 +68,8 @@ const VerificationProfile = () => {
         documents: formData.documents,
       });
 
-      // Redirect back to advocate dashboard on success
-      navigate("/advocate");
+      navigate("/advocate", { replace: true });
     } catch (err) {
-      // Surface backend or fallback error message
       setError(
         err?.response?.data?.message ||
           "Failed to submit verification details"
@@ -89,12 +84,10 @@ const VerificationProfile = () => {
       title="Advocate Verification"
       navItems={[{ label: "Dashboard", path: "/advocate" }]}
     >
-      {/* ---------- Loading Overlay ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <div className="max-w-xl rounded-xl border border-border bg-surface p-6">
-          {/* ---------- Card Heading ---------- */}
           <h2 className="mb-1 text-lg font-semibold text-text-primary">
             Submit Verification Details
           </h2>
@@ -103,16 +96,13 @@ const VerificationProfile = () => {
             Provide your professional details to complete advocate verification.
           </p>
 
-          {/* ---------- Error Feedback ---------- */}
           {error && (
             <p className="mb-3 text-sm text-error">
               {error}
             </p>
           )}
 
-          {/* ---------- Verification Form ---------- */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Enrollment Number */}
             <div>
               <label className="block text-sm text-text-secondary">
                 Enrollment Number *
@@ -127,7 +117,6 @@ const VerificationProfile = () => {
               />
             </div>
 
-            {/* Bar Council */}
             <div>
               <label className="block text-sm text-text-secondary">
                 Bar Council *
@@ -142,7 +131,6 @@ const VerificationProfile = () => {
               />
             </div>
 
-            {/* Experience */}
             <div>
               <label className="block text-sm text-text-secondary">
                 Years of Experience
@@ -157,18 +145,10 @@ const VerificationProfile = () => {
               />
             </div>
 
-            {/* ---------- Action Buttons ---------- */}
             <div className="flex gap-3 pt-2">
               <button
                 type="submit"
-                className="
-                  rounded-lg
-                  bg-primary
-                  px-4 py-2
-                  text-sm font-medium
-                  text-text-primary
-                  hover:opacity-90
-                "
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-text-primary hover:opacity-90"
               >
                 Submit for Verification
               </button>
@@ -176,27 +156,12 @@ const VerificationProfile = () => {
               <button
                 type="button"
                 onClick={() => navigate("/advocate")}
-                className="
-                  rounded-lg
-                  border border-border
-                  px-4 py-2
-                  text-sm
-                  text-text-secondary
-                  hover:bg-surfaceElevated
-                "
+                className="rounded-lg border border-border px-4 py-2 text-sm text-text-secondary hover:bg-surfaceElevated"
               >
                 Cancel
               </button>
             </div>
           </form>
-
-          {/* ---------- Informational Note ---------- */}
-          <div className="mt-6 rounded-lg bg-surfaceElevated p-3 text-xs text-text-muted">
-            <p>
-              Once submitted, your details will be reviewed by an administrator.
-              You will be notified once verification is approved or rejected.
-            </p>
-          </div>
         </div>
       )}
     </DashboardLayout>
