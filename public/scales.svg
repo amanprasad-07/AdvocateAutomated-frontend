@@ -1,7 +1,8 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 60 60"
-  fill=""
+  fill="currentColor"
+  style="color: white"
 >
   <!-- Vertical pillar -->
   <rect x="30" y="10" width="4" height="36" rx="2" fill="currentColor"/>
@@ -32,4 +33,3 @@
   <!-- Base -->
   <rect x="22" y="48" width="20" height="4" rx="2" fill="currentColor"/>
 </svg>
-

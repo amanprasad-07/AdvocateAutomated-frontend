@@ -173,12 +173,12 @@ const Landing = () => {
 
         {/* Hero content */}
         <div className="z-10 relative">
-          <h2 className="mx-auto mb-6 max-w-3xl text-3xl sm:text-4xl font-semibold leading-tigh text-text-primary">
+          <h2 className="mx-auto mb-6 max-w-3xl text-3xl sm:text-4xl font-semibold leading-tigh text-white">
             Legal Work. Structured. Transparent.
             <span className="text-primary"> Human.</span>
           </h2>
 
-          <p className="mx-auto mb-10 max-w-2xl text-lg text-text-primary/80">
+          <p className="mx-auto mb-10 max-w-2xl text-lg text-white/80">
             Advocate Automated is a modern legal services platform built to remove
             confusion, delays, and opacity from legal work — connecting clients
             with verified advocates through a system that values clarity,
@@ -203,9 +203,9 @@ const Landing = () => {
             <Link
               to="/register"
               className="
-                rounded-xl border border-border
+                rounded-xl border border-white
                 px-6 py-3 bg-black/30
-                text-lg font-medium text-text-primary
+                text-lg font-medium text-white
                 hover:bg-black/80 hover:shadow-md
                 transition
               "
