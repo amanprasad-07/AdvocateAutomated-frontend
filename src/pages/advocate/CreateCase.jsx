@@ -58,7 +58,7 @@ const CreateCase = () => {
       });
 
       navigate("/advocate");
-    } catch {
+    } catch { 
       setError("Failed to create case");
     }
   };

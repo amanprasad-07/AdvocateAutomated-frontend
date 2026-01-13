@@ -85,10 +85,9 @@ const MyAppointments = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  !statusParam
-                    ? "bg-primary text-text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${!statusParam
+                  ? "bg-primary text-text-primary"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -101,10 +100,9 @@ const MyAppointments = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  statusParam === "requested"
-                    ? "bg-surfaceElevated text-warning"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${statusParam === "requested"
+                  ? "bg-surfaceElevated text-warning"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -117,10 +115,9 @@ const MyAppointments = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  statusParam === "approved"
-                    ? "bg-surfaceElevated text-success"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${statusParam === "approved"
+                  ? "bg-surfaceElevated text-success"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -133,10 +130,9 @@ const MyAppointments = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  statusParam === "rejected"
-                    ? "bg-surfaceElevated text-error"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${statusParam === "rejected"
+                  ? "bg-surfaceElevated text-error"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -167,8 +163,10 @@ const MyAppointments = () => {
                 className={`
                   rounded-xl border border-border
                   border-l-4
-                  bg-surface
+                  bg-surface 
                   p-4
+                  hover:bg-surfaceElevated
+                transition-colors
                   ${STATUS_STYLES[appt.status] || ""}
                 `}
               >

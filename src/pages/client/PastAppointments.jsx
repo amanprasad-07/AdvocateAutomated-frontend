@@ -78,10 +78,9 @@ const PastAppointments = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  !statusParam
-                    ? "bg-primary text-text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${!statusParam
+                  ? "bg-primary text-text-primary"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -94,10 +93,9 @@ const PastAppointments = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  statusParam === "completed"
-                    ? "bg-surfaceElevated text-success"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${statusParam === "completed"
+                  ? "bg-surfaceElevated text-success"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -110,10 +108,9 @@ const PastAppointments = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  statusParam === "rejected"
-                    ? "bg-surfaceElevated text-error"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${statusParam === "rejected"
+                  ? "bg-surfaceElevated text-error"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -146,6 +143,8 @@ const PastAppointments = () => {
                   border-l-4
                   bg-surface
                   p-4
+                  hover:bg-surfaceElevated
+                transition-colors
                   ${STATUS_STYLES[appt.status] || ""}
                 `}
               >
