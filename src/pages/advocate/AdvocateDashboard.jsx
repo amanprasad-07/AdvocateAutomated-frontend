@@ -126,7 +126,7 @@ const AdvocateDashboard = () => {
             {user?.verificationStatus === "pending" &&
               (!user?.advocateProfile || !user?.advocateProfile?.submittedAt) && (
                 <button
-                  onClick={() => navigate("/verification/profile")}
+                  onClick={() => navigate("/verification/profile",{ replace: true })}
                   className="
                     mt-2 rounded-lg bg-primary
                     px-4 py-2 text-sm font-medium

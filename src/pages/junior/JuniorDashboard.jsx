@@ -120,7 +120,7 @@ const JuniorDashboard = () => {
                 !user?.advocateProfile?.submittedAt) && (
                 <button
                   onClick={() =>
-                    navigate("/junior_advocate/verification/profile")
+                    navigate("/junior_advocate/verification/profile",{ replace: true })
                   }
                   className="
                     mt-2
