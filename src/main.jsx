@@ -30,6 +30,7 @@ import AdvocateCaseEvidence from "./pages/advocate/AdvocateCaseEvidence";
 import AdvocateAddEvidence from "./pages/advocate/AdvocateAddEvidence";
 import AdvocateCreateBill from "./pages/advocate/AdvocateCreateBill";
 import AdvocateCaseBills from "./pages/advocate/AdvocateCaseBills";
+import VerificationProfile from "./pages/advocate/VerificationProfile";
 
 import ClientDashboard from "./pages/client/ClientDashboard";
 import BookAppointment from "./pages/client/BookAppointment";
@@ -44,8 +45,10 @@ import JuniorCaseDetails from "./pages/junior/JuniorCaseDetails";
 import JuniorCaseTasks from "./pages/junior/JuniorCaseTasks";
 import JuniorAddEvidence from "./pages/junior/JuniorAddEvidence";
 import JuniorCaseEvidence from "./pages/junior/JuniorCaseEvidence";
+import JuniorVerificationProfile from "./pages/junior/JuniorVerificationProfile";
 
 import "./index.css";
+
 
 
 
@@ -215,6 +218,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "/verification/profile",
+    element: (
+      <ProtectedRoute allowedRoles={["advocate"]}>
+        <VerificationProfile />
+      </ProtectedRoute>
+    ),
+  },
 
   {
     path: "/client",
@@ -310,6 +321,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["junior_advocate"]}>
         <JuniorCaseEvidence />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/junior_advocate/verification/profile",
+    element: (
+      <ProtectedRoute allowedRoles={["junior_advocate"]}>
+        <JuniorVerificationProfile />
       </ProtectedRoute>
     ),
   },

@@ -33,18 +33,26 @@ const AdminPendingApprovals = () => {
   };
 
   const rejectUser = async (userId) => {
-    const confirmReject = window.confirm(
-      "Are you sure you want to reject this user?"
-    );
-    if (!confirmReject) return;
+  const reason = window.prompt(
+    "Enter rejection reason (this will be visible to the advocate):"
+  );
 
-    try {
-      await api.patch(`/admin/pending-advocates/${userId}/reject`);
-      fetchPendingUsers();
-    } catch {
-      alert("Failed to reject user");
-    }
-  };
+  if (!reason) return;
+
+  try {
+    await api.patch(
+      `/admin/pending-advocates/${userId}/reject`,
+      { reason }
+    );
+    fetchPendingUsers();
+  } catch (error) {
+    alert(
+      error?.response?.data?.message ||
+      "Failed to reject user"
+    );
+  }
+};
+
 
   return (
     <DashboardLayout
@@ -80,11 +88,12 @@ const AdminPendingApprovals = () => {
             <div
               key={user._id}
               className="
-                flex items-start justify-between gap-4
-                rounded-xl border border-border
-                bg-surface p-4
-              "
+              flex flex-col gap-4
+              rounded-xl border border-border
+              bg-surface p-4
+            "
             >
+
               {/* ---------- User Info ---------- */}
               <div className="space-y-1">
                 <p className="font-medium text-text-primary">
@@ -105,18 +114,82 @@ const AdminPendingApprovals = () => {
                 </p>
               </div>
 
+              <hr className="border-border" />
+
+              {/* ---------- Verification Details ---------- */}
+              {user.advocateProfile ? (
+                <div className="rounded-lg bg-surfaceElevated p-3 text-sm">
+                  <p className="mb-2 font-semibold text-text-primary">
+                    Verification Details
+                  </p>
+
+                  <p>
+                    <span className="font-medium">Enrollment Number:</span>{" "}
+                    {user.advocateProfile.enrollmentNumber}
+                  </p>
+
+                  <p>
+                    <span className="font-medium">Bar Council:</span>{" "}
+                    {user.advocateProfile.barCouncil}
+                  </p>
+
+                  <p>
+                    <span className="font-medium">Experience:</span>{" "}
+                    {user.advocateProfile.experienceYears || "N/A"} years
+                  </p>
+
+                  <p className="text-xs text-text-muted mt-1">
+                    Submitted on{" "}
+                    {new Date(
+                      user.advocateProfile.submittedAt
+                    ).toLocaleDateString()}
+                  </p>
+
+                  {user.advocateProfile.documents?.length > 0 && (
+                    <ul className="mt-2 list-disc pl-5 text-xs text-primary">
+                      {user.advocateProfile.documents.map((doc, index) => (
+                        <li key={index}>
+                          <a
+                            href={doc}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline"
+                          >
+                            View document {index + 1}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ) : (
+                <p className="text-sm italic text-text-muted">
+                  No verification details submitted.
+                </p>
+              )}
+
+
               {/* ---------- Actions ---------- */}
               <div className="flex gap-2">
                 <button
+                  disabled={!user.advocateProfile?.submittedAt}
                   onClick={() => approveUser(user._id)}
-                  className="
-                    rounded-lg bg-primary px-3 py-1
-                    text-sm font-medium text-text-primary
-                    transition-opacity hover:opacity-90
-                  "
+                  className={`
+                      rounded-lg px-3 py-1 text-sm font-medium
+                      ${user.advocateProfile?.submittedAt
+                      ? "bg-primary text-text-primary hover:opacity-90"
+                      : "bg-border text-text-muted cursor-not-allowed"
+                    }
+                      `}
+                  title={
+                    user.advocateProfile?.submittedAt
+                      ? "Approve advocate"
+                      : "Cannot approve without verification details"
+                  }
                 >
                   Approve
                 </button>
+
 
                 <button
                   onClick={() => rejectUser(user._id)}

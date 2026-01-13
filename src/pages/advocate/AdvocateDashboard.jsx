@@ -32,6 +32,9 @@ const AdvocateDashboard = () => {
     fetchDashboardData();
   }, []);
 
+  const isVerified = user?.verificationStatus === "approved";
+
+
   /* ---------- Derived Data ---------- */
 
   const pendingAppointments = appointments.filter(
@@ -72,141 +75,197 @@ const AdvocateDashboard = () => {
             </p>
 
             <VerificationStatusBanner />
+
+            {user?.verificationStatus === "rejected" && (
+              <div className="mt-3 rounded-lg border border-error bg-error/10 p-3">
+                <p className="text-sm font-medium text-error">
+                  Verification Rejected
+                </p>
+
+                <p className="mt-1 text-sm text-text-secondary">
+                  Reason: {user.verificationRejectionReason}
+                </p>
+
+                <button
+                  onClick={() => navigate("/verification/profile")}
+                  className="
+                  mt-2 rounded-lg bg-primary px-3 py-1
+                  text-sm font-medium text-text-primary
+                  hover:opacity-90
+                "
+                >
+                  Update Details & Resubmit
+                </button>
+              </div>
+            )}
+
+
+            {user?.verificationStatus === "pending" &&
+              (!user?.advocateProfile || !user?.advocateProfile?.submittedAt) && (
+                <button
+                  onClick={() => navigate("/verification/profile")}
+                  className="
+                      mt-2
+                      rounded-lg
+                      bg-primary
+                      px-4 py-2
+                      text-sm font-medium
+                      text-text-primary
+                      hover:opacity-90
+                    "
+                >
+                  Submit Verification Details
+                </button>
+              )}
+
+            {user?.verificationStatus === "pending" &&
+              user?.advocateProfile?.submittedAt && (
+                <p className="mt-2 text-sm text-text-muted italic">
+                  Verification details submitted. Awaiting admin review.
+                </p>
+              )}
           </div>
+
+
 
           {/* ---------- Metrics ---------- */}
-          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-            <div
-              onClick={() =>
-                navigate(
-                  "/advocate/my-appointments?status=requested"
-                )
-              }
-              className="
-                cursor-pointer
-                rounded-xl border border-border
-                bg-surface
-                p-4
-                hover:bg-surfaceElevated
-                transition-colors
-              "
-            >
-              <p className="text-sm text-text-muted">
-                Pending Requests
-              </p>
-              <p className="text-2xl font-semibold text-text-primary">
-                {pendingAppointments.length}
-              </p>
-            </div>
-
-            <div
-              onClick={() =>
-                navigate(
-                  "/advocate/my-appointments?status=approved"
-                )
-              }
-              className="
-                cursor-pointer
-                rounded-xl border border-border
-                bg-surface
-                p-4
-                hover:bg-surfaceElevated
-                transition-colors
-              "
-            >
-              <p className="text-sm text-text-muted">
-                Approved Appointments
-              </p>
-              <p className="text-2xl font-semibold text-text-primary">
-                {approvedAppointments.length}
-              </p>
-            </div>
-
-            <div
-              onClick={() =>
-                navigate(
-                  "/advocate/my-cases?status=open,in_progress"
-                )
-              }
-              className="
-                cursor-pointer
-                rounded-xl border border-border
-                bg-surface
-                p-4
-                hover:bg-surfaceElevated
-                transition-colors
-              "
-            >
-              <p className="text-sm text-text-muted">
-                Active Cases
-              </p>
-              <p className="text-2xl font-semibold text-text-primary">
-                {activeCases.length}
-              </p>
-            </div>
-
-            <div
-              onClick={() =>
-                navigate("/advocate/my-cases")
-              }
-              className="
-                cursor-pointer
-                rounded-xl border border-border
-                bg-surface
-                p-4
-                hover:bg-surfaceElevated
-                transition-colors
-              "
-            >
-              <p className="text-sm text-text-muted">
-                Total Cases
-              </p>
-              <p className="text-2xl font-semibold text-text-primary">
-                {cases.length}
-              </p>
-            </div>
-          </div>
-
-          {/* ---------- Focus Section ---------- */}
-          <div className="mb-6 rounded-xl border border-border bg-surface p-6">
-            <p className="mb-1 font-semibold text-text-primary">
-              Next Appointment
-            </p>
-
-            {nextAppointment ? (
-              <p
+          <div
+            className={`
+    ${!isVerified ? "opacity-40 pointer-events-none" : ""}
+  `}
+          >
+            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+              <div
+                onClick={() =>
+                  navigate(
+                    "/advocate/my-appointments?status=requested"
+                  )
+                }
                 className="
-                  cursor-pointer
-                  text-primary
-                  underline-offset-2
-                  hover:underline
-                "
+                cursor-pointer
+                rounded-xl border border-border
+                bg-surface
+                p-4
+                hover:bg-surfaceElevated
+                transition-colors
+              "
+              >
+                <p className="text-sm text-text-muted">
+                  Pending Requests
+                </p>
+                <p className="text-2xl font-semibold text-text-primary">
+                  {pendingAppointments.length}
+                </p>
+              </div>
+
+              <div
                 onClick={() =>
                   navigate(
                     "/advocate/my-appointments?status=approved"
                   )
                 }
+                className="
+                cursor-pointer
+                rounded-xl border border-border
+                bg-surface
+                p-4
+                hover:bg-surfaceElevated
+                transition-colors
+              "
               >
-                {nextAppointment.date} •{" "}
-                {nextAppointment.timeSlot} •{" "}
-                {nextAppointment.client?.name}
-              </p>
-            ) : (
-              <p className="text-sm italic text-text-muted">
-                No upcoming approved appointments.
-              </p>
-            )}
-          </div>
+                <p className="text-sm text-text-muted">
+                  Approved Appointments
+                </p>
+                <p className="text-2xl font-semibold text-text-primary">
+                  {approvedAppointments.length}
+                </p>
+              </div>
 
-          {/* ---------- Quick Actions ---------- */}
-          <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-            <button
-              onClick={() =>
-                navigate(
-                  "/advocate/my-appointments?status=requested"
-                )
-              }
-              className="
+              <div
+                onClick={() =>
+                  navigate(
+                    "/advocate/my-cases?status=open,in_progress"
+                  )
+                }
+                className="
+                cursor-pointer
+                rounded-xl border border-border
+                bg-surface
+                p-4
+                hover:bg-surfaceElevated
+                transition-colors
+              "
+              >
+                <p className="text-sm text-text-muted">
+                  Active Cases
+                </p>
+                <p className="text-2xl font-semibold text-text-primary">
+                  {activeCases.length}
+                </p>
+              </div>
+
+              <div
+                onClick={() =>
+                  navigate("/advocate/my-cases")
+                }
+                className="
+                cursor-pointer
+                rounded-xl border border-border
+                bg-surface
+                p-4
+                hover:bg-surfaceElevated
+                transition-colors
+              "
+              >
+                <p className="text-sm text-text-muted">
+                  Total Cases
+                </p>
+                <p className="text-2xl font-semibold text-text-primary">
+                  {cases.length}
+                </p>
+              </div>
+            </div>
+
+            {/* ---------- Focus Section ---------- */}
+            <div className="mb-6 rounded-xl border border-border bg-surface p-6">
+              <p className="mb-1 font-semibold text-text-primary">
+                Next Appointment
+              </p>
+
+              {nextAppointment ? (
+                <p
+                  className="
+                  cursor-pointer
+                  text-primary
+                  underline-offset-2
+                  hover:underline
+                "
+                  onClick={() =>
+                    navigate(
+                      "/advocate/my-appointments?status=approved"
+                    )
+                  }
+                >
+                  {nextAppointment.date} •{" "}
+                  {nextAppointment.timeSlot} •{" "}
+                  {nextAppointment.client?.name}
+                </p>
+              ) : (
+                <p className="text-sm italic text-text-muted">
+                  No upcoming approved appointments.
+                </p>
+              )}
+            </div>
+
+            {/* ---------- Quick Actions ---------- */}
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+              <button
+                onClick={() =>
+                  navigate(
+                    "/advocate/my-appointments?status=requested"
+                  )
+                }
+                className="
                 rounded-lg
                 bg-primary
                 px-4 py-2
@@ -214,15 +273,15 @@ const AdvocateDashboard = () => {
                 hover:bg-primary-hover
                 transition-colors
               "
-            >
-              Review Appointments
-            </button>
+              >
+                Review Appointments
+              </button>
 
-            <button
-              onClick={() =>
-                navigate("/advocate/my-cases")
-              }
-              className="
+              <button
+                onClick={() =>
+                  navigate("/advocate/my-cases")
+                }
+                className="
                 rounded-lg
                 border border-border
                 px-4 py-2
@@ -231,9 +290,10 @@ const AdvocateDashboard = () => {
                 hover:text-text-primary
                 transition-colors
               "
-            >
-              View Cases
-            </button>
+              >
+                View Cases
+              </button>
+            </div>
           </div>
         </>
       )}

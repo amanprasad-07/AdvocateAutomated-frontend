@@ -44,7 +44,14 @@ export const AuthProvider = ({ children }) => {
   }
 };
 
-
+const refreshUser = async () => {
+  try {
+    const res = await api.get("/auth/me");
+    setUser(res.data.user);
+  } catch {
+    setUser(null);
+  }
+};
 
   useEffect(() => {
     checkAuth();
@@ -52,7 +59,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, role, loading, login, register, logout }}
+      value={{ user, role, loading, login, register, logout, refreshUser }}
     >
       {children}
     </AuthContext.Provider>
