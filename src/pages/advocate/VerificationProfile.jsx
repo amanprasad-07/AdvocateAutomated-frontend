@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -25,15 +25,18 @@ const VerificationProfile = () => {
   const [error, setError] = useState("");
 
   /* ---------- Safety Guard (UI-level) ---------- */
-  /* Prevent access if verification is already approved
-     or details have already been submitted */
+  /* Redirects the user away from this page if:
+     - verification is already approved, OR
+     - verification details have already been submitted */
+ useEffect(() => {
   if (
     user?.verificationStatus === "approved" ||
     user?.advocateProfile?.submittedAt
   ) {
-    navigate("/advocate");
-    return null;
+    navigate("/advocate", { replace: true });
   }
+}, [user, navigate]);
+
 
   /* ---------- Input Change Handler ---------- */
   /* Updates individual form fields dynamically */

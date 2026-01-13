@@ -24,22 +24,18 @@ const JuniorVerificationProfile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  /**
-   * Safety guard (UI-level)
-   *
-   * Prevents access to this page if:
-   * - The user is already approved, OR
-   * - Verification details were already submitted
-   *
-   * Redirects the user back to their dashboard.
-   */
+  /* ---------- Safety Guard (UI-level) ---------- */
+  /* Redirects the user away from this page if:
+     - verification is already approved, OR
+     - verification details have already been submitted */
+  useEffect(() => {
   if (
     user?.verificationStatus === "approved" ||
     user?.advocateProfile?.submittedAt
   ) {
-    navigate("/advocate");
-    return null;
+    navigate("/junior_advocate", { replace: true });
   }
+}, [user, navigate]);
 
   /**
    * Generic input change handler
