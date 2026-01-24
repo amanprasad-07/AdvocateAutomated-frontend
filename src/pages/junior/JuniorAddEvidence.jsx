@@ -51,6 +51,7 @@ const JuniorAddEvidence = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        timeout: 60000, // 60 seconds
       });
 
       // Redirect to case evidence listing after successful upload
