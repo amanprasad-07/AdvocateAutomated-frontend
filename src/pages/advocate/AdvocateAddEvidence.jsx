@@ -55,7 +55,7 @@ const AdvocateAddEvidence = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        timeout: 60000, // 60 seconds
+        timeout: 60000,
       });
 
       // Redirect back to evidence listing for the case
