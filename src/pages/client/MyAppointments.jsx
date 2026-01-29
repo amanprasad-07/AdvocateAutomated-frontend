@@ -98,7 +98,7 @@ const MyAppointments = () => {
     <DashboardLayout
       title="My Appointments"
       navItems={[
-        { label: "Dashboard", path: "/client" },
+          { label: "Dashboard", path: "/client" },
         { label: "Book Appointment", path: "/client/book-appointment" },
         { label: "My Appointments", path: "/client/my-appointments" },
         { label: "Past Appointments", path: "/client/past-appointments" },

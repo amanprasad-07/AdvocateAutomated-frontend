@@ -4,44 +4,27 @@ import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-/* ---------- Bill Status Styles (Semantic) ----------
-   Maps bill payment status to left-border and text color styles
-*/
 const STATUS_STYLES = {
-  pending: "border-l-warning text-warning",
-  paid: "border-l-success text-success",
+  pending: "border-l-warning",
+  paid: "border-l-success",
 };
 
 const AdvocateCaseBills = () => {
-  // Extract the case identifier from route params
   const { caseId } = useParams();
-
-  // Navigation helper
   const navigate = useNavigate();
 
-  // Bills related to the current case
   const [bills, setBills] = useState([]);
-
-  // Loading and error handling states
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // URL query params handler (used for filtering)
   const [searchParams, setSearchParams] = useSearchParams();
 
-  /**
-   * Fetch all payments and filter them by the current case ID
-   * This keeps backend API simple while scoping data at the UI layer
-   */
   const fetchBills = async () => {
     try {
       const res = await api.get("/payments");
-
-      // Narrow down bills to only those belonging to this case
       const caseBills = res.data.data.filter(
         (p) => p.case?._id === caseId
       );
-
       setBills(caseBills || []);
     } catch {
       setError("Failed to load bills.");
@@ -50,40 +33,35 @@ const AdvocateCaseBills = () => {
     }
   };
 
-  // Fetch bills whenever caseId changes
   useEffect(() => {
     fetchBills();
   }, [caseId]);
 
-  /* ---------- Filters ----------
-     Allows filtering bills by payment status using URL query params
-  */
   const statusParam = searchParams.get("status");
 
   const filteredBills = statusParam
     ? bills.filter((b) => b.status === statusParam)
     : bills;
 
-  /**
-   * Updates the URL query parameter for filtering
-   * Passing null resets filters
-   */
   const setFilter = (status) => {
-    if (!status) {
-      setSearchParams({});
-    } else {
-      setSearchParams({ status });
-    }
+    status ? setSearchParams({ status }) : setSearchParams({});
   };
 
-  /**
-   * Deletes a pending bill and refreshes the list
-   * Only applicable to unpaid (pending) bills
-   */
   const handleDelete = async (id) => {
     await api.delete(`/payments/${id}`);
     fetchBills();
   };
+
+  const handleGenerateInvoice = async (paymentId) => {
+    try {
+      await api.post(`/invoices/${paymentId}/generate`);
+      fetchBills(); // refresh list so UI updates
+    } catch (err) {
+      console.error("Invoice generation failed", err);
+      alert("Failed to generate invoice");
+    }
+  };
+
 
   return (
     <DashboardLayout
@@ -92,131 +70,125 @@ const AdvocateCaseBills = () => {
         { label: "Dashboard", path: "/advocate" },
         { label: "My Appointments", path: "/advocate/my-appointments" },
         { label: "My Cases", path: "/advocate/my-cases" },
-        {
-          label: "Back to Case",
-          path: `/advocate/my-cases/${caseId}`,
-        },
+        { label: "Back to Case", path: `/advocate/my-cases/${caseId}` },
       ]}
     >
-      {/* ---------- Loading ---------- */}
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <>
           {/* ---------- Filters ---------- */}
           <div className="mb-4 flex flex-wrap gap-3 justify-center">
-            <button
-              onClick={() => setFilter(null)}
-              className={`
-                rounded-lg border border-border
-                px-3 py-1 text-sm
-                ${
-                  !statusParam
+            {["all", "pending", "paid"].map((s) => (
+              <button
+                key={s}
+                onClick={() => setFilter(s === "all" ? null : s)}
+                className={`
+                  rounded-lg border border-border px-3 py-1 text-sm
+                  ${(statusParam ?? "all") === s
                     ? "bg-primary text-text-primary"
                     : "text-text-secondary hover:bg-surfaceElevated"
-                }
-                transition-colors
-              `}
-            >
-              All
-            </button>
-
-            <button
-              onClick={() => setFilter("pending")}
-              className={`
-                rounded-lg border border-border
-                px-3 py-1 text-sm
-                ${
-                  statusParam === "pending"
-                    ? "bg-surfaceElevated text-warning"
-                    : "text-text-secondary hover:bg-surfaceElevated"
-                }
-                transition-colors
-              `}
-            >
-              Pending
-            </button>
-
-            <button
-              onClick={() => setFilter("paid")}
-              className={`
-                rounded-lg border border-border
-                px-3 py-1 text-sm
-                ${
-                  statusParam === "paid"
-                    ? "bg-surfaceElevated text-success"
-                    : "text-text-secondary hover:bg-surfaceElevated"
-                }
-                transition-colors
-              `}
-            >
-              Paid
-            </button>
+                  }
+                `}
+              >
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </button>
+            ))}
           </div>
 
-          {/* ---------- Error ---------- */}
-          {error && (
-            <p className="mb-3 text-sm text-error">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-sm text-error">{error}</p>}
 
-          {/* ---------- Empty State ---------- */}
           {filteredBills.length === 0 && (
-            <p className="text-text-muted">
+            <p className="text-text-muted text-center">
               No bills match this filter.
             </p>
           )}
 
-          {/* ---------- Bills List ---------- */}
-          <div className="space-y-3">
+          {/* ---------- Bills ---------- */}
+          <div className="space-y-5">
             {filteredBills.map((bill) => (
               <div
                 key={bill._id}
                 className={`
-                  rounded-xl border border-border
-                  border-l-4
-                  bg-surface
-                  p-4
-                  ${STATUS_STYLES[bill.status] || ""}
+                  rounded-xl border border-border border-l-4
+                  bg-surface p-5
+                  ${STATUS_STYLES[bill.status]}
                 `}
               >
-                {/* Bill Amount */}
-                <p className="text-base sm:text-lg font-semibold text-text-primary">
-                  ₹{bill.amount}
-                </p>
-
-                {/* Bill Metadata */}
-                <div className="mt-1 space-y-1 sm:space-y-2 text-sm text-text-secondary">
-                  <p>
-                    <strong>For:</strong> {bill.paymentFor}
-                  </p>
-
-                  <p className="capitalize">
-                    <strong>Status:</strong>{" "}
-                    <span className="font-medium">
-                      {bill.status}
-                    </span>
-                  </p>
+                {/* ---------- Line Items ---------- */}
+                <div className="space-y-2 text-sm">
+                  {bill.lineItems.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex justify-between text-text-secondary"
+                    >
+                      <span>
+                        {item.title} × {item.quantity}
+                      </span>
+                      <span>₹{item.amount}</span>
+                    </div>
+                  ))}
                 </div>
 
-                {/* ---------- Actions ---------- */}
-                {bill.status === "pending" && (
-                  <button
-                    onClick={() => handleDelete(bill._id)}
-                    className="
-                      mt-3 w-full sm:w-auto rounded-lg
-                      border border-error
-                      px-3 py-1
-                      text-sm text-error
-                      hover:bg-surfaceElevated
-                      hover:text-text-primary
-                      transition-colors
-                    "
+                <hr className="my-3 border-border" />
+
+                {/* ---------- Totals ---------- */}
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>₹{bill.subtotal}</span>
+                  </div>
+
+                  <div className="flex justify-between text-text-secondary">
+                    <span>{bill.tax.label}</span>
+                    <span>₹{bill.tax.amount}</span>
+                  </div>
+
+                  <div className="flex justify-between font-semibold text-base text-text-primary">
+                    <span>Total</span>
+                    <span>₹{bill.total}</span>
+                  </div>
+                </div>
+
+                {/* ---------- Footer ---------- */}
+                <div className="mt-3 flex items-center justify-between">
+                  <span
+                    className={`text-sm font-medium capitalize ${bill.status === "paid"
+                      ? "text-success"
+                      : "text-warning"
+                      }`}
                   >
-                    Delete
-                  </button>
-                )}
+                    {bill.status}
+                  </span>
+
+                  {bill.status === "pending" && (
+                    <button
+                      onClick={() => handleDelete(bill._id)}
+                      className="
+                        rounded-lg border border-error px-3 py-1
+                        text-sm text-error hover:bg-surfaceElevated
+                      "
+                    >
+                      Delete
+                    </button>
+                  )}
+
+                  {bill.status === "paid" && !bill.invoice?.invoiceNumber && (
+                    <button
+                      onClick={() => handleGenerateInvoice(bill._id)}
+                      className="
+                        rounded-lg bg-primary px-3 py-1
+                        text-sm text-text-primary
+                        hover:bg-primary-hover
+                      "
+                    >
+                      Generate Invoice
+                    </button>
+                  )}
+
+
+
+                </div>
               </div>
             ))}
           </div>

@@ -102,6 +102,55 @@ const AdvocateCaseDetails = () => {
             <strong>Client:</strong> {caseData.client?.name}
           </p>
         </div>
+        {/* ---------- AI Case Analysis (Read-only) ---------- */}
+        {caseData.appointment?.aiAnalysis?.output && (
+          <div className="m-3 rounded-xl border border-border bg-surface p-4">
+            <h3 className="mb-2 text-sm font-semibold text-text-primary">
+              AI Case Analysis (Advisory)
+            </h3>
+
+            <div className="space-y-1 text-sm text-text-secondary">
+              <p>
+                <strong>Case Type:</strong>{" "}
+                {caseData.appointment.aiAnalysis.output.caseType}
+              </p>
+
+              <p>
+                <strong>Urgency:</strong>{" "}
+                {caseData.appointment.aiAnalysis.output.urgency}
+              </p>
+
+              <p>
+                <strong>Evidence Readiness:</strong>{" "}
+                {caseData.appointment.aiAnalysis.output.evidenceReadiness}
+              </p>
+
+              <p>
+                <strong>Recommended Specialization:</strong>{" "}
+                {caseData.appointment.aiAnalysis.output.recommendedSpecialization}
+              </p>
+
+              {caseData.appointment.aiAnalysis.output.nextSteps?.length > 0 && (
+                <div className="pt-2">
+                  <strong>Suggested Next Steps:</strong>
+                  <ul className="ml-5 list-disc">
+                    {caseData.appointment.aiAnalysis.output.nextSteps.map(
+                      (step, i) => (
+                        <li key={i}>{step}</li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <p className="mt-3 text-xs italic text-text-muted">
+              AI-generated summary for preliminary guidance only.
+              Advocate judgment and legal expertise prevail.
+            </p>
+          </div>
+        )}
+
 
         <div className="mt-3 text-sm">
           <strong>Status:</strong>{" "}

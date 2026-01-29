@@ -113,15 +113,16 @@ const ClientCaseDetails = () => {
     // Create Razorpay order on the backend
     const orderRes = await api.post(
       "/payments/create-order",
-      { amount: bill.amount }
+      { paymentId: bill._id }
     );
+
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: bill.amount * 100, // Convert to paise
+      amount: bill.total * 100, // Convert to paise
       currency: "INR",
       name: "Advocate Automated System",
-      description: bill.paymentFor,
+      description: "Legal Services Invoice",
       order_id: orderRes.data.order.id,
 
       // Called by Razorpay on successful payment
@@ -148,6 +149,41 @@ const ClientCaseDetails = () => {
     const razorpay = new window.Razorpay(options);
     razorpay.open();
   };
+
+ const handleDownloadInvoice = async (paymentId) => {
+  try {
+    const res = await api.get(`/invoices/${paymentId}/download`, {
+      responseType: "blob", // Important for handling binary data
+    });
+
+    // Create a URL for the blob
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    
+    // Attempt to extract filename from headers, fallback to default
+    const contentDisposition = res.headers['content-disposition'];
+    let fileName = "Invoice.pdf";
+    if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/);
+        if (fileNameMatch.length === 2) fileName = fileNameMatch[1];
+    }
+    
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    
+  } catch (error) {
+    console.error("Download failed", error);
+    alert("Failed to download invoice. Please try again later.");
+  }
+};
+
+
 
   return (
     <DashboardLayout
@@ -183,7 +219,7 @@ const ClientCaseDetails = () => {
       </div>
 
       {/* ---------- Pending Bills ---------- */}
-      <h3 className="mb-3 text-base sm:text-lg font-semibold text-text-primary">
+      <h3 className="mb-4 text-lg font-semibold text-text-primary">
         Pending Bills
       </h3>
 
@@ -191,44 +227,107 @@ const ClientCaseDetails = () => {
         <p className="text-text-muted">No pending bills.</p>
       )}
 
-      <div className="space-y-3">
-        {pendingBills.map((bill) => (
-          <div
-            key={bill._id}
-            className={`
-              rounded-xl border border-border
-              border-l-4
-              bg-surface
-              p-4
-              ${BILL_STYLES.pending}
-            `}
-          >
-            <p className="text-base sm:text-lg font-semibold text-text-primary">
-              ₹{bill.amount}
-            </p>
-            <p className="text-text-secondary">
-              {bill.paymentFor}
-            </p>
+      <div className="space-y-5">
+        {pendingBills.map((bill) => {
+          const subtotal = bill.lineItems?.reduce(
+            (sum, i) => sum + i.quantity * i.unitPrice,
+            0
+          ) || 0;
 
-            <button
+          return (
+            <div
+              key={bill._id}
               className="
-                mt-4 w-full sm:w-auto rounded-lg
-                bg-primary
-                px-4 py-2
-                text-sm font-medium text-text-primary
-                hover:bg-primary-hover
-                transition-colors
-              "
-              onClick={() => handlePayNow(bill)}
+          rounded-xl border border-border
+          bg-surface
+          p-6
+          space-y-4
+        "
             >
-              Pay Now
-            </button>
-          </div>
-        ))}
+              {/* ---------- Header ---------- */}
+              <div className="flex justify-between items-center">
+                <h4 className="text-base font-semibold text-text-primary">
+                  Bill Summary
+                </h4>
+                <span className="text-sm text-warning font-medium">
+                  Pending
+                </span>
+              </div>
+
+              {/* ---------- Items ---------- */}
+              <div className="divide-y divide-border">
+                {bill.lineItems.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="py-3 flex justify-between gap-4"
+                  >
+                    <div>
+                      <p className="font-medium text-text-primary">
+                        {item.title}
+                      </p>
+                      {item.description && (
+                        <p className="text-sm text-text-muted">
+                          {item.description}
+                        </p>
+                      )}
+                      <p className="text-xs text-text-muted">
+                        Qty {item.quantity} × ₹{item.unitPrice}
+                      </p>
+                    </div>
+
+                    <p className="font-medium text-text-primary">
+                      ₹{item.quantity * item.unitPrice}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* ---------- Totals ---------- */}
+              <div className="border-t border-border pt-4 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Subtotal</span>
+                  <span>₹{bill.subtotal}</span>
+                </div>
+
+                <div className="flex justify-between text-text-secondary">
+                  <span>{bill.tax.label}</span>
+                  <span>₹{bill.tax.amount}</span>
+                </div>
+
+                <div className="flex justify-between text-base font-semibold">
+                  <span>Total</span>
+                  <span>₹{bill.total}</span>
+                </div>
+              </div>
+
+
+              {/* ---------- Pay CTA ---------- */}
+              <button
+                onClick={() => handlePayNow(bill)}
+                className="
+            w-full rounded-lg
+            bg-primary
+            px-4 py-2
+            text-sm font-medium text-text-primary
+            hover:bg-primary-hover
+            transition-colors
+          "
+              >
+                Pay Securely
+              </button>
+
+              <p className="text-xs text-text-muted text-center">
+                Payments are processed securely via Razorpay
+              </p>
+            </div>
+          );
+        })}
       </div>
 
+
       {/* ---------- Paid Bills ---------- */}
-      <h3 className="mt-8 mb-3 text-base sm:text-lg font-semibold text-text-primary">
+      {/* ---------- Paid Bills ---------- */}
+      <h3 className="mt-8 mb-4 text-lg font-semibold text-text-primary">
         Paid Bills
       </h3>
 
@@ -236,30 +335,74 @@ const ClientCaseDetails = () => {
         <p className="text-text-muted">No paid bills.</p>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-5">
         {paidBills.map((bill) => (
           <div
             key={bill._id}
-            className={`
-              rounded-xl border border-border
-              border-l-4
-              bg-surface
-              p-4
-              ${BILL_STYLES.paid}
-            `}
+            className="
+        rounded-xl border border-border
+        bg-surface p-6 space-y-4
+      "
           >
-            <p className="text-base sm:text-lg font-semibold text-text-primary">
-              ₹{bill.amount}
-            </p>
-            <p className="text-text-secondary">
-              {bill.paymentFor}
-            </p>
-            <p className="mt-1 text-sm font-medium text-success">
-              Paid
-            </p>
+            {/* Header */}
+            <div className="flex justify-between items-center">
+              <h4 className="text-base font-semibold text-text-primary">
+                Payment Receipt
+              </h4>
+              <span className="text-sm font-medium text-success">
+                Paid
+              </span>
+            </div>
+
+            {/* Line Items */}
+            <div className="divide-y divide-border">
+              {bill.lineItems.map((item, idx) => (
+                <div key={idx} className="py-2 flex justify-between">
+                  <span className="text-text-secondary">
+                    {item.title} × {item.quantity}
+                  </span>
+                  <span>₹{item.amount}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Totals */}
+            <div className="border-t border-border pt-3 space-y-1 text-sm">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>₹{bill.subtotal}</span>
+              </div>
+
+              <div className="flex justify-between text-text-secondary">
+                <span>{bill.tax.label}</span>
+                <span>₹{bill.tax.amount}</span>
+              </div>
+
+              <div className="flex justify-between font-semibold text-base">
+                <span>Total Paid</span>
+                <span>₹{bill.total}</span>
+              </div>
+            </div>
+
+            {/* Invoice CTA */}
+            {bill.invoice?.invoiceUrl && (
+              <button
+                onClick={() => handleDownloadInvoice(bill._id)}
+                className="
+                    mt-3 w-full rounded-lg
+                    border border-primary
+                    px-4 py-2 text-sm font-medium
+                    text-primary hover:bg-primary/10
+                  "
+              >
+                Download Invoice
+              </button>
+
+            )}
           </div>
         ))}
       </div>
+
     </DashboardLayout>
   );
 };

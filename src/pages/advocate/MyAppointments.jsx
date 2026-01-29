@@ -82,8 +82,8 @@ const AdvocateMyAppointments = () => {
   // Apply status-based filtering when a filter is active
   const filteredAppointments = statusParam
     ? appointments.filter((a) =>
-        statusParam.split(",").includes(a.status)
-      )
+      statusParam.split(",").includes(a.status)
+    )
     : appointments;
 
   // Update query params to reflect selected filter
@@ -142,6 +142,27 @@ const AdvocateMyAppointments = () => {
     setSelectedAppointmentId(null);
   };
 
+  /**
+ * Marks consultation as completed for an approved appointment
+ */
+  const completeConsultation = async (appointmentId) => {
+    try {
+      await api.patch(`/appointments/${appointmentId}/complete`);
+
+      // Update local state
+      setAppointments((prev) =>
+        prev.map((a) =>
+          a._id === appointmentId
+            ? { ...a, status: "completed" }
+            : a
+        )
+      );
+    } catch {
+      setError("Failed to mark consultation as completed");
+    }
+  };
+
+
   return (
     <DashboardLayout
       title="My Appointments"
@@ -168,10 +189,9 @@ const AdvocateMyAppointments = () => {
           className={`
             rounded-lg border border-border
             px-3 py-1 text-sm
-            ${
-              !statusParam
-                ? "bg-surfaceElevated text-primary"
-                : "text-text-secondary hover:bg-surfaceElevated"
+            ${!statusParam
+              ? "bg-surfaceElevated text-primary"
+              : "text-text-secondary hover:bg-surfaceElevated"
             }
             transition-colors
           `}
@@ -186,10 +206,9 @@ const AdvocateMyAppointments = () => {
             className={`
               rounded-lg border border-border
               px-3 py-1 text-sm capitalize
-              ${
-                statusParam === status
-                  ? `bg-surfaceElevated ${FILTER_STYLES[status]}`
-                  : "text-text-secondary hover:bg-surfaceElevated"
+              ${statusParam === status
+                ? `bg-surfaceElevated ${FILTER_STYLES[status]}`
+                : "text-text-secondary hover:bg-surfaceElevated"
               }
               transition-colors
             `}
@@ -238,6 +257,50 @@ const AdvocateMyAppointments = () => {
                 </p>
               </div>
 
+              {/* ---------- AI Case Overview (Read-only) ---------- */}
+              {appt.aiAnalysis?.output && (
+                <details className="mt-3 rounded-lg border border-border bg-bg p-3">
+                  <summary className="cursor-pointer text-sm font-medium text-text-primary">
+                    AI Case Overview
+                  </summary>
+
+                  <div className="mt-2 space-y-2 text-sm text-text-secondary">
+                    <p>
+                      <strong>Case Type:</strong>{" "}
+                      {appt.aiAnalysis.output.caseType}
+                    </p>
+
+                    <p>
+                      <strong>Urgency:</strong>{" "}
+                      {appt.aiAnalysis.output.urgency}
+                    </p>
+
+                    <p>
+                      <strong>Evidence Readiness:</strong>{" "}
+                      {appt.aiAnalysis.output.evidenceReadiness}
+                    </p>
+
+                    <p>
+                      <strong>Recommended Specialization:</strong>{" "}
+                      {appt.aiAnalysis.output.recommendedSpecialization}
+                    </p>
+
+                    <div>
+                      <strong>Suggested Next Steps:</strong>
+                      <ul className="ml-5 list-disc">
+                        {appt.aiAnalysis.output.nextSteps?.map((step, i) => (
+                          <li key={i}>{step}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <p className="pt-2 text-xs italic text-text-muted">
+                      AI-generated summary. Advocate judgment prevails.
+                    </p>
+                  </div>
+                </details>
+              )}
+
               {/* ---------- Contextual Actions ---------- */}
               <div className="mt-3 flex flex-wrap gap-2">
                 {appt.status === "requested" && (
@@ -275,17 +338,35 @@ const AdvocateMyAppointments = () => {
                   </>
                 )}
 
-                {appt.status === "approved" && !hasCase && (
+                {/* Consultation completion */}
+                {appt.status === "approved" && (
+                  <button
+                    onClick={() => completeConsultation(appt._id)}
+                    className="
+      rounded-lg
+      bg-primary
+      px-3 py-1
+      text-sm font-medium text-text-primary
+      hover:bg-primary-hover
+      transition-colors
+    "
+                  >
+                    Mark Consultation Completed
+                  </button>
+                )}
+
+                {/* Case creation only AFTER consultation */}
+                {appt.status === "completed" && !hasCase && (
                   <button
                     onClick={() =>
                       navigate(`/advocate/create-case/${appt._id}`)
                     }
                     className="
                       rounded-lg
-                      bg-primary
+                      bg-success
                       px-3 py-1
                       text-sm font-medium text-text-primary
-                      hover:bg-primary-hover
+                      hover:bg-success-hover
                       transition-colors
                     "
                   >
@@ -293,17 +374,6 @@ const AdvocateMyAppointments = () => {
                   </button>
                 )}
 
-                {appt.status === "approved" && hasCase && (
-                  <span className="text-sm font-medium text-success">
-                    Case already created
-                  </span>
-                )}
-
-                {appt.status === "completed" && (
-                  <span className="text-sm italic text-text-muted">
-                    Appointment completed
-                  </span>
-                )}
               </div>
             </div>
           );
