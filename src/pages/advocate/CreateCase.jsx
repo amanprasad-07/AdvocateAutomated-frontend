@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import api from "../../api/axios";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const CreateCase = () => {
   // Extract appointment ID from route params
@@ -23,8 +24,11 @@ const CreateCase = () => {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    caseType: "",
+    assignedJuniors: [],
   });
+
+  const [juniors, setJuniors] = useState([]);
+
 
   /**
    * Fetch appointment details so the advocate
@@ -34,18 +38,17 @@ const CreateCase = () => {
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const res = await api.get("/appointments");
+        const res = await api.get(`/appointments/${appointmentId}`)
 
         // Locate the appointment matching the route param
-        const found = res.data.data.find(
-          (a) => a._id === appointmentId
-        );
+        const appointment = res.data.data;
 
-        if (!found) {
+        if (!appointment) {
           setError("Appointment not found");
         } else {
-          setAppointment(found);
+          setAppointment(appointment);
         }
+
       } catch {
         setError("Failed to load appointment");
       } finally {
@@ -57,12 +60,26 @@ const CreateCase = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+  useEffect(() => {
+    const fetchJuniors = async () => {
+      try {
+        const res = await api.get("/users/getJuniors");
+        setJuniors(res.data.data || []);
+      } catch {
+        // silent fail — junior assignment is optional
+      }
+    };
+
+    fetchJuniors();
+  }, []);
+
+
   // Generic form field handler
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  /**
+  /** 
    * Submit case creation request.
    * Links the case to the originating appointment.
    */
@@ -75,7 +92,7 @@ const CreateCase = () => {
         appointmentId,
         title: form.title,
         description: form.description,
-        caseType: form.caseType,
+        assignedJuniors: form.assignedJuniors,
       });
 
       // Redirect advocate back to dashboard after success
@@ -89,10 +106,13 @@ const CreateCase = () => {
   if (loading) {
     return (
       <DashboardLayout title="Create Case">
-        <p className="p-6 text-text-muted">Loading…</p>
+        <div className="flex justify-center p-6">
+          <LoadingSpinner />
+        </div>
       </DashboardLayout>
     );
   }
+
 
   return (
     <DashboardLayout
@@ -134,6 +154,54 @@ const CreateCase = () => {
           </div>
         </div>
       )}
+
+      {/* ---------- AI Case Analysis (Read-only) ---------- */}
+      {appointment?.aiAnalysis?.output && (
+        <div className="mb-6 rounded-xl border border-border bg-surfaceElevated p-6">
+          <h3 className="mb-3 text-sm font-semibold text-text-primary">
+            AI Case Analysis (Reference Only)
+          </h3>
+
+          <div className="space-y-2 text-sm text-text-secondary">
+            <p>
+              <strong>Case Type:</strong>{" "}
+              {appointment.aiAnalysis.output.caseType}
+            </p>
+
+            <p>
+              <strong>Urgency:</strong>{" "}
+              {appointment.aiAnalysis.output.urgency}
+            </p>
+
+            <p>
+              <strong>Evidence Readiness:</strong>{" "}
+              {appointment.aiAnalysis.output.evidenceReadiness}
+            </p>
+
+            <p>
+              <strong>Recommended Specialization:</strong>{" "}
+              {appointment.aiAnalysis.output.recommendedSpecialization}
+            </p>
+
+            {Array.isArray(appointment.aiAnalysis.output.nextSteps) && (
+              <div>
+                <strong>Suggested Next Steps:</strong>
+                <ul className="ml-5 mt-1 list-disc">
+                  {appointment.aiAnalysis.output.nextSteps.map((step, i) => (
+                    <li key={i}>{step}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <p className="mt-3 text-xs italic text-text-muted">
+            This AI-generated analysis is advisory in nature.
+            Final legal assessment and case framing rests with the advocate.
+          </p>
+        </div>
+      )}
+
 
       {/* ---------- Create Case Form ---------- */}
       <form
@@ -180,26 +248,38 @@ const CreateCase = () => {
           "
         />
 
-        {/* Case type selector */}
-        <select
-          name="caseType"
-          value={form.caseType}
-          onChange={handleChange}
-          required
-          className="
-            w-full rounded-lg
-            border border-border
-            bg-bg
-            px-3 py-2
-            text-text-primary
-            focus:outline-none
-            focus:ring-2 focus:ring-primary/30
-          "
-        >
-          <option value="">Select Case Type</option>
-          <option value="civil">Civil</option>
-          <option value="criminal">Criminal</option>
-        </select>
+        {/* ---------- Assign Junior Advocates ---------- */}
+        {juniors.length > 0 && (
+          <div className="rounded-xl border border-border bg-surface p-4">
+            <p className="mb-2 text-sm font-semibold text-text-primary">
+              Assign Junior Advocates (optional)
+            </p>
+
+            <div className="space-y-2 text-sm text-text-secondary">
+              {juniors.map((junior) => (
+                <label key={junior._id} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={form.assignedJuniors.includes(junior._id)}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setForm((prev) => ({
+                        ...prev,
+                        assignedJuniors: checked
+                          ? [...prev.assignedJuniors, junior._id]
+                          : prev.assignedJuniors.filter(
+                            (id) => id !== junior._id
+                          ),
+                      }));
+                    }}
+                  />
+                  {junior.name} ({junior.email})
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
 
         {/* Submit action */}
         <button

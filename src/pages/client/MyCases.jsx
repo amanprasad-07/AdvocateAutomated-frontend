@@ -59,8 +59,8 @@ const ClientMyCases = () => {
    */
   const filteredCases = statusParam
     ? cases.filter(c =>
-        statusParam.split(",").includes(c.status)
-      )
+      statusParam.split(",").includes(c.status)
+    )
     : cases;
 
   /**
@@ -78,7 +78,7 @@ const ClientMyCases = () => {
     <DashboardLayout
       title="My Cases"
       navItems={[
-        { label: "Dashboard", path: "/client" },
+          { label: "Dashboard", path: "/client" },
         { label: "Book Appointment", path: "/client/book-appointment" },
         { label: "My Appointments", path: "/client/my-appointments" },
         { label: "Past Appointments", path: "/client/past-appointments" },
@@ -98,10 +98,9 @@ const ClientMyCases = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  !statusParam
-                    ? "bg-primary text-text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${!statusParam
+                  ? "bg-primary text-text-primary"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -114,10 +113,9 @@ const ClientMyCases = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  statusParam === "open"
-                    ? "bg-surfaceElevated text-primary"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${statusParam === "open"
+                  ? "bg-surfaceElevated text-primary"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -130,10 +128,9 @@ const ClientMyCases = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  statusParam === "in_progress"
-                    ? "bg-surfaceElevated text-warning"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${statusParam === "in_progress"
+                  ? "bg-surfaceElevated text-warning"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}
@@ -146,10 +143,9 @@ const ClientMyCases = () => {
               className={`
                 rounded-lg border border-border
                 px-3 py-1 text-sm
-                ${
-                  statusParam === "closed"
-                    ? "bg-surfaceElevated text-success"
-                    : "text-text-secondary hover:bg-surfaceElevated"
+                ${statusParam === "closed"
+                  ? "bg-surfaceElevated text-success"
+                  : "text-text-secondary hover:bg-surfaceElevated"
                 }
                 transition-colors
               `}

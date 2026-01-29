@@ -13,7 +13,7 @@ const VerificationProfile = () => {
     enrollmentNumber: "",
     barCouncil: "",
     experienceYears: "",
-    documents: [],
+    specialization: [],
   });
 
   const [loading, setLoading] = useState(false);
@@ -57,6 +57,11 @@ const VerificationProfile = () => {
       setError("Enrollment number and bar council are required");
       return;
     }
+    if (formData.specialization.length === 0) {
+  setError("Please select at least one area of specialization");
+  return;
+}
+
 
     try {
       setLoading(true);
@@ -65,14 +70,14 @@ const VerificationProfile = () => {
         enrollmentNumber: formData.enrollmentNumber,
         barCouncil: formData.barCouncil,
         experienceYears: Number(formData.experienceYears),
-        documents: formData.documents,
+        specialization: formData.specialization,
       });
 
       navigate("/advocate", { replace: true });
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          "Failed to submit verification details"
+        "Failed to submit verification details"
       );
     } finally {
       setLoading(false);
@@ -169,6 +174,47 @@ const VerificationProfile = () => {
               focus:ring-2 focus:ring-primary/30"
               />
             </div>
+
+            <div>
+              <label className="mb-2 block text-sm text-text-secondary">
+                Area(s) of Specialization *
+              </label>
+
+              <div className="grid grid-cols-2 gap-2 text-sm text-text-primary">
+                {[
+                  "Civil",
+                  "Criminal",
+                  "Family",
+                  "Property",
+                  "Corporate",
+                  "Consumer Protection",
+                  "Personal Injury",
+                  "Labour",
+                  "Intellectual Property",
+                  "Tax",
+                  "Other",
+                ].map((spec) => (
+                  <label key={spec} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value={spec}
+                      checked={formData.specialization.includes(spec)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setFormData((prev) => ({
+                          ...prev,
+                          specialization: e.target.checked
+                            ? [...prev.specialization, value]
+                            : prev.specialization.filter((s) => s !== value),
+                        }));
+                      }}
+                    />
+                    {spec}
+                  </label>
+                ))}
+              </div>
+            </div>
+
 
             <div className="flex gap-3 pt-2">
               <button
